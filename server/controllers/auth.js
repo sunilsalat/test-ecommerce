@@ -8,7 +8,7 @@ const Token = require("../models/token");
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if ((!name, !email, !password)) {
+  if (!name || !email || !password) {
     throw new Error("All the fields are required to register");
   }
 
@@ -56,7 +56,7 @@ const login = async (req, res) => {
       payload,
       refreshTokenDB: existing_token.refreshTokenDB,
     });
-    res.status(200).json({ name: user.name, role: user.isAdmin });
+    res.status(200).json({ name: user.name, role: user.isAdmin, id: user._id });
     return;
   }
 
@@ -70,7 +70,7 @@ const login = async (req, res) => {
 
   const token = await Token.create(tokenPayload);
   createJwtToken({ res, payload, refreshTokenDB: token.refreshTokenDB });
-  res.status(200).json({ msg: "True" });
+  res.status(200).json({ name: user.name, role: user.isAdmin, id: user._id });
 };
 
 // LOGOUT
@@ -90,4 +90,8 @@ const logout = async (req, res) => {
   res.status(200).json({ msg: "true" });
 };
 
-module.exports = { register, login, logout };
+const checkRootUserInfo = async (req, res) => {
+  res.status(200);
+};
+
+module.exports = { register, login, logout, checkRootUserInfo };

@@ -1,8 +1,18 @@
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { userLogout } from "../../slices/userLoginSlice";
 
 const Navbar = () => {
-  const userInfo = true;
+  const { userInfo } = useSelector((state) => state.login);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const haneleLogOut = () => {
+    dispatch(userLogout());
+    navigate("/signin");
+  };
+
   return (
     <nav className="navbar">
       <div className="left-section">left-section</div>
@@ -12,20 +22,22 @@ const Navbar = () => {
           <ul>
             {userInfo ? (
               <>
-                <li>
+                <li onClick={() => haneleLogOut()}>
                   <Link to="/">LogOut</Link>
                 </li>
                 <li>
-                  <Link to="/">Profile</Link>
+                  <Link to="/">
+                    {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
+                  </Link>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link to="/">LogIn</Link>
+                  <Link to="/signin">SignIn</Link>
                 </li>
                 <li>
-                  <Link to="/">SigUp</Link>
+                  <Link to="/signup">SigUp</Link>
                 </li>
               </>
             )}
