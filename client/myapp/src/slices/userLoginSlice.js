@@ -10,7 +10,6 @@ export const userLogin = createAsyncThunk(
       },
       body: JSON.stringify({ email, password }),
     });
-
     return await res.json();
   }
 );
@@ -33,6 +32,7 @@ const userLoginSlice = createSlice({
   },
   reducers: {},
   extraReducers: {
+    // Login
     [userLogin.pending]: (state) => {
       console.log("Request pending");
     },
@@ -44,6 +44,7 @@ const userLoginSlice = createSlice({
     [userLogin.rejected]: (state) => {
       console.log("Request rejected");
     },
+    // Logout
     [userLogout.pending]: (state) => {
       console.log("Request pending");
     },

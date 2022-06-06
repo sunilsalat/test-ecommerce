@@ -4,9 +4,8 @@ import SignIn from "./pages/signin/SignIn";
 import SignUp from "./pages/signup/SignUp";
 import NotFound from "./pages/notfound/NotFound";
 import NavBar from "./components/Navbar/Navbar";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AuthWrapper from "./components/authWrapper/AuthWrapper";
 import Profile from "./pages/profile/Profile";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (

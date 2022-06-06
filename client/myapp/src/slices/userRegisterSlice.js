@@ -10,7 +10,6 @@ export const userRegister = createAsyncThunk(
       },
       body: JSON.stringify({ name, email, password }),
     });
-
     return res.json();
   }
 );
