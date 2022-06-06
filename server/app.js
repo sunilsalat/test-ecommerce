@@ -1,0 +1,25 @@
+require("dotenv").config();
+const express = require("express");
+const cookiePraser = require("cookie-parser");
+require("express-async-errors");
+const app = express();
+const authRouter = require("./routes/authRouter");
+const productRouter = require("./routes/productRouter");
+const { errorHandlerMiddleware } = require("./middleewares/errorHandler");
+const { notFound } = require("./middleewares/notFound");
+
+// middlewares
+app.use(express.json());
+app.use(cookiePraser(process.env.JWT_SECRET));
+
+app.get("/", (req, res) => {
+  res.status(200).send("ok");
+});
+
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/product", productRouter);
+
+app.use(errorHandlerMiddleware);
+app.use(notFound);
+
+module.exports = { app };

@@ -1,0 +1,33 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: steelblue;
+  color: black;
+  height: 70px;
+}
+
+.left-section {
+  flex: 1;
+}
+.middle-section {
+  flex: 2;
+}
+.right-section {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-links ul {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-links li {
+  list-style: none;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-decoration: none;
+}
