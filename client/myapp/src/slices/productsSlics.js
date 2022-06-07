@@ -18,10 +18,13 @@ const productsSlics = createSlice({
     },
     [getAllProducts.fulfilled]: (state, action) => {
       console.log("Promise fullfilled");
-      console.log(action.payload);
+      state.products = action.payload;
+      state.success = true;
     },
     [getAllProducts.rejected]: (state) => {
       console.log("Promise rejected");
     },
   },
 });
+
+export default productsSlics.reducer;

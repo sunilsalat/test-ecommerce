@@ -8,6 +8,7 @@ import Profile from "./pages/profile/Profile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
+ 
   return (
     <div className="App">
       <Router>

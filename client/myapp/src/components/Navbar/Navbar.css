@@ -1,3 +1,7 @@
+:root {
+  --bg-serach: rgb(245, 241, 241);
+}
+
 .navbar {
   display: flex;
   justify-content: center;
@@ -9,10 +13,43 @@
 
 .left-section {
   flex: 1;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 900;
+  font-style: italic;
 }
+
+.left-section > a {
+  text-decoration: none;
+  color: white;
+}
+
 .middle-section {
   flex: 2;
 }
+
+.middle-section > input {
+  border: none;
+  outline: none;
+  background-color: var(--bg-serach);
+  padding: 3px;
+  height: 30px;
+  border-radius: 3px;
+}
+
+.middle-section > input:active {
+  border: none;
+  outline: none;
+}
+
+.middle-section > button {
+  background-color: var(--bg-serach);
+  height: 30px;
+  margin-left: -3px;
+  padding-left: 10px;
+  border: 1px solid var(--bg-serach);
+  border-radius: 3px;
+}
+
 .right-section {
   flex: 1;
   display: flex;
@@ -29,5 +66,46 @@
   list-style: none;
   padding-left: 5px;
   padding-right: 5px;
+}
+.nav-links a {
   text-decoration: none;
+  color: white;
+  font-size: bold;
+  height: 30px;
+}
+.middle-section-mobile {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .middle-section {
+    display: none;
+  }
+  .middle-section-mobile {
+    background-color: rgb(162, 197, 226);
+    display: block;
+    padding: 10px;
+  }
+  .middle-section-mobile > input {
+    border: none;
+    outline: none;
+    background-color: var(--bg-serach);
+    padding: 3px;
+    height: 30px;
+    border-radius: 3px;
+  }
+
+  .middle-section-mobile > input:active {
+    border: none;
+    outline: none;
+  }
+
+  .middle-section-mobile > button {
+    background-color: var(--bg-serach);
+    height: 30px;
+    margin-left: -2px;
+    padding-left: 10px;
+    border: 1px solid var(--bg-serach);
+    border-radius: 3px;
+  }
 }

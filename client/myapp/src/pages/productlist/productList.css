@@ -1,2 +1,31 @@
+.main-container {
+  display: flex;
+  justify-content: center;
+}
 
+.side-container {
+  flex: 1;
+  padding-top: 5px;
+  background-color: grey;
+  height: 100%;
+  border-right: 1px solid rgba(rgb(7, 7, 7), rgb(5, 5, 5), rgb(0, 0, 0), 1);
 
+}
+
+.productList-container {
+  flex: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 600px) {
+  .main-container {
+    flex-direction: column-reverse;
+  }
+  .side-container{
+    position: sticky;
+    bottom: 0;
+    opacity: 1;
+  }
+}

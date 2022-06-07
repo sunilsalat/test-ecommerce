@@ -14,7 +14,7 @@ const SignUp = () => {
   const location = useLocation();
   const redirect = location.search ? location.search.split("=")[1] : "/";
   const { userInfo, success, error } = useSelector((state) => state.register);
-  const {userInfo:info } = useSelector((state) => state.login);
+  const { userInfo: info } = useSelector((state) => state.login);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,9 +22,8 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-
-    if(info){
-        navigate('/')
+    if (info) {
+      navigate("/");
     }
     if (success) {
       navigate("/signin");
@@ -32,32 +31,41 @@ const SignUp = () => {
   }, [navigate, success]);
 
   return (
-    <div className="loginFormContainer">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="name"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        ></input>
-        <input
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        ></input>
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="signup-main-container ">
+      <div className="inner-container">
+        <div className="title">
+          <h2>LoginForm</h2>
+        </div>
+        <div className="form-container">
+          <form className="form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Name"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            ></input>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            ></input>
+            <input
+              type="text"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></input>
+            <button className="login-btn" type="submit">
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
