@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Category = require("../models/category");
 
 const createProduct = async (req, res) => {
   const { title, description, image, unit } = req.body;
@@ -23,8 +24,30 @@ const editProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const products = await Product.find().limit(10);
+  const { cat } = req.query;
+  console.log(req.query);
 
+  if (cat != "all") {
+    console.log(cat);
+    const products = await Product.find({ category: cat })
+      .limit(10)
+      .populate("category");
+    res.status(200).json({ products });
+  }
+
+  const products = await Product.find().limit(10).populate("category");
+
+  res.status(200).json({ products });
+};
+
+const getCategoryWiseProduct = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new Error("Category not found");
+  }
+  const products = await Product.find({ category: id })
+    .limit(10)
+    .populate("category");
   res.status(200).json({ products });
 };
 
@@ -34,9 +57,32 @@ const getProductDetail = async (req, res) => {
   res.status(200).json({ product });
 };
 
+// Add category to which product belongs
+
+const addProductCategory = async (req, res) => {
+  const { title } = req.body;
+  if (!title) {
+    throw new Error("Title can not be blank!");
+  }
+  const cat = await Category.create({ title });
+  res.status(200).json({ cat });
+};
+
+// getallcategory
+
+const getAllCategory = async (req, res) => {
+  // Todo -- show most selling categories first
+  const categories = await Category.find({});
+
+  res.status(200).json({ categories });
+};
+
 module.exports = {
   createProduct,
   editProduct,
   getAllProducts,
   getProductDetail,
+  addProductCategory,
+  getAllCategory,
+  getCategoryWiseProduct,
 };

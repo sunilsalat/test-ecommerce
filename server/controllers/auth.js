@@ -94,4 +94,5 @@ const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
+
 module.exports = { register, login, logout, checkRootUserInfo };

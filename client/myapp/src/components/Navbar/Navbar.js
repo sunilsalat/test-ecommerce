@@ -1,6 +1,7 @@
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { getAllProducts } from "../../slices/productsSlics";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
 
@@ -13,6 +14,14 @@ const Navbar = () => {
     console.log("button clicked");
   };
 
+
+  const redirectToHome = ()=>{
+    console.log('slkdfjlk')
+    dispatch(getAllProducts({cat:'all'}))
+    navigate('/')
+
+  }
+
   const haneleLogOut = () => {
     dispatch(userLogout());
     navigate("/signin");
@@ -22,7 +31,7 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="left-section">
-          <Link to="/">MY-STORE</Link>
+          <Link to="/" onClick={()=>redirectToHome()}>MY-STORE</Link>
         </div>
         <div className="middle-section">
           <input type="search" placeholder="Search"></input>

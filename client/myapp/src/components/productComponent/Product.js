@@ -1,15 +1,28 @@
 import "./Product.css";
+import { FaHeart } from "react-icons/fa";
+
+import { useNavigate } from "react-router-dom";
+
 const Product = ({ product }) => {
   const { _id, title, description, price, image, unit } = product;
+
+  const navigate = useNavigate()
+  const t = (_id) => {
+    navigate(`/product-detail/${_id}`)
+  };
+
   return (
     <div className="main-card-container">
       <div className="product-card-container">
-        <div className="product-img-container">
+        <FaHeart className="heart" />
+        <div className="product-img-container" onClick={() => t(_id)}>
           <img src={image} />
         </div>
         <div className="product-info-container">
           <p>{title}</p>
-          <p>Price - 499</p>
+          <p>
+            <span>$ {price}</span>
+          </p>
         </div>
         <div className="product-purchase-container">
           <button>ADD TO CART</button>

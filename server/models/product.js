@@ -21,6 +21,12 @@ const ProductSchema = mongoose.Schema({
     type: String,
     required: [true, "Image can not be empty"],
   },
+  price: { type: Number, required: [true, "Price can not be blank "] },
+  category: {
+    type: mongoose.ObjectId,
+    ref: "Category",
+    required: [true, "Category can not be blank"],
+  },
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
