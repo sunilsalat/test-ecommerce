@@ -2,27 +2,27 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async ({ cat }) => {
+  async ({cat, title}) => {
     try {
-      const res = await fetch(`/api/v1/product/all?cat=${cat}`);
+      const res = await fetch(`/api/v1/product/all?cat=${cat}&title=${title}`);
       return await res.json();
     } catch (error) {
-      console.log(error.message, "slkdjfljdslkfjlksdjflkdsjlkfjdslkjflk");
+      console.log(error.message);
     }
   }
 );
 
-export const getCategoryWiseProduct = createAsyncThunk(
+export const getCategories = createAsyncThunk(
   "products/getCategoryWiseProduct",
-  async ({ id }) => {
-    const res = await fetch(`/api/v1/product/cat-product/${id}`);
+  async () => {
+    const res = await fetch("/api/v1/product/cat-all");
     return await res.json();
   }
 );
 
 const productsSlics = createSlice({
   name: "products",
-  initialState: { products: [], success: false, error: "" },
+  initialState: { categories: [], products: [], success: false, error: "" },
   reducers: {},
   extraReducers: {
     [getAllProducts.pending]: (state) => {
@@ -35,17 +35,17 @@ const productsSlics = createSlice({
     },
     [getAllProducts.rejected]: (state, error) => {
       console.log("Promise rejected");
-      console.log(error)
+      console.log(error);
     },
-    // cat-wise-product
-    [getCategoryWiseProduct.pending]: (state) => {
+    // cat
+    [getCategories.pending]: (state) => {
       console.log("Promise pending");
     },
-    [getCategoryWiseProduct.fulfilled]: (state, action) => {
+    [getCategories.fulfilled]: (state, action) => {
       console.log("Promise pending");
-      state.products = action.payload;
+      state.categories = action.payload.categories;
     },
-    [getCategoryWiseProduct.rejected]: (state) => {
+    [getCategories.rejected]: (state) => {
       console.log("Promise pending");
     },
   },

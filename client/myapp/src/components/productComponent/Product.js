@@ -1,14 +1,13 @@
 import "./Product.css";
 import { FaHeart } from "react-icons/fa";
-
 import { useNavigate } from "react-router-dom";
 
 const Product = ({ product }) => {
   const { _id, title, description, price, image, unit } = product;
 
-  const navigate = useNavigate()
-  const t = (_id) => {
-    navigate(`/product-detail/${_id}`)
+  const navigate = useNavigate();
+  const t = (id) => {
+    navigate(`/product-detail/${id}`);
   };
 
   return (

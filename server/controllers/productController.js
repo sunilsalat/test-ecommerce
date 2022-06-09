@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Category = require("../models/category");
+const mongoose = require("mongoose");
 
 const createProduct = async (req, res) => {
   const { title, description, image, unit } = req.body;
@@ -24,19 +25,31 @@ const editProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const { cat } = req.query;
-  console.log(req.query);
+  const { cat, title } = req.query;
+  console.log(cat, "is cat", title, "is title");
 
-  if (cat != "all") {
-    console.log(cat);
-    const products = await Product.find({ category: cat })
-      .limit(10)
-      .populate("category");
-    res.status(200).json({ products });
+  console.log(typeof cat, typeof title);
+
+  if (cat || title) {
+    try {
+      const newTitle = new RegExp("^" + title);
+      const products = await Product.find({
+        $or: [{ category: cat }, { title: { $regex: newTitle } }],
+      })
+        .limit(10)
+        .populate("category");
+
+      res.status(200).json({ products });
+    } catch (error) {
+      // const newTitle = new RegExp("^" + title);
+      // const products = await Product.find({ title: { $regex: newTitle } })
+      //   .limit(10)
+      //   .populate("category");
+      // res.status(200).json({ products });
+    }
   }
 
   const products = await Product.find().limit(10).populate("category");
-
   res.status(200).json({ products });
 };
 

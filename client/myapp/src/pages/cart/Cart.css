@@ -1,0 +1,39 @@
+.cart-container {
+  margin-top: 5rem;
+
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.cart-items-container {
+  border: 1px solid rgb(236, 24, 24);
+  padding: 10px;
+}
+
+.item-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-bottom: 2rem;
+  height: 40px;
+}
+
+
+.item-image, .item-info, .item-btn{
+  margin: 0px 10px;
+}
+
+.item-image > img{
+  height: 50px;
+  object-fit: cover;
+}
+
+.cart-info-container {
+  border: 1px solid black;
+}
+
+.total-info-container {
+  
+}

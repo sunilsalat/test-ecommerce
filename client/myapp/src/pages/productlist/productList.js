@@ -1,34 +1,31 @@
 import "./productList.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Product from "../../components/productComponent/Product";
-import {
-  getAllProducts,
-  getCategoryWiseProduct,
-} from "../../slices/productsSlics";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAllProducts, getCategories } from "../../slices/productsSlics";
+import { getAllCartItems } from "../../slices/cartSlice";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.products);
-  const [cat1, setCat] = useState([]);
+  const { products, categories } = useSelector((state) => state.products);
+
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const cat = query.get("cat");
+  const title = query.get("title");
 
   useEffect(() => {
-    dispatch(getAllProducts({ cat: "all" }));
+    if (categories.length === 0) {
+      dispatch(getCategories());
+    }
   }, []);
 
-  //  util function to load categories
   useEffect(() => {
-    const getAllCat = async () => {
-      const res = await fetch("/api/v1/product/cat-all");
-      const data = await res.json();
-      console.log(data);
-      if (res.status === 200) {
-        setCat(data);
-      }
-    };
-
-    getAllCat();
-  }, []);
+    dispatch(getAllProducts({ cat, title }));
+    dispatch(getAllCartItems())
+  }, [dispatch, cat, title]);
 
   if (products.length <= 0) {
     return <div>Loading...</div>;
@@ -45,12 +42,12 @@ const ProductList = () => {
             <h5>Category</h5>
           </div>
           <div className="category-list">
-            {cat1.length !== 0 &&
-              cat1.categories.map((e) => {
+            {categories.length !== 0 &&
+              categories.map((e) => {
                 return (
                   <p
                     onClick={() => {
-                      dispatch(getAllProducts({ cat: e._id }));
+                      navigate(`/?cat=${e._id}`);
                     }}
                     key={e._id}
                   >

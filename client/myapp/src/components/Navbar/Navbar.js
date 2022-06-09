@@ -1,26 +1,28 @@
 import "./Navbar.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllProducts } from "../../slices/productsSlics";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [title, setTitle] = useState("");
   const { userInfo } = useSelector((state) => state.login);
+  const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const search = useLocation();
+
+  const query = new URLSearchParams(search);
+  const cat = query.get("cat");
 
   const handleSearch = () => {
-    console.log("button clicked");
+    navigate(`/?cat=${cat}&title=${title}`);
   };
 
-
-  const redirectToHome = ()=>{
-    console.log('slkdfjlk')
-    dispatch(getAllProducts({cat:'all'}))
-    navigate('/')
-
-  }
+  const redirectToHome = () => {
+    navigate("/");
+  };
 
   const haneleLogOut = () => {
     dispatch(userLogout());
@@ -31,11 +33,18 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="left-section">
-          <Link to="/" onClick={()=>redirectToHome()}>MY-STORE</Link>
+          <Link to="/" onClick={() => redirectToHome()}>
+            MY-STORE
+          </Link>
         </div>
         <div className="middle-section">
-          <input type="search" placeholder="Search"></input>
-          <button onClick={handleSearch}>
+          <input
+            type="search"
+            placeholder="Search"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          ></input>
+          <button onClick={() => handleSearch()}>
             <FaSearch />
           </button>
         </div>
@@ -52,6 +61,12 @@ const Navbar = () => {
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/cart">
+                      <FaShoppingCart /> Cart
+                      <span style={{backgroundColor:'white', padding:'1px', color:'steelblue'}}>{cartItems && cartItems.length}</span>
+                    </Link>
+                  </li>
                 </>
               ) : (
                 <>
@@ -61,7 +76,7 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/signin">
+                    <Link to="/cart">
                       <FaShoppingCart /> Cart
                     </Link>
                   </li>
