@@ -18,9 +18,10 @@ const ProductDetailSlice = createSlice({
     },
     [productDetail.fulfilled]: (state, action) => {
       console.log("Promised fullfilled");
-      state.product = action.payload;
+      state.product = action.payload.product;
     },
-    [productDetail.rejected]: (state) => {
+    [productDetail.rejected]: (state, error) => {
+      console.log(error.message)
       console.log("Promised rejected");
     },
   },

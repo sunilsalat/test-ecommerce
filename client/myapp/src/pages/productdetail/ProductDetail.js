@@ -18,21 +18,18 @@ const ProductDetail = () => {
 
   useEffect(() => {
     dispatch(productDetail({ id }));
-  }, []);
+  }, [id]);
 
   return (
     <div className="productDetail-container">
       <div className="product-img-btn-container">
         <div className="product-img">
-          <img
-            src="https://rukminim1.flixcart.com/image/416/416/ky90scw0/mobile/v/g/s/-original-imagagnfgffgqny2.jpeg?q=70"
-            alt=""
-          />
+          <img src={product && product.image} alt="" />
         </div>
         <div className="product-btn">
           <button>Buy Now</button>
           <button
-            onClick={() => cartHandler({ qty: 1, productId: product.product._id })}
+            onClick={() => cartHandler({ qty: 1, productId: product._id })}
           >
             Add To Cart
           </button>
@@ -40,14 +37,9 @@ const ProductDetail = () => {
       </div>
 
       <div className="product-content-container">
-        <h2>Title</h2>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque
-          aliquid, rem doloribus ab laborum repudiandae ipsam quisquam
-          aspernatur, totam recusandae, doloremque atque voluptatem. Debitis,
-          quia!
-        </p>
-        <h2>$ 16,000</h2>
+        <h2> {product && product.title}</h2>
+        <p>{product && product.description}</p>
+        <h2>{product && product.price}</h2>
       </div>
     </div>
   );
