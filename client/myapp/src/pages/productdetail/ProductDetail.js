@@ -27,11 +27,11 @@ const ProductDetail = () => {
           <img src={product && product.image} alt="" />
         </div>
         <div className="product-btn">
-          <button>Buy Now</button>
+          <button>BUY NOW</button>
           <button
             onClick={() => cartHandler({ qty: 1, productId: product._id })}
           >
-            Add To Cart
+            ADD TO CART
           </button>
         </div>
       </div>

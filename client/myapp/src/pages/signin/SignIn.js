@@ -12,7 +12,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo, error } = useSelector((state) => state.login);
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
@@ -30,7 +30,7 @@ const SignIn = () => {
   return (
     <div className="signin-main-container">
       <div className="inner-container">
-        <div  className="title">
+        <div className="title">
           <h2>LoginForm</h2>
         </div>
         <div className="form-container">
@@ -53,6 +53,17 @@ const SignIn = () => {
               Submit
             </button>
           </form>
+        </div>
+        <div>
+          <h4>Don have account?</h4>
+          <p onClick={() => navigate("/signup")}>SignUp</p>
+        </div>
+        <div>
+          {error && (
+            <div>
+              <p>{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -39,7 +39,7 @@ const ProductList = () => {
         </div>
         <div className="category-container">
           <div className="category">
-            <h5>Category</h5>
+            <p>Category</p>
           </div>
           <div className="category-list">
             {categories.length !== 0 &&

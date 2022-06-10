@@ -26,9 +26,13 @@ const SignUp = () => {
       navigate("/");
     }
     if (success) {
-      navigate("/signin");
+      setEmail("");
+      setName("");
+      setPassword("");
     }
-  }, [navigate, success]);
+
+    // TODO --> return a function to clean up error messages
+  }, [navigate, success, dispatch]);
 
   return (
     <div className="signup-main-container ">
@@ -41,9 +45,9 @@ const SignUp = () => {
             <input
               type="text"
               placeholder="Name"
-              value={email}
+              value={name}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setName(e.target.value);
               }}
             ></input>
             <input
@@ -65,6 +69,15 @@ const SignUp = () => {
             </button>
           </form>
         </div>
+        <div>
+          <h4>Already Registerd?</h4>
+          <p onClick={() => navigate("/signin")}>SignIn</p>
+        </div>
+        {error && (
+          <div>
+            <p>{error}</p>
+          </div>
+        )}
       </div>
     </div>
   );

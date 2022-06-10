@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const AddressSchema = mongoose.Schema({
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  pincode: { type: String, required: true, minlength: 6, maxlength: 6 },
+  country: { type: String, required: true },
+});
+
 const UserSchema = mongoose.Schema({
   name: {
     type: String,
@@ -17,9 +25,10 @@ const UserSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "user"],
+    enum: ["admin", "user", 'seller'],
     default: "user",
   },
+  addresses: [AddressSchema],
 });
 
 UserSchema.pre("save", async function () {

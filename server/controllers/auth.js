@@ -20,7 +20,7 @@ const register = async (req, res) => {
 
   const user = await User.create(req.body);
 
-  res.status(200).json({ msg: "True" });
+  res.status(200).json({ msg: "User registration successful" });
 };
 
 // LOGIN
@@ -94,5 +94,30 @@ const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
+const addUserAddress = async (req, res) => {
+  const { state, country, city, pincode, street } = req.body;
 
-module.exports = { register, login, logout, checkRootUserInfo };
+  if (!state || !country || !city || !street || !pincode) {
+    throw new Error("All the feild are required!");
+  }
+
+  const add = {
+    street,
+    country,
+    city,
+    pincode,
+    state,
+  };
+
+  const user = await User.findOne({ _id: req.userInfo.id });
+
+  if (!user) {
+    throw new Error("Can not add address");
+  }
+  user.addresses.push(add);
+  await user.save();
+
+  res.status(200).json({ ok: true });
+};
+
+module.exports = { register, login, logout, checkRootUserInfo, addUserAddress };

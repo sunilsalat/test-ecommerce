@@ -19,7 +19,6 @@ const Cart = () => {
   const alterQuantity = ({ cartItemId, method }) => {
     dispatch(editCartItem({ cartItemId, method }));
     dispatch(getAllCartItems());
-
   };
 
   const handleRemove = (id) => {
@@ -27,11 +26,13 @@ const Cart = () => {
     dispatch(getAllCartItems());
   };
 
+  console.log(userInfo)
+
   useEffect(() => {
-    if (!userInfo || !userInfo.name) {
+    if (!userInfo || !userInfo.name ) {
       navigate("/signin");
     }
-  }, []);
+  }, [navigate, dispatch]);
 
   useEffect(() => {
     dispatch(getAllCartItems());
@@ -40,39 +41,35 @@ const Cart = () => {
   return (
     <div className="cart-container">
       <div className="cart-items-container">
-        {cartItems.map((item) => {
+        {cartItems && cartItems.map((item) => {
           return (
             <div key={item._id} className="item-container">
               <div className="item-image">
                 <img src={item.item_image} />
               </div>
               <div className="item-info">
-                <div>{item.item_title}</div>
-                <div>{item.item_price}</div>
+                <h5>{item.item_title}</h5>
+                <p>${item.item_price}</p>
                 <div>
-                  <button onClick={() => handleRemove(item._id)}>delete</button>
+                  <button onClick={() => handleRemove(item._id)}>DELETE</button>
                 </div>
               </div>
               <div className="item-btn">
-                <span>
-                  <button
-                    onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "inc" })
-                    }
-                  >
-                    +
-                  </button>
-                </span>
-                <span>{item.item_qty}</span>
-                <span>
-                  <button
-                    onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "dec" })
-                    }
-                  >
-                    -
-                  </button>
-                </span>
+                <button
+                  onClick={() =>
+                    alterQuantity({ cartItemId: item._id, method: "inc" })
+                  }
+                >
+                  +
+                </button>
+                <span className="item-qty">{item.item_qty}</span>
+                <button
+                  onClick={() =>
+                    alterQuantity({ cartItemId: item._id, method: "dec" })
+                  }
+                >
+                  -
+                </button>
               </div>
             </div>
           );
@@ -81,10 +78,15 @@ const Cart = () => {
 
       <div className="cart-total-container">
         <div className="total-info-container">
-          <div>total qty - {totalQty}</div>
-          <div>total price - {totalPrice}</div>
+          <h3>Your cart summary:</h3>
+          <p>Total Qty - {totalQty}</p>
+          <p>SubTotal - ${totalPrice}</p>
+          <hr></hr>
+          <h5>Total - ${totalQty * totalPrice}</h5>
         </div>
-        <div>chekcout</div>
+        <div>
+          <button className="checkOut-btn">CHEKOUT</button>
+        </div>
       </div>
     </div>
   );

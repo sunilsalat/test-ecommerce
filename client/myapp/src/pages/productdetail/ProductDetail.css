@@ -1,49 +1,92 @@
 .productDetail-container {
   display: flex;
   padding: 15px;
+  /* border: 1px solid black; */
 }
 .product-img-btn-container {
   width: 40%;
   text-align: center;
-}
-.product-content-container {
-  width: 60%;
-  text-align: left;
-}
-.product-content-container p {
-  /* margin: 18px 0; */
-}
-.product-btn {
-  display: flex;
-  justify-content: space-between;
-  padding: 18px;
-}
-.product-btn button {
-  width: 45%;
-  padding: 12px 0;
-  background-color: cadetblue;
-  color: white;
-  border: none;
-}
-.product-img img {
-  /* height: 100%;
-    width: 100%; */
-  object-fit: cover;
-}
-.product-img {
-  margin: 0 auto;
+  /* border: 1px solid black; */
+  padding: 10px;
+  height: 530px;
+  background-color: rgb(235, 233, 233);
 }
 
-@media only screen and (max-width: 450px) {
+.product-img {
+  margin: auto;
+  height: 90%;
+  /* border: 1px solid blue; */
+}
+
+.product-img img {
+  height: 95%;
+  object-fit: cover;
+}
+
+.product-btn {
+  display: flex;
+  justify-content: center;
+  /* border: 1px solid red; */
+}
+.product-btn > button {
+  width: 35%;
+  padding: 18px 0;
+  margin: 0 5px;
+  background-color: rgb(81, 157, 160);
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: 0.15s;
+}
+
+.product-btn button:hover {
+  background-color: #fcb23b;
+  color: black;
+}
+
+.product-content-container {
+  width: 55%;
+  text-align: left;
+  /* border: 1px solid; */
+  padding: 10px 10px 10px 20px;
+  background-color: rgb(235, 233, 233);
+  margin: 3px;
+
+}
+
+@media only screen and (max-width: 550px) {
   .productDetail-container {
     flex-direction: column;
   }
   .product-img-btn-container {
     width: 100%;
+    height: 350px;
     text-align: center;
   }
-  .product-content-container  {
+  .product-content-container {
     /* margin: 18px 0; */
+    width: 100%;
     margin: auto;
   }
+
+  .product-img {
+    height: 90%;
+  }
+
+  
+  .product-img img{
+    height: 90%;
+    width: 95%;
+  }
+
+
+  .product-btn > button {
+    padding: 10px 0;
+    margin: 0 5px;
+  }
+
+  .product-content-container {
+    width: 100%;
+  }
 }
+

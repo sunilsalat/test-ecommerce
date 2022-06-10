@@ -2,15 +2,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const userLogin = createAsyncThunk(
   "login/userLogin",
-  async ({ email, password }) => {
-    const res = await fetch("/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    return await res.json();
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.status !== 200) {
+        throw new Error("LogIn failed");
+      }
+      return await res.json();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
@@ -40,9 +48,12 @@ const userLoginSlice = createSlice({
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
       state.userInfo = action.payload;
       state.success = true;
+      state.error = "";
     },
-    [userLogin.rejected]: (state) => {
+    [userLogin.rejected]: (state, error) => {
       console.log("Request rejected");
+      state.success = false;
+      state.error = error.payload.message;
     },
     // Logout
     [userLogout.pending]: (state) => {
