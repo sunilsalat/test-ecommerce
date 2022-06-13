@@ -21,6 +21,7 @@ const addToCart = async (req, res) => {
   }
 
   const { title, image, price, _id } = product;
+  
 
   const cart = await Cart.create({
     item_title: title,
@@ -49,12 +50,9 @@ const removeFromCart = async (req, res) => {
 };
 
 // edit cart item
-
 const editCartItem = async (req, res) => {
   const { cartItemId } = req.params;
   const { method } = req.body;
-
-  console.log("car", cartItemId);
 
   if (!cartItemId || !method) {
     throw new Error("cartItmeId id is required");
@@ -85,9 +83,15 @@ const editCartItem = async (req, res) => {
 // getall cart items
 
 const getAllCartItems = async (req, res) => {
-  let cartItems = await Cart.find();
+  let cartItems = await Cart.find({ userId: req.userInfo.id });
 
   cartItems = cartItems.filter((e) => e.item_qty > 0);
+
+  let totalFee = 0;
+  for (var item of cartItems) {
+    const shi = await Product.findOne({ _id: item.productId });
+    totalFee += shi.shippinFee;
+  }
 
   const { totalQty, totalPrice } = cartItems.reduce(
     (agg, cuu) => {
@@ -102,7 +106,9 @@ const getAllCartItems = async (req, res) => {
     }
   );
 
-  res.status(200).json({ cartItems, totalQty, totalPrice });
+  res
+    .status(200)
+    .json({ cartItems, totalQty, totalPrice, totalShippingFee: totalFee });
 };
 
 module.exports = { addToCart, removeFromCart, editCartItem, getAllCartItems };

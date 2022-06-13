@@ -38,8 +38,8 @@ export const removeCartItem = createAsyncThunk(
 
 export const editCartItem = createAsyncThunk(
   "cart/editCartItem",
-  async ({cartItemId, method}) => {
-    console.log(cartItemId, method)
+  async ({ cartItemId, method }) => {
+    console.log(cartItemId, method);
     const res = await fetch(`/api/v1/cart/edit/${cartItemId}`, {
       method: "PUT",
       headers: {
@@ -59,6 +59,7 @@ const cartSlice = createSlice({
     cartItems: [],
     totalQty: 0,
     totalPrice: 0,
+    totalShippingFee: 0,
   },
   reducers: {},
   extraReducers: {
@@ -83,6 +84,7 @@ const cartSlice = createSlice({
       state.cartItems = action.payload.cartItems;
       state.totalQty = action.payload.totalQty;
       state.totalPrice = action.payload.totalPrice;
+      state.totalShippingFee = action.payload.totalShippingFee
     },
     [getAllCartItems.rejected]: (state, error) => {
       console.log(error.message);

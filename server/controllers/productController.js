@@ -26,30 +26,29 @@ const editProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   const { cat, title } = req.query;
-  console.log(cat, "is cat", title, "is title");
 
-  console.log(typeof cat, typeof title);
+  console.log(cat, title, "cat ", "title");
 
-  if (cat || title) {
-    try {
-      const newTitle = new RegExp("^" + title);
-      const products = await Product.find({
-        $or: [{ category: cat }, { title: { $regex: newTitle } }],
-      })
-        .limit(10)
-        .populate("category");
+  if (cat !== "null" && cat !== undefined) {
+    const newTitle = new RegExp("^" + title);
+    const products = await Product.find({
+      $or: [{ category: cat }, { title: { $regex: newTitle } }],
+    })
+      .limit(10)
+      .populate("category");
 
-      res.status(200).json({ products });
-    } catch (error) {
-      // const newTitle = new RegExp("^" + title);
-      // const products = await Product.find({ title: { $regex: newTitle } })
-      //   .limit(10)
-      //   .populate("category");
-      // res.status(200).json({ products });
-    }
+    res.status(200).json({ products });
   }
 
-  const products = await Product.find().limit(10).populate("category");
+  if (title !== "null" && title !== undefined) {
+    const newTitle = new RegExp("^" + title, "i");
+    const products = await Product.find({ title: { $regex: newTitle } })
+      .limit(10)
+      .populate("category");
+    res.status(200).json({ products });
+  }
+
+  const products = await Product.find({}).limit(10).populate("category");
   res.status(200).json({ products });
 };
 

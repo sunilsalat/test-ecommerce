@@ -10,11 +10,39 @@ const CartSchema = mongoose.Schema({
     ref: "Product",
     required: true,
   },
-  userId:{
-    type:mongoose.Types.ObjectId, 
-    ref:'User', 
-    required:true
-  }
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
+
+// TODO - improve totalQty and totalPrice using aggregation pipeline
+
+/*// CartSchema.statics.calculateTotals = async function (userId) {
+//   const result = await this.aggregate([
+//     { $match: { userId: userId } },
+//     {
+//       $group: {
+//         _id: null,
+//         totalQty: { $sum: "$item_qty" },
+//         totalPrice: { $multiply: ["$item_qty", 10] },
+//       },
+//     },
+//   ]);
+
+//   this.findOneAndUpdate(
+//     { userId: userId },
+//     {
+//       totalPrice: Math.ceil(result[0]?.totalPrice || 0),
+//       totalQty: Math.ceil(result[0]?.totalQty || 0),
+//     }
+//   );
+// };
+
+// CartSchema.post("save", async function () {
+//   console.log(this);
+//   this.constructor.calculateTotals(this.userId);
+// });*/
 
 module.exports = mongoose.model("Cart", CartSchema);

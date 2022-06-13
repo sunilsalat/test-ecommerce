@@ -11,7 +11,6 @@ const ProductDetail = () => {
   const { product } = useSelector((state) => state.productDetail);
 
   const cartHandler = ({ qty, productId }) => {
-    console.log(qty, productId, "issj");
     dispatch(addToCart({ item_qty: qty, productId: productId }));
     dispatch(getAllCartItems());
   };

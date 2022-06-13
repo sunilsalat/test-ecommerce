@@ -26,10 +26,6 @@ const OrderItems = mongoose.Schema({
 
 const OrderSchema = mongoose.Schema(
   {
-    tax: {
-      type: Number,
-      required: [true, "Tax can not be blank "],
-    },
     shippingFee: {
       type: Number,
       required: [true, "shippingFee can not be blank"],
@@ -64,6 +60,15 @@ const OrderSchema = mongoose.Schema(
       enum: ["pending", "confirmed", "failed", "deliverd", "cancel"],
       default: "pending",
     },
+    paymentIntentId: {
+      type: String,
+    },
+    clientScret: {
+      type: String,
+    },
+    paymentMethod: {
+      type: String,
+    },
     orderPlacedAt: { type: Date },
     isDeliverd: { type: Boolean, default: false },
     deliverdAt: { type: Date },
@@ -74,4 +79,5 @@ const OrderSchema = mongoose.Schema(
 
 module.exports = mongoose.model("Order", OrderSchema);
 
-// all the fields of address needs to be stored in order schema seprately as user can modify or delete address later
+// all the fields of address needs to be stored in order schema seprately,
+// as user can modify or delete address later

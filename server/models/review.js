@@ -35,7 +35,6 @@ const ReviewSchema = mongoose.Schema(
 // only one review can be added by one user per product, use compounding index
 ReviewSchema.index({ userId: 1, productId: 1 }, { unique: true });
 
-
 // agg all review for a particular product and save it to the product shhema post review save
 
 module.exports = mongoose.model("Review", ReviewSchema);

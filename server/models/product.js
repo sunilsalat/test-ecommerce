@@ -9,10 +9,14 @@ const OfferSchema = mongoose.Schema({
     type: Number,
     required: [true, "Offer count can not be empty "],
   },
-  offerTitle:{
-    type:String, 
-    required:[true, 'Offer title can not be empty ']
-  }
+  offerTitle: {
+    type: String,
+    required: [true, "Offer title can not be empty "],
+  },
+  offerDiscount: {
+    type: Number,
+    required: [true, "OfferDiscount can not be empty"],
+  },
 });
 
 const ProductSchema = mongoose.Schema({
@@ -47,6 +51,10 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  weight: {
+    type: Number,
+    required: [true, "Weight can not be empty"],
+  },
   countOfReviews: {
     type: Number,
     default: 0,
@@ -60,7 +68,17 @@ const ProductSchema = mongoose.Schema({
     ref: "User",
     required: [true, "User can not be empty"],
   },
+  shippinFee: {
+    type: Number,
+    default: 0,
+  },
   offers: [OfferSchema],
+});
+
+ProductSchema.pre("save", async function () {
+  if (this.weight > 200) {
+    this.shippinFee = 25;
+  }
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
