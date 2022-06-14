@@ -27,8 +27,6 @@ const editProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   const { cat, title } = req.query;
 
-  console.log(cat, title, "cat ", "title");
-
   if (cat !== "null" && cat !== undefined) {
     const newTitle = new RegExp("^" + title);
     const products = await Product.find({

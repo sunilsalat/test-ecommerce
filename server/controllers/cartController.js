@@ -21,7 +21,15 @@ const addToCart = async (req, res) => {
   }
 
   const { title, image, price, _id } = product;
-  
+
+  const existingItem = await Cart.findOne({ productId });
+
+  if (existingItem) {
+    existingItem.item_qty += 1;
+    await existingItem.save();
+    res.status(200).json({ cart: existingItem });
+    return
+  }
 
   const cart = await Cart.create({
     item_title: title,

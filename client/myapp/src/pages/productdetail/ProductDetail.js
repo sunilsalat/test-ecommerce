@@ -14,6 +14,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { product, reviews } = useSelector((state) => state.productDetail);
+  const { userInfo } = useSelector((state) => state.login);
 
   const cartHandler = ({ qty, productId }) => {
     dispatch(addToCart({ item_qty: qty, productId: productId }));
@@ -22,7 +23,10 @@ const ProductDetail = () => {
 
   useEffect(() => {
     dispatch(productDetail({ id }));
-    dispatch(getAllProductReviews({ id }));
+
+    if (userInfo) {
+      dispatch(getAllProductReviews({ id }));
+    }
   }, [id]);
 
   return (
@@ -54,9 +58,10 @@ const ProductDetail = () => {
           <h3>$ {product && product.price}</h3>
 
           <div className="review-container">
-            {reviews.map((review) => {
-              return <RatingAndReview review={review} key={review._id} />;
-            })}
+            {reviews.length > 0 &&
+              reviews.map((review) => {
+                return <RatingAndReview review={review} key={review._id} />;
+              })}
           </div>
         </div>
       </div>
