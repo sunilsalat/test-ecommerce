@@ -38,7 +38,7 @@ ReviewSchema.index({ userId: 1, productId: 1 }, { unique: true });
 // agg all review for a particular product and save it to the product shhema post review save
 
 ReviewSchema.statics.calculateAvgRating = async function (productId) {
-  const result = this.aggregate([
+  const result = await this.aggregate([
     {
       $match: { productId: productId },
     },
@@ -59,15 +59,17 @@ ReviewSchema.statics.calculateAvgRating = async function (productId) {
         countOfReviews: Math.ceil(result[0]?.countOfRev || 0),
       }
     );
-  } catch (error) {}
-
-  ReviewSchema.post("save", async function () {
-    this.constructor.calculateAvgRating(this.productId);
-  });
-
-  ReviewSchema.post("remove", async function () {
-    this.constructor.calculateAvgRating(this.productId);
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+ReviewSchema.post("save", async function () {
+  await this.constructor.calculateAvgRating(this.productId);
+});
+
+ReviewSchema.post("remove", async function () {
+  await this.constructor.calculateAvgRating(this.productId);
+});
 
 module.exports = mongoose.model("Review", ReviewSchema);

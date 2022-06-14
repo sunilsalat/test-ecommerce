@@ -35,6 +35,16 @@ const addReview = async (req, res) => {
   res.status(200).json({ review });
 };
 
-// todo ==> else rest api edit /delet, get etc etc
+const getAllProductReview = async (req, res) => {
+  const { productId } = req.params;
 
-module.exports = { addReview };
+  if (!productId) {
+    throw new Error("Product id is not provided ");
+  }
+
+  const reviews = await Review.find({ productId }).populate('userId').limit(10);
+
+  res.status(200).json({ reviews });
+};
+
+module.exports = { addReview, getAllProductReview };

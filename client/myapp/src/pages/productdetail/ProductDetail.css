@@ -51,7 +51,16 @@
   padding: 10px 10px 10px 20px;
   background-color: rgb(235, 233, 233);
   margin: 3px;
+}
 
+.product-content-container > h3 {
+  text-transform: capitalize;
+  margin-bottom: 6px;
+  
+}
+
+.review-container {
+  margin-top: 30px;
 }
 
 @media only screen and (max-width: 550px) {
@@ -73,12 +82,10 @@
     height: 90%;
   }
 
-  
-  .product-img img{
+  .product-img img {
     height: 90%;
     width: 95%;
   }
-
 
   .product-btn > button {
     padding: 10px 0;
@@ -89,4 +96,3 @@
     width: 100%;
   }
 }
-

@@ -1,0 +1,32 @@
+.review-main-container {
+  padding: 10px;
+}
+
+.review-title-container {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.review-title-container > P {
+  background-color: #388E3C;
+  padding: 2px;
+  color: white;
+  border-radius: 3px;
+}
+
+.review-title-container > h5 {
+  margin-left: 20px;
+  text-transform: capitalize;
+}
+
+.review-comment-container{
+    text-transform: capitalize;
+}
+
+.user-name {
+  color: rgb(100, 100, 100);
+  font-style: italic;
+  text-transform: capitalize;
+}
