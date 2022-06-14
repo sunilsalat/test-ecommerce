@@ -38,6 +38,8 @@ const ProductDetail = () => {
       <div className="product-content-container">
         <h2> {product && product.title}</h2>
         <p>{product && product.description}</p>
+        <p>{product && product.avgRatings}</p>
+        <p>{product && product.countOfReviews}</p>
         <h2>{product && product.price}</h2>
       </div>
     </div>

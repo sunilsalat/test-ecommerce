@@ -64,7 +64,15 @@ const Navbar = () => {
                   <li>
                     <Link to="/cart">
                       <FaShoppingCart /> Cart
-                      <span style={{backgroundColor:'white', padding:'1px', color:'steelblue'}}>{cartItems && cartItems.length}</span>
+                      <span
+                        style={{
+                          backgroundColor: "white",
+                          padding: "1px",
+                          color: "steelblue",
+                        }}
+                      >
+                        {cartItems && cartItems.length}
+                      </span>
                     </Link>
                   </li>
                 </>

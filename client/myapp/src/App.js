@@ -8,6 +8,7 @@ import Profile from "./pages/profile/Profile";
 import Cart from "./pages/cart/Cart";
 import ProductDetail from "./pages/productdetail/ProductDetail";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Main from "./components/main/Main";
 
 function App() {
   return (
@@ -15,12 +16,20 @@ function App() {
       <Router>
         <NavBar />
         <Routes>
+
           <Route path="/" element={<ProductList />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
+          <Route path="main/*"  element={
+            <Main>
+              <Routes>
+                  <Route path="productlist" element={<ProductList/>}/>
+              </Routes>
+            </Main>
+          }/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

@@ -90,10 +90,13 @@ const logout = async (req, res) => {
   res.status(200).json({ msg: "true" });
 };
 
+
+// misc
 const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
+//// misc
 const addUserAddress = async (req, res) => {
   const { state, country, city, pincode, street } = req.body;
 

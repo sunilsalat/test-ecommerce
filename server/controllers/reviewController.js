@@ -10,7 +10,7 @@ const addReview = async (req, res) => {
 
   // check if review already submitted
   const isProductAlreadyReviewd = await Review.findOne({
-    userId: userInfo.id,
+    userId: req.userInfo.id,
     productId,
   });
 
@@ -19,16 +19,16 @@ const addReview = async (req, res) => {
   }
 
   // check for product purchased by user ?
-  const allUserOrder = await Order.find({ user: req.userInfo.id });
-  const isProductPurchasedByUser = allUserOrder.orderItems.map((item) => {
-    if (item._id === productId) {
-      return item;
-    }
-  });
+  // const allUserOrder = await Order.find({ user: req.userInfo.id });
+  // const isProductPurchasedByUser = allUserOrder.orderItems.map((item) => {
+  //   if (item._id === productId) {
+  //     return item;
+  //   }
+  // });
 
-  if (isProductPurchasedByUser.length === 0) {
-    throw new Error("Product is not purchased by user ");
-  }
+  // if (isProductPurchasedByUser.length === 0) {
+  //   throw new Error("Product is not purchased by user ");
+  // }
 
   const review = await Review.create({ ...req.body, userId: req.userInfo.id });
 

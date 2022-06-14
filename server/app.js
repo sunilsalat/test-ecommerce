@@ -6,6 +6,7 @@ const app = express();
 const authRouter = require("./routes/authRouter");
 const productRouter = require("./routes/productRouter");
 const cartRouter = require("./routes/cartRouter");
+const reviewRouter = require("./routes/reviewRouter");
 const { errorHandlerMiddleware } = require("./middleewares/errorHandler");
 const { notFound } = require("./middleewares/notFound");
 
@@ -19,7 +20,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
-app.use('/api/v1/cart', cartRouter)
+app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/review", reviewRouter);
 
 app.use(errorHandlerMiddleware);
 app.use(notFound);

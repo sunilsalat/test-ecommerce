@@ -51,13 +51,13 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  weight: {
-    type: Number,
-    required: [true, "Weight can not be empty"],
-  },
   countOfReviews: {
     type: Number,
     default: 0,
+  },
+  weight: {
+    type: Number,
+    required: [true, "Weight can not be empty"],
   },
   company: {
     type: String,
