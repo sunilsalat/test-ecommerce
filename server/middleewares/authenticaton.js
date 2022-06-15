@@ -42,4 +42,14 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware };
+const isSeller = (req, res, next) => {
+  const { id, role, name } = req.userInfo;
+
+  if (role !== "seller") {
+    throw new Error("Only sellers are allowed");
+  }
+
+  next();
+};
+
+module.exports = { authMiddleware, isSeller };

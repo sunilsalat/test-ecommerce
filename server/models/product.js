@@ -59,14 +59,10 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     required: [true, "Weight can not be empty"],
   },
-  company: {
-    type: String,
-    required: [true, "Company can not be empty "],
-  },
   seller: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    required: [true, "User can not be empty"],
+    type: mongoose.ObjectId,
+    ref: "Seller",
+    required: [true, "Seller can not be empty"],
   },
   shippinFee: {
     type: Number,

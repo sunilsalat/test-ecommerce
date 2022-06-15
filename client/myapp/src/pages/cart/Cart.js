@@ -30,11 +30,12 @@ const Cart = () => {
     if (!userInfo || !userInfo.name) {
       navigate("/signin");
     }
-    dispatch(getAllCartItems());
-
   }, [navigate, dispatch]);
 
- 
+  useEffect(() => {
+    dispatch(getAllCartItems());
+  }, []);
+
   return (
     <div className="cart-container">
       <div className="cart-items-container">

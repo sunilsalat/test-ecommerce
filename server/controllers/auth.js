@@ -3,6 +3,7 @@ const { createJwtToken } = require("../utlis/jwt");
 const { generateUserPayload } = require("../utlis/generateUserPayload");
 const crypto = require("crypto");
 const Token = require("../models/token");
+const Seller = require("../models/seller");
 
 // REGISTER
 const register = async (req, res) => {
@@ -56,7 +57,7 @@ const login = async (req, res) => {
       payload,
       refreshTokenDB: existing_token.refreshTokenDB,
     });
-    res.status(200).json({ name: user.name, role: user.isAdmin, id: user._id });
+    res.status(200).json({ name: user.name, role: user.role, id: user._id });
     return;
   }
 
@@ -70,7 +71,7 @@ const login = async (req, res) => {
 
   const token = await Token.create(tokenPayload);
   createJwtToken({ res, payload, refreshTokenDB: token.refreshTokenDB });
-  res.status(200).json({ name: user.name, role: user.isAdmin, id: user._id });
+  res.status(200).json({ name: user.name, role: user.role, id: user._id });
 };
 
 // LOGOUT
@@ -90,7 +91,6 @@ const logout = async (req, res) => {
   res.status(200).json({ msg: "true" });
 };
 
-
 // misc
 const checkRootUserInfo = async (req, res) => {
   res.status(200);
@@ -98,7 +98,7 @@ const checkRootUserInfo = async (req, res) => {
 
 //// misc
 const addUserAddress = async (req, res) => {
-  const { state, country, city, pincode, street } = req.body;
+  const { state, country, city, pincode, street, loc } = req.body;
 
   if (!state || !country || !city || !street || !pincode) {
     throw new Error("All the feild are required!");
@@ -110,6 +110,7 @@ const addUserAddress = async (req, res) => {
     city,
     pincode,
     state,
+    loc: { type: "Point", coordinates: loc },
   };
 
   const user = await User.findOne({ _id: req.userInfo.id });
@@ -117,10 +118,32 @@ const addUserAddress = async (req, res) => {
   if (!user) {
     throw new Error("Can not add address");
   }
+
   user.addresses.push(add);
   await user.save();
 
   res.status(200).json({ ok: true });
 };
 
-module.exports = { register, login, logout, checkRootUserInfo, addUserAddress };
+// seller handles
+
+const setUpSeller = async (req, res) => {
+  const { location, name } = req.body;
+
+  const seller = await Seller.create({
+    loc: { type: "Point", coordinates: location },
+    name,
+    user: req.userInfo.id,
+  });
+
+  res.status(200).json({ seller });
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  checkRootUserInfo,
+  addUserAddress,
+  setUpSeller,
+};

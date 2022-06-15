@@ -3,7 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const Product = ({ product }) => {
-  const { _id, title, description, price, image, unit } = product;
+  const { _id, title, price, image } = product;
 
   const navigate = useNavigate();
   const t = (id) => {

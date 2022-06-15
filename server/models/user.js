@@ -7,7 +7,13 @@ const AddressSchema = mongoose.Schema({
   state: { type: String, required: true },
   pincode: { type: String, required: true, minlength: 6, maxlength: 6 },
   country: { type: String, required: true },
+  loc: {
+    type: { type: String },
+    coordinates: [],
+  },
 });
+
+AddressSchema.index({ loc: "2dsphere" });
 
 const UserSchema = mongoose.Schema({
   name: {
@@ -25,7 +31,7 @@ const UserSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "user", 'seller'],
+    enum: ["admin", "user", "seller"],
     default: "user",
   },
   addresses: [AddressSchema],

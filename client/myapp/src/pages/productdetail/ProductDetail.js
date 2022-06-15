@@ -57,6 +57,8 @@ const ProductDetail = () => {
           )}
           <h3>$ {product && product.price}</h3>
 
+          <p>Seller-{product &&product.seller.name}</p>
+
           <div className="review-container">
             {reviews.length > 0 &&
               reviews.map((review) => {

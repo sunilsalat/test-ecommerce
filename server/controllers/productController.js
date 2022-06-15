@@ -3,13 +3,16 @@ const Category = require("../models/category");
 const mongoose = require("mongoose");
 
 const createProduct = async (req, res) => {
-  const { title, description, image, unit } = req.body;
+  const { title, description, image, price, category, weight } = req.body;
 
-  if (!title || !description || !image || !unit) {
+  if (!title || !description || !image || !price || !category || !weight) {
     throw new Error("Missing fields");
   }
 
-  const product = await Product.create(req.body);
+  const product = await Product.create({
+    ...req.body,
+    seller: req.userInfo.id,
+  });
 
   res.status(201).json({ product });
 };
@@ -33,7 +36,8 @@ const getAllProducts = async (req, res) => {
       $or: [{ category: cat }, { title: { $regex: newTitle } }],
     })
       .limit(10)
-      .populate("category");
+      .populate("category")
+      .populate(["category", "seller"]);
 
     res.status(200).json({ products });
   }
@@ -42,11 +46,14 @@ const getAllProducts = async (req, res) => {
     const newTitle = new RegExp("^" + title, "i");
     const products = await Product.find({ title: { $regex: newTitle } })
       .limit(10)
-      .populate("category");
+      .populate("category")
+      .populate(["category", "seller"]);
     res.status(200).json({ products });
   }
 
-  const products = await Product.find({}).limit(10).populate("category");
+  const products = await Product.find({})
+    .limit(10)
+    .populate(["category", "seller"]);
   res.status(200).json({ products });
 };
 
@@ -62,8 +69,10 @@ const getCategoryWiseProduct = async (req, res) => {
 };
 
 const getProductDetail = async (req, res) => {
-  const product = await Product.findById(req.params.id);
-
+  const product = await Product.findById(req.params.id).populate([
+    "category",
+    "seller",
+  ]);
   res.status(200).json({ product });
 };
 
