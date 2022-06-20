@@ -7,8 +7,9 @@ import NavBar from "./components/Navbar/Navbar";
 import Profile from "./pages/profile/Profile";
 import Cart from "./pages/cart/Cart";
 import ProductDetail from "./pages/productdetail/ProductDetail";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "./components/main/Main";
+import ProtectedRoute from "./components/protectedRoute";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -20,7 +21,9 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/cart" element={<Cart />} />
+          </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route
             path="/main/*"

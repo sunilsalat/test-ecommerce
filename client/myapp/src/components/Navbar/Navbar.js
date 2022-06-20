@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const Navbar = () => {
   const [title, setTitle] = useState("");
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Navbar = () => {
         <div className="right-section">
           <div className="nav-links">
             <ul>
-              {userInfo ? (
+              {userInfo && userInfo.name ? (
                 <>
                   <li onClick={() => haneleLogOut()}>
                     <Link to="/">LogOut</Link>

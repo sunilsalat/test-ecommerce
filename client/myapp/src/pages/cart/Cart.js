@@ -15,9 +15,11 @@ const Cart = () => {
   const [showAddressForm, setAddressForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const { cartItems, totalQty, totalPrice, totalShippingFee, address } =
     useSelector((state) => state.cart);
+
+  const shippingAddress = `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
   const alterQuantity = ({ cartItemId, method }) => {
     if (method === "inc") {
@@ -37,11 +39,11 @@ const Cart = () => {
     setAddressForm(!showAddressForm);
   };
 
-  useEffect(() => {
-    if (!userInfo || !userInfo.name) {
-      navigate("/signin");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   if (!userInfo || !userInfo.name) {
+  //     navigate("/signin");
+  //   }
+  // }, [navigate]);
 
   useEffect(() => {
     if (!cartItems && userInfo) {
@@ -49,12 +51,16 @@ const Cart = () => {
     }
   }, []);
 
+  if (cartItems && cartItems.length === 0) {
+    return <div>Your cart is empty !</div>;
+  }
+
   return (
     <div className="cart-container">
       <div className="cart-items-container">
         <div className="address-container">
           <div>My Cart({totalQty})</div>
-          <div>Deliver To - {JSON.stringify(address)}</div>
+          <div>Deliver To - {shippingAddress}</div>
           <div>
             {showAddressForm ? (
               <div className="modal">

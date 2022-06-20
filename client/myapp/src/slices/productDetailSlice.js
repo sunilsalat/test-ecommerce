@@ -18,7 +18,7 @@ export const getAllProductReviews = createAsyncThunk(
 
 const ProductDetailSlice = createSlice({
   name: "ProductDetail",
-  initialState: { product: {}, reviews:[] },
+  initialState: { product: {}, reviews:null },
   reducers: {},
   extraReducers: {
     [productDetail.pending]: (state) => {

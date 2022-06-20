@@ -9,14 +9,20 @@ const getShippingFee = async (req, res) => {
 
   const user = await User.findOne({ _id: req.userInfo.id });
 
+  if(!user){
+    throw new Error('User not found')
+  }
+
   const cr = user.addresses[1].loc.coordinates;
+
+  console.log(cr, 'cordinates')
 
   const dist = await Seller.aggregate([
     {
       $geoNear: {
         near: {
           type: "Point",
-          coordinates: cr,
+          coordinates: [...cr],
         },
         query: { _id: new mongoose.mongo.ObjectId(sellerId) },
         distanceField: "distance",

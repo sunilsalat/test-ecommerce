@@ -3,6 +3,7 @@ import userLoginSlice from "./slices/userLoginSlice";
 import userRegisterSlice from "./slices/userRegisterSlice";
 import productsSlics from "./slices/productsSlics";
 import productDetailSlice from "./slices/productDetailSlice";
+import userProfileSlice from "./slices/userProfileSlice";
 import cartSlice from "./slices/cartSlice";
 
 const store = configureStore({
@@ -11,7 +12,8 @@ const store = configureStore({
     register: userRegisterSlice,
     products: productsSlics,
     productDetail: productDetailSlice,
-    cart:cartSlice
+    cart: cartSlice,
+    profile: userProfileSlice,
   },
 });
 

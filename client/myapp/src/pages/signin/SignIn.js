@@ -12,7 +12,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { userInfo, error } = useSelector((state) => state.login);
+  const { userInfo, error } = useSelector((state) => state.profile);
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
@@ -23,6 +23,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.id) {
+      console.log(userInfo, "in login userinfo ");
       navigate("/");
     }
   }, [userInfo, navigate]);

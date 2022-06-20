@@ -32,7 +32,7 @@ const login = async (req, res) => {
     throw new Error("Missing field");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate("addresses");
   if (!user) {
     throw new Error("invalid credentials");
   }
@@ -59,10 +59,7 @@ const login = async (req, res) => {
     });
 
     return res.status(200).json({
-      name: user.name,
-      role: user.role,
-      id: user._id,
-      address: user.addresses,
+      ok: true,
     });
   }
 
@@ -78,10 +75,7 @@ const login = async (req, res) => {
   createJwtToken({ res, payload, refreshTokenDB: token.refreshTokenDB });
 
   res.status(200).json({
-    name: user.name,
-    role: user.role,
-    id: user._id,
-    address: user.addresses,
+    ok: true,
   });
 };
 
@@ -112,35 +106,6 @@ const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
-//// misc
-const addUserAddress = async (req, res) => {
-  const { state, country, city, pincode, street, loc } = req.body;
-
-  if (!state || !country || !city || !street || !pincode) {
-    throw new Error("All the feild are required!");
-  }
-
-  const add = {
-    street,
-    country,
-    city,
-    pincode,
-    state,
-    loc: { type: "Point", coordinates: loc },
-  };
-
-  const user = await User.findOne({ _id: req.userInfo.id });
-
-  if (!user) {
-    throw new Error("Can not add address");
-  }
-
-  user.addresses.push(add);
-  await user.save();
-
-  res.status(200).json({ ok: true });
-};
-
 // seller handles
 
 const setUpSeller = async (req, res) => {
@@ -160,6 +125,5 @@ module.exports = {
   login,
   logout,
   checkRootUserInfo,
-  addUserAddress,
   setUpSeller,
 };

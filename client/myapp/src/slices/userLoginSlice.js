@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getUserProfile, emptyUserInfo } from "./userProfileSlice";
+
 
 export const userLogin = createAsyncThunk(
   "login/userLogin",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch("/api/v1/auth/login", {
         method: "POST",
@@ -11,6 +13,10 @@ export const userLogin = createAsyncThunk(
         },
         body: JSON.stringify({ email, password }),
       });
+
+      if (res.status === 200) {
+        dispatch(getUserProfile({}));
+      }
 
       if (res.status !== 200) {
         throw new Error("LogIn failed");
@@ -22,33 +28,43 @@ export const userLogin = createAsyncThunk(
   }
 );
 
-export const userLogout = createAsyncThunk("login/userLogout", async () => {
+export const userLogout = createAsyncThunk("login/userLogout", async (_,{dispatch}) => {
+  localStorage.removeItem("userInfo");
+
   const res = await fetch("/api/v1/auth/logout", {
     method: "GET",
   });
-  return res.json();
+
+  if(res.status === 200){
+    dispatch(emptyUserInfo())
+  }
+  return await res.json();
 });
 
-const userInfoFromLocalStorage = JSON.parse(localStorage.getItem("userInfo"));
+// const userInfoFromLocalStorage = JSON.parse(localStorage.getItem("userInfo"));
 
 const userLoginSlice = createSlice({
   name: "login",
   initialState: {
-    userInfo: userInfoFromLocalStorage,
-    success: false,
-    error: "",
+    // userInfo: userInfoFromLocalStorage,
+    // success: false,
+    // error: "",
   },
-  reducers: {},
+  reducers: {
+    defaultAdd: (state, action) => {
+      state.userInfo.address = action.payload;
+    },
+  },
   extraReducers: {
     // Login
     [userLogin.pending]: (state) => {
       console.log("Request pending");
     },
     [userLogin.fulfilled]: (state, action) => {
-      localStorage.setItem("userInfo", JSON.stringify(action.payload));
-      state.userInfo = action.payload;
-      state.success = true;
-      state.error = "";
+      console.log("request fulfilled");
+      // state.userInfo = action.payload;
+      // state.success = true;
+      // state.error = "";
     },
     [userLogin.rejected]: (state, error) => {
       console.log("Request rejected");
@@ -60,14 +76,15 @@ const userLoginSlice = createSlice({
       console.log("Request pending");
     },
     [userLogout.fulfilled]: (state, action) => {
-      localStorage.removeItem("userInfo");
       console.log("Request fullfilled");
-      state.userInfo = "";
+      state.userInfo = null;
     },
     [userLogout.rejected]: (state) => {
       console.log("Request rejected");
     },
   },
 });
+
+export const { defaultAdd } = userLoginSlice.actions;
 
 export default userLoginSlice.reducer;

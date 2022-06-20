@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { setAddress, TotalShippingFee } from "../../slices/cartSlice";
+import { addUserAddress } from "../../slices/userProfileSlice";
 
 const AddressForm = ({ setAddressForm }) => {
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
-
   const { cartItems } = useSelector((state) => state.cart);
 
   const editShow = () => {
@@ -24,6 +24,21 @@ const AddressForm = ({ setAddressForm }) => {
     dispatch(TotalShippingFee({ cartItems, add }));
   };
 
+  const formSubmitHandler = (e) => {
+    e.preventDefault();
+    const data = {};
+    for (let t of e.target) {
+      if (t.name == "loc") {
+        data[t.name] = t.value.split(",");
+      }
+      data[t.name] = t.value;
+    }
+
+    if (data) {
+      dispatch(addUserAddress({ data }));
+    } else alert("please add all fields");
+  };
+
   return (
     <div className="addressform-container">
       <p className="close-button" onClick={() => setAddressForm(false)}>
@@ -31,24 +46,23 @@ const AddressForm = ({ setAddressForm }) => {
       </p>
       {show ? (
         <div>
-          <p onClick={() => showChangeAddComponent()}>
-            change address
-            <hr></hr>
-            OR
-          </p>
+          <p onClick={() => showChangeAddComponent()}>change address</p>
+          <hr></hr>
+          OR
         </div>
       ) : (
         <div>
-          {userInfo.address.map((add) => {
-            const { city, state, street, pincode } = add;
-            const shortAdd = `${street}, ${city}, ${state}, ${pincode}`;
-            return (
-              <div key={add._id} className="address-item-container">
-                <p>{shortAdd}</p>
-                <button onClick={() => setAddressDefault(add)}>select</button>
-              </div>
-            );
-          })}
+          {userInfo &&
+            userInfo.address.map((add) => {
+              const { city, state, street, pincode } = add;
+              const shortAdd = `${street}, ${city}, ${state}, ${pincode}`;
+              return (
+                <div key={add._id} className="address-item-container">
+                  <p>{shortAdd}</p>
+                  <button onClick={() => setAddressDefault(add)}>select</button>
+                </div>
+              );
+            })}
           OR
         </div>
       )}
@@ -56,18 +70,15 @@ const AddressForm = ({ setAddressForm }) => {
       {show ? (
         <div>
           <div className="addressform-form">
-            <form>
-              <input placeholder="Street"></input>
-              <input placeholder="City"></input>
-              <input placeholder="State"></input>
-              <input placeholder="Country"></input>
-              <input placeholder="Pincode"></input>
-              <input placeholder="loc(lng, lat)"></input>
+            <form onSubmit={(e) => formSubmitHandler(e)}>
+              <input name="street" required placeholder="Street"></input>
+              <input name="city" required placeholder="City"></input>
+              <input name="state" required placeholder="State"></input>
+              <input name="country" required placeholder="Country"></input>
+              <input name="pincode" required placeholder="Pincode"></input>
+              <input name="loc" required placeholder="loc(lng, lat)"></input>
+              <button type="submit">ADD</button>
             </form>
-          </div>
-
-          <div className="btn-address-container">
-            <button> Add Address</button>
           </div>
         </div>
       ) : (

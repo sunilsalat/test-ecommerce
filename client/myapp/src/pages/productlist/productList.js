@@ -9,7 +9,7 @@ import { getAllCartItems } from "../../slices/cartSlice";
 const ProductList = () => {
   const dispatch = useDispatch();
   const { products, categories } = useSelector((state) => state.products);
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
 
   const navigate = useNavigate();
@@ -25,8 +25,6 @@ const ProductList = () => {
       dispatch(getCategories());
     }
   }, []);
-
-  console.log(cat, title);
 
   useEffect(() => {
     if (!products || cat !== null || title !== null) {

@@ -60,7 +60,7 @@ const ProductDetail = () => {
           {/* <p>Seller-{product && product.seller.name}</p> */}
 
           <div className="review-container">
-            {reviews.length > 0 &&
+            {reviews &&
               reviews.map((review) => {
                 return <RatingAndReview review={review} key={review._id} />;
               })}

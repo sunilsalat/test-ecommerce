@@ -5,7 +5,6 @@ const {
   login,
   logout,
   checkRootUserInfo,
-  addUserAddress,
   setUpSeller,
 } = require("../controllers/auth");
 
@@ -14,8 +13,6 @@ router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/logout").get(authMiddleware, logout);
 router.route("/root-user").get(authMiddleware, checkRootUserInfo);
-router.route("/add-address").post(authMiddleware, addUserAddress);
-
 router.route("/add-seller").post([authMiddleware, isSeller], setUpSeller);
 
 module.exports = router;
