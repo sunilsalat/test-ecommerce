@@ -94,11 +94,9 @@ const cartSlice = createSlice({
     totalQty: 0,
     totalPrice: 0,
     totalShippingFee: 0,
-    address: userInfo
-      ? userInfo.address?.find((add) => add.isDefault === true) ||
-        userInfo.address[0]
-      : "",
-    success: "",
+    address:
+      userInfo && userInfo.address.find((add) => add.isDefault === true),
+    success: null,
   },
   reducers: {
     setAddress: (state, action) => {

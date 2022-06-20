@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserProfile, emptyUserInfo } from "./userProfileSlice";
 
-
 export const userLogin = createAsyncThunk(
   "login/userLogin",
   async ({ email, password }, { rejectWithValue, dispatch }) => {
@@ -28,28 +27,25 @@ export const userLogin = createAsyncThunk(
   }
 );
 
-export const userLogout = createAsyncThunk("login/userLogout", async (_,{dispatch}) => {
-  localStorage.removeItem("userInfo");
+export const userLogout = createAsyncThunk(
+  "login/userLogout",
+  async ({}, { dispatch }) => {
+    localStorage.removeItem("userInfo");
 
-  const res = await fetch("/api/v1/auth/logout", {
-    method: "GET",
-  });
+    const res = await fetch("/api/v1/auth/logout", {
+      method: "GET",
+    });
 
-  if(res.status === 200){
-    dispatch(emptyUserInfo())
+    if (res.status === 200) {
+      dispatch(emptyUserInfo());
+    }
+    return await res.json();
   }
-  return await res.json();
-});
-
-// const userInfoFromLocalStorage = JSON.parse(localStorage.getItem("userInfo"));
+);
 
 const userLoginSlice = createSlice({
   name: "login",
-  initialState: {
-    // userInfo: userInfoFromLocalStorage,
-    // success: false,
-    // error: "",
-  },
+  initialState: {},
   reducers: {
     defaultAdd: (state, action) => {
       state.userInfo.address = action.payload;
@@ -62,9 +58,6 @@ const userLoginSlice = createSlice({
     },
     [userLogin.fulfilled]: (state, action) => {
       console.log("request fulfilled");
-      // state.userInfo = action.payload;
-      // state.success = true;
-      // state.error = "";
     },
     [userLogin.rejected]: (state, error) => {
       console.log("Request rejected");

@@ -26,7 +26,7 @@ export const addUserAddress = createAsyncThunk(
 
       if (res.status === 200) {
         const userValues = JSON.parse(localStorage.getItem("userInfo"));
-        userValues.address.unshift(data);
+        userValues.address.unshift({...data, isDefault:true});
         localStorage.setItem("userInfo", JSON.stringify(userValues));
       }
 

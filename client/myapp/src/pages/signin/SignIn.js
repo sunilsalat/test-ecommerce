@@ -23,7 +23,6 @@ const SignIn = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.id) {
-      console.log(userInfo, "in login userinfo ");
       navigate("/");
     }
   }, [userInfo, navigate]);

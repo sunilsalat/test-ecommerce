@@ -25,7 +25,7 @@ const Navbar = () => {
   };
 
   const haneleLogOut = () => {
-    dispatch(userLogout());
+    dispatch(userLogout({}));
     navigate("/signin");
   };
 
