@@ -16,7 +16,7 @@ const ProductDetail = () => {
   const { product, reviews } = useSelector((state) => state.productDetail);
   const { userInfo } = useSelector((state) => state.login);
 
-  const cartHandler = ({ qty, productId }) => {
+  const AddProductToCart = ({ qty, productId }) => {
     dispatch(addToCart({ item_qty: qty, productId: productId }));
     dispatch(getAllCartItems());
   };
@@ -39,7 +39,7 @@ const ProductDetail = () => {
           <div className="product-btn">
             <button>BUY NOW</button>
             <button
-              onClick={() => cartHandler({ qty: 1, productId: product._id })}
+              onClick={() => AddProductToCart({ qty: 1, productId: product._id })}
             >
               ADD TO CART
             </button>
@@ -57,7 +57,7 @@ const ProductDetail = () => {
           )}
           <h3>$ {product && product.price}</h3>
 
-          <p>Seller-{product &&product.seller.name}</p>
+          {/* <p>Seller-{product && product.seller.name}</p> */}
 
           <div className="review-container">
             {reviews.length > 0 &&

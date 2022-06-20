@@ -4,13 +4,16 @@ const Token = require("../models/token");
 const authMiddleware = async (req, res, next) => {
   const { accessToken, refreshToken } = req.signedCookies;
 
+  if (!refreshToken) {
+    throw new Error("tokens not provided");
+  }
+
   try {
     // if accessToken is present and valid no need to generate newTokens
     if (accessToken) {
       const payload = verifyJwtToken(accessToken);
       req.userInfo = payload;
-      next();
-      return;
+      return next();
     }
 
     const data = verifyJwtToken(refreshToken);
@@ -22,7 +25,7 @@ const authMiddleware = async (req, res, next) => {
     });
 
     if (!token || !token.isValid) {
-      throw new Error("Not authorize ");
+      throw new Error("Not authorize !");
     }
 
     // refresh the access token using Refresh token

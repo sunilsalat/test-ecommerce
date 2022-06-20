@@ -1,38 +1,36 @@
 // calculate shipping fee based on location, weight, units
-
-const seller = require("../models/seller");
+const mongoose = require("mongoose");
 const Seller = require("../models/seller");
 const User = require("../models/user");
+const Product = require("../models/product");
 
 const getShippingFee = async (req, res) => {
-  const { sellerId } = req.body;
+  const { sellerId, productId, cartItems, add } = req.body;
 
   const user = await User.findOne({ _id: req.userInfo.id });
 
   const cr = user.addresses[1].loc.coordinates;
 
-  
-  
-
   const dist = await Seller.aggregate([
     {
       $geoNear: {
-        query: { name: "tata groceries "}, 
         near: {
           type: "Point",
           coordinates: cr,
         },
+        query: { _id: new mongoose.mongo.ObjectId(sellerId) },
         distanceField: "distance",
         distanceMultiplier: 0.001,
-        spherical: true
-
-      }
+        spherical: true,
+      },
     },
   ]);
 
-  console.log(dist)
+  const product = await Product({ _id: productId });
 
-  res.status(200).json({ shippingFee: 0, dist: dist[0].distance });
+  const totalFee = product?.shippinFee || 0 + dist[0]?.distance > 100 ? 50 : 0;
+
+  res.status(200).json({ shippingFee: totalFee });
 };
 
 module.exports = { getShippingFee };

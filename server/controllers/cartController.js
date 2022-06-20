@@ -27,8 +27,7 @@ const addToCart = async (req, res) => {
   if (existingItem) {
     existingItem.item_qty += 1;
     await existingItem.save();
-    res.status(200).json({ cart: existingItem });
-    return
+    return res.status(200).json({ cart: existingItem });
   }
 
   const cart = await Cart.create({
@@ -59,6 +58,7 @@ const removeFromCart = async (req, res) => {
 
 // edit cart item
 const editCartItem = async (req, res) => {
+  console.log("request received from fronend !!!!!!", Date.now());
   const { cartItemId } = req.params;
   const { method } = req.body;
 
@@ -74,7 +74,9 @@ const editCartItem = async (req, res) => {
         new: true,
       }
     );
+    res.status(200).json({ ok: cartItem });
   }
+
   if (method == "dec") {
     const cartItem = await Cart.findOneAndUpdate(
       { _id: cartItemId },
@@ -83,13 +85,13 @@ const editCartItem = async (req, res) => {
         new: true,
       }
     );
+    res.status(200).json({ ok: cartItem });
   }
 
-  res.status(200).json({ ok: true });
+  res.status(200);
 };
 
 // getall cart items
-
 const getAllCartItems = async (req, res) => {
   let cartItems = await Cart.find({ userId: req.userInfo.id });
 

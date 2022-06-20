@@ -57,8 +57,13 @@ const login = async (req, res) => {
       payload,
       refreshTokenDB: existing_token.refreshTokenDB,
     });
-    res.status(200).json({ name: user.name, role: user.role, id: user._id });
-    return;
+
+    return res.status(200).json({
+      name: user.name,
+      role: user.role,
+      id: user._id,
+      address: user.addresses,
+    });
   }
 
   // saving refresh token to database
@@ -71,7 +76,13 @@ const login = async (req, res) => {
 
   const token = await Token.create(tokenPayload);
   createJwtToken({ res, payload, refreshTokenDB: token.refreshTokenDB });
-  res.status(200).json({ name: user.name, role: user.role, id: user._id });
+
+  res.status(200).json({
+    name: user.name,
+    role: user.role,
+    id: user._id,
+    address: user.addresses,
+  });
 };
 
 // LOGOUT
@@ -89,6 +100,11 @@ const logout = async (req, res) => {
   });
 
   res.status(200).json({ msg: "true" });
+};
+
+//USER INFO
+const getUserInfo = async (req, res) => {
+  // todo
 };
 
 // misc

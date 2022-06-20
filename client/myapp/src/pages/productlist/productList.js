@@ -9,25 +9,36 @@ import { getAllCartItems } from "../../slices/cartSlice";
 const ProductList = () => {
   const dispatch = useDispatch();
   const { products, categories } = useSelector((state) => state.products);
+  const { userInfo } = useSelector((state) => state.login);
+  const { cartItems } = useSelector((state) => state.cart);
 
   const navigate = useNavigate();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const cat = query.get("cat");
   const title = query.get("title");
+  // const cat = query.has("cat") && query.get("cat");
+  // const title = query.has("title") && query.get("title");
 
   useEffect(() => {
-    if (categories.length === 0) {
+    if (!categories) {
       dispatch(getCategories());
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllProducts({ cat, title }));
-    dispatch(getAllCartItems())
-  }, [dispatch, cat, title]);
+  console.log(cat, title);
 
-  if (products.length <= 0) {
+  useEffect(() => {
+    if (!products || cat !== null || title !== null) {
+      dispatch(getAllProducts({ cat, title }));
+    }
+
+    if (userInfo && userInfo.name && !cartItems) {
+      dispatch(getAllCartItems());
+    }
+  }, [dispatch, cat]);
+
+  if (!products) {
     return <div>Loading...</div>;
   }
 
@@ -42,7 +53,7 @@ const ProductList = () => {
             <p>Category</p>
           </div>
           <div className="category-list">
-            {categories.length !== 0 &&
+            {categories &&
               categories.map((e) => {
                 return (
                   <p
@@ -62,7 +73,7 @@ const ProductList = () => {
 
       <div className="productList-container">
         {products &&
-          products.products.map((product) => {
+          products.map((product) => {
             return <Product product={product} key={product._id} />;
           })}
       </div>

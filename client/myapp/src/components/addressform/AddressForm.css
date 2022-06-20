@@ -1,0 +1,27 @@
+.addressform-container{
+    position: relative;
+}
+
+.addressform-form {
+  padding: 25px;
+}
+
+.addressform-container form {
+  display: flex;
+  flex-direction: column;
+}
+.addressform-container form input {
+  margin-bottom: 12px;
+}
+
+.btn-address-container {
+  /* display: flex; */
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.close-button{
+    position: absolute;
+    top:10px;
+    right: 10px;
+}

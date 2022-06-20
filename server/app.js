@@ -25,7 +25,7 @@ app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use('/api/v1/util', utilsRouter)
 
-app.use(errorHandlerMiddleware);
 app.use(notFound);
+app.use(errorHandlerMiddleware);
 
 module.exports = { app };

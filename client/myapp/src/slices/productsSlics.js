@@ -22,15 +22,13 @@ export const getCategories = createAsyncThunk(
 
 const productsSlics = createSlice({
   name: "products",
-  initialState: { categories: [], products: [], success: false, error: "" },
+  initialState: { categories: null, products: null, success: false, error: "" },
   reducers: {},
   extraReducers: {
     [getAllProducts.pending]: (state) => {
-      console.log("Promise pending");
     },
     [getAllProducts.fulfilled]: (state, action) => {
-      console.log("Promise fullfilled");
-      state.products = action.payload;
+      state.products = action.payload.products;
       state.success = true;
     },
     [getAllProducts.rejected]: (state, error) => {
@@ -39,14 +37,12 @@ const productsSlics = createSlice({
     },
     // cat
     [getCategories.pending]: (state) => {
-      console.log("Promise pending");
     },
     [getCategories.fulfilled]: (state, action) => {
-      console.log("Promise pending");
       state.categories = action.payload.categories;
     },
     [getCategories.rejected]: (state) => {
-      console.log("Promise pending");
+      console.log("Promise rejected");
     },
   },
 });

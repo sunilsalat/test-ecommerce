@@ -1,44 +1,70 @@
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddressForm from "../../components/addressform/AddressForm";
 import {
   getAllCartItems,
   removeCartItem,
   editCartItem,
+  incQty,
+  decQty,
 } from "../../slices/cartSlice";
 
 const Cart = () => {
+  const [showAddressForm, setAddressForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.login);
-  const { cartItems, totalQty, totalPrice, totalShippingFee } = useSelector(
-    (state) => state.cart
-  );
+  const { cartItems, totalQty, totalPrice, totalShippingFee, address } =
+    useSelector((state) => state.cart);
 
   const alterQuantity = ({ cartItemId, method }) => {
+    if (method === "inc") {
+      dispatch(incQty(cartItemId));
+    }
+    if (method === "dec") {
+      dispatch(decQty(cartItemId));
+    }
     dispatch(editCartItem({ cartItemId, method }));
-    dispatch(getAllCartItems());
   };
 
   const handleRemove = (id) => {
     dispatch(removeCartItem(id));
-    dispatch(getAllCartItems());
+  };
+
+  const showHideAddressForm = () => {
+    setAddressForm(!showAddressForm);
   };
 
   useEffect(() => {
     if (!userInfo || !userInfo.name) {
       navigate("/signin");
     }
-  }, [navigate, dispatch]);
+  }, [navigate]);
 
   useEffect(() => {
-    dispatch(getAllCartItems());
+    if (!cartItems && userInfo) {
+      dispatch(getAllCartItems());
+    }
   }, []);
 
   return (
     <div className="cart-container">
       <div className="cart-items-container">
+        <div className="address-container">
+          <div>My Cart({totalQty})</div>
+          <div>Deliver To - {JSON.stringify(address)}</div>
+          <div>
+            {showAddressForm ? (
+              <div className="modal">
+                <AddressForm setAddressForm={setAddressForm} />
+              </div>
+            ) : (
+              <button onClick={() => showHideAddressForm()}>Change</button>
+            )}
+          </div>
+        </div>
         {cartItems &&
           cartItems.map((item) => {
             return (

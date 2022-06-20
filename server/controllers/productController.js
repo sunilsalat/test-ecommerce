@@ -39,7 +39,7 @@ const getAllProducts = async (req, res) => {
       .populate("category")
       .populate(["category", "seller"]);
 
-    res.status(200).json({ products });
+    return res.status(200).json({ products });
   }
 
   if (title !== "null" && title !== undefined) {
@@ -48,7 +48,7 @@ const getAllProducts = async (req, res) => {
       .limit(10)
       .populate("category")
       .populate(["category", "seller"]);
-    res.status(200).json({ products });
+    return res.status(200).json({ products });
   }
 
   const products = await Product.find({})
@@ -77,7 +77,6 @@ const getProductDetail = async (req, res) => {
 };
 
 // Add category to which product belongs
-
 const addProductCategory = async (req, res) => {
   const { title } = req.body;
   if (!title) {
