@@ -1,41 +1,37 @@
 import "./Navbar.css";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllProducts } from "../../slices/productsSlics";
+import { getAllCartItems } from "../../slices/cartSlice";
 
 const Navbar = () => {
   const [title, setTitle] = useState("");
   const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const search = useLocation();
-
-  const query = new URLSearchParams(search);
-  const cat = query.get("cat");
 
   const handleSearch = () => {
-    navigate(`/?cat=${cat}&title=${title}`);
-  };
-
-  const redirectToHome = () => {
-    navigate("/");
+    dispatch(getAllProducts({ query_param: { title: title } }));
   };
 
   const haneleLogOut = () => {
     dispatch(userLogout({}));
-    navigate("/signin");
   };
+
+  useEffect(()=>{
+    if(!cartItems){
+      dispatch(getAllCartItems())
+    }
+  },[])
 
   return (
     <>
       <nav className="navbar">
         <div className="left-section">
-          <Link to="/" onClick={() => redirectToHome()}>
-            MY-STORE
-          </Link>
+          <Link to="/">MY-STORE</Link>
         </div>
         <div className="middle-section">
           <input
@@ -53,9 +49,7 @@ const Navbar = () => {
             <ul>
               {userInfo && userInfo.name ? (
                 <>
-                  <li onClick={() => haneleLogOut()}>
-                    <Link to="/">LogOut</Link>
-                  </li>
+                  <li onClick={() => haneleLogOut()}>LogOut</li>
                   <li>
                     <Link to="/">
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}

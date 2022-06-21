@@ -14,7 +14,7 @@ const SignIn = () => {
 
   const { userInfo, error } = useSelector((state) => state.profile);
 
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+  // const redirect = location.search ? location.search.split("=")[1] : "/";
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserProfile, emptyUserInfo } from "./userProfileSlice";
+import { clearCart, getAllCartItems } from "./cartSlice";
 
 export const userLogin = createAsyncThunk(
   "login/userLogin",
@@ -15,6 +16,7 @@ export const userLogin = createAsyncThunk(
 
       if (res.status === 200) {
         dispatch(getUserProfile({}));
+        dispatch(getAllCartItems());
       }
 
       if (res.status !== 200) {
@@ -30,22 +32,25 @@ export const userLogin = createAsyncThunk(
 export const userLogout = createAsyncThunk(
   "login/userLogout",
   async ({}, { dispatch }) => {
+    // Clear the local storage and clear userProfile info
     localStorage.removeItem("userInfo");
+    dispatch(emptyUserInfo());
 
     const res = await fetch("/api/v1/auth/logout", {
-      method: "GET",
+      method: "DELETE",
     });
 
     if (res.status === 200) {
-      dispatch(emptyUserInfo());
+      dispatch(clearCart());
     }
+
     return await res.json();
   }
 );
 
 const userLoginSlice = createSlice({
   name: "login",
-  initialState: {},
+  initialState: { msg: null },
   reducers: {
     defaultAdd: (state, action) => {
       state.userInfo.address = action.payload;
@@ -70,7 +75,7 @@ const userLoginSlice = createSlice({
     },
     [userLogout.fulfilled]: (state, action) => {
       console.log("Request fullfilled");
-      state.userInfo = null;
+      state.msg = true;
     },
     [userLogout.rejected]: (state) => {
       console.log("Request rejected");

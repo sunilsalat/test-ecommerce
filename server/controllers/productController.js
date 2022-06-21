@@ -28,12 +28,12 @@ const editProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const { cat, title } = req.query;
 
-  if (cat !== "null" && cat !== undefined) {
-    const newTitle = new RegExp("^" + title);
+
+
+  if (req.query.hasOwnProperty("category")) {
     const products = await Product.find({
-      $or: [{ category: cat }, { title: { $regex: newTitle } }],
+      category: req.query['category'],
     })
       .limit(10)
       .populate("category")
@@ -42,8 +42,8 @@ const getAllProducts = async (req, res) => {
     return res.status(200).json({ products });
   }
 
-  if (title !== "null" && title !== undefined) {
-    const newTitle = new RegExp("^" + title, "i");
+  if (req.query.hasOwnProperty("title")) {
+    const newTitle = new RegExp("^" + req.query['title'], "i");
     const products = await Product.find({ title: { $regex: newTitle } })
       .limit(10)
       .populate("category")

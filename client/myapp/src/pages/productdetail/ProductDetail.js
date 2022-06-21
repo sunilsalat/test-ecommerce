@@ -9,25 +9,31 @@ import { addToCart, getAllCartItems } from "../../slices/cartSlice";
 import "./ProductDetail.css";
 import Star from "../../components/star/Star";
 import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview";
+import AddReveiw from "../../components/addReview/addReview";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { product, reviews } = useSelector((state) => state.productDetail);
-  const { userInfo } = useSelector((state) => state.login);
+  const { product, reviews, error, loading, reviewLoading} = useSelector(
+    (state) => state.productDetail
+  );
+  const { userInfo } = useSelector((state) => state.profile);
 
   const AddProductToCart = ({ qty, productId }) => {
     dispatch(addToCart({ item_qty: qty, productId: productId }));
-    dispatch(getAllCartItems());
   };
 
   useEffect(() => {
     dispatch(productDetail({ id }));
 
-    if (userInfo) {
+    if (userInfo && userInfo.name) {
       dispatch(getAllProductReviews({ id }));
     }
   }, [id]);
+
+  if(loading ){
+    return<div>Loading...</div>
+  }
 
   return (
     <>
@@ -39,10 +45,20 @@ const ProductDetail = () => {
           <div className="product-btn">
             <button>BUY NOW</button>
             <button
-              onClick={() => AddProductToCart({ qty: 1, productId: product._id })}
+              onClick={() =>
+                AddProductToCart({ qty: 1, productId: product._id })
+              }
             >
               ADD TO CART
             </button>
+          </div>
+          <div className="write-review-container">
+            <span>{error}</span>
+            {userInfo ? (
+              reviewLoading ? 'Loading...':<AddReveiw productId={product._id} />
+            ) : (
+              "Login to write review"
+            )}
           </div>
         </div>
 

@@ -86,11 +86,13 @@ const logout = async (req, res) => {
 
   res.cookie("accessToken", "", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now() + 10),
+    maxAge: 10,
   });
   res.cookie("refreshToken", "", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now() + 10),
+    maxAge: 10,
   });
 
   res.status(200).json({ msg: "true" });
@@ -106,7 +108,7 @@ const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
-// seller handles
+// seller handl
 
 const setUpSeller = async (req, res) => {
   const { location, name } = req.body;

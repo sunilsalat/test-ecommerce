@@ -1,10 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-// import { defaultAdd } from "./userLoginSlice";
 
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
   async ({}, { rejectWithValue }) => {
-    console.log("inside values  of fget user sprofoi");
     try {
       const res = await fetch("/api/v1/profile/get-user-info");
       return await res.json();
@@ -25,9 +23,7 @@ export const addUserAddress = createAsyncThunk(
       });
 
       if (res.status === 200) {
-        const userValues = JSON.parse(localStorage.getItem("userInfo"));
-        userValues.address.unshift({...data, isDefault:true});
-        localStorage.setItem("userInfo", JSON.stringify(userValues));
+        dispatch(getUserProfile({}));
       }
 
       return await res.json();
@@ -48,7 +44,7 @@ const userProfileSlice = createSlice({
     },
   },
   extraReducers: {
-    // getUserProfileInformation
+    // getUserProfileInfo
     [getUserProfile.pending]: (state) => {
       console.log("promise pending");
     },
@@ -68,5 +64,5 @@ const userProfileSlice = createSlice({
     },
   },
 });
-export const {emptyUserInfo} = userProfileSlice.actions
+export const { emptyUserInfo } = userProfileSlice.actions;
 export default userProfileSlice.reducer;

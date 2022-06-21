@@ -22,7 +22,10 @@ const addToCart = async (req, res) => {
 
   const { title, image, price, _id } = product;
 
-  const existingItem = await Cart.findOne({ productId });
+  const existingItem = await Cart.findOne({
+    productId,
+    userId: req.userInfo.id,
+  });
 
   if (existingItem) {
     existingItem.item_qty += 1;
@@ -68,7 +71,7 @@ const editCartItem = async (req, res) => {
 
   if (method == "inc") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId },
+      { _id: cartItemId, userId:req.userInfo.id},
       { $inc: { item_qty: 1 } },
       {
         new: true,
@@ -79,7 +82,7 @@ const editCartItem = async (req, res) => {
 
   if (method == "dec") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId },
+      { _id: cartItemId, userId:req.userInfo.id},
       { $inc: { item_qty: -1 } },
       {
         new: true,

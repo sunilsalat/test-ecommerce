@@ -9,16 +9,12 @@ import { getAllCartItems } from "../../slices/cartSlice";
 const ProductList = () => {
   const dispatch = useDispatch();
   const { products, categories } = useSelector((state) => state.products);
-  const { userInfo } = useSelector((state) => state.profile);
-  const { cartItems } = useSelector((state) => state.cart);
 
   const navigate = useNavigate();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
-  const cat = query.get("cat");
-  const title = query.get("title");
-  // const cat = query.has("cat") && query.get("cat");
-  // const title = query.has("title") && query.get("title");
+
+  const cat = query.has("cat") && query.get("cat");
 
   useEffect(() => {
     if (!categories) {
@@ -27,12 +23,13 @@ const ProductList = () => {
   }, []);
 
   useEffect(() => {
-    if (!products || cat !== null || title !== null) {
-      dispatch(getAllProducts({ cat, title }));
-    }
+    if (!products || cat !== null) {
+      if (cat) {
+        dispatch(getAllProducts({ query_param: { category: cat } }));
+      }else{
+        dispatch(getAllProducts({}))
+      }
 
-    if (userInfo && userInfo.name && !cartItems) {
-      dispatch(getAllCartItems());
     }
   }, [dispatch, cat]);
 

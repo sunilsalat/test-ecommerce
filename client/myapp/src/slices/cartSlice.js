@@ -94,13 +94,14 @@ const cartSlice = createSlice({
     totalQty: 0,
     totalPrice: 0,
     totalShippingFee: 0,
-    address:
-      userInfo && userInfo.address.find((add) => add.isDefault === true),
+    address: userInfo && userInfo.address.find((add) => add.isDefault === true),
     success: null,
   },
   reducers: {
     setAddress: (state, action) => {
-      state.address = action.payload;
+      state.address = userInfo.address.find(
+        (add) => add._id === action.payload
+      );
     },
 
     incQty: (state, action) => {
@@ -123,6 +124,12 @@ const cartSlice = createSlice({
       });
 
       state.cartItems = newCartItems;
+    },
+
+    clearCart: (state, action) => {
+      state.cartItems = null;
+      state.totalQty = 0;
+      state.totalPrice = 0;
     },
   },
   extraReducers: {
@@ -160,6 +167,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setAddress, decQty, incQty } = cartSlice.actions;
+export const { setAddress, decQty, incQty, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

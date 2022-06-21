@@ -12,8 +12,10 @@ const authMiddleware = async (req, res, next) => {
     // if accessToken is present and valid no need to generate newTokens
     if (accessToken) {
       const payload = verifyJwtToken(accessToken);
+      console.log("payload is this ", payload);
       req.userInfo = payload;
-      return next();
+      next();
+      return;
     }
 
     const data = verifyJwtToken(refreshToken);

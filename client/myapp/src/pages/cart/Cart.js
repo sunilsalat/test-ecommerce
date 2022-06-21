@@ -1,7 +1,6 @@
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AddressForm from "../../components/addressform/AddressForm";
 import {
   getAllCartItems,
@@ -14,12 +13,11 @@ import {
 const Cart = () => {
   const [showAddressForm, setAddressForm] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.profile);
   const { cartItems, totalQty, totalPrice, totalShippingFee, address } =
     useSelector((state) => state.cart);
 
-  const shippingAddress = `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
+  const shippingAddress = address && `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
   const alterQuantity = ({ cartItemId, method }) => {
     if (method === "inc") {
