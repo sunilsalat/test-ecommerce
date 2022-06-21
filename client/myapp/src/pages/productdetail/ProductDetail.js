@@ -14,7 +14,7 @@ import AddReveiw from "../../components/addReview/addReview";
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { product, reviews, error, loading, reviewLoading} = useSelector(
+  const { product, reviews, error, loading, reviewLoading } = useSelector(
     (state) => state.productDetail
   );
   const { userInfo } = useSelector((state) => state.profile);
@@ -31,8 +31,8 @@ const ProductDetail = () => {
     }
   }, [id]);
 
-  if(loading ){
-    return<div>Loading...</div>
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -55,7 +55,11 @@ const ProductDetail = () => {
           <div className="write-review-container">
             <span>{error}</span>
             {userInfo ? (
-              reviewLoading ? 'Loading...':<AddReveiw productId={product._id} />
+              reviewLoading ? (
+                "Loading..."
+              ) : (
+                <AddReveiw productId={product._id} />
+              )
             ) : (
               "Login to write review"
             )}

@@ -64,7 +64,6 @@ export const editCartItem = createAsyncThunk(
 );
 
 // hit utli api to clculate shipping fee
-
 export const TotalShippingFee = createAsyncThunk(
   "cart/TotalShippingFee",
   async ({ cartItems, add }) => {

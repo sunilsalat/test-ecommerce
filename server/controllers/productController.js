@@ -29,8 +29,6 @@ const editProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
 
-
-
   if (req.query.hasOwnProperty("category")) {
     const products = await Product.find({
       category: req.query['category'],
