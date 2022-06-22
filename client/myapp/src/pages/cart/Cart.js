@@ -1,4 +1,5 @@
 import "./Cart.css";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import AddressForm from "../../components/addressform/AddressForm";
@@ -11,13 +12,16 @@ import {
 } from "../../slices/cartSlice";
 
 const Cart = () => {
-  const [showAddressForm, setAddressForm] = useState(false);
+  const [showAddressForm, toggleAddresFormVisiblity] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.profile);
   const { cartItems, totalQty, totalPrice, totalShippingFee, address } =
     useSelector((state) => state.cart);
 
-  const shippingAddress = address && `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
+  const shippingAddress =
+    address &&
+    `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
   const alterQuantity = ({ cartItemId, method }) => {
     if (method === "inc") {
@@ -34,7 +38,7 @@ const Cart = () => {
   };
 
   const showHideAddressForm = () => {
-    setAddressForm(!showAddressForm);
+    toggleAddresFormVisiblity(!showAddressForm);
   };
 
   // useEffect(() => {
@@ -62,7 +66,9 @@ const Cart = () => {
           <div>
             {showAddressForm ? (
               <div className="modal">
-                <AddressForm setAddressForm={setAddressForm} />
+                <AddressForm
+                  toggleAddresFormVisiblity={toggleAddresFormVisiblity}
+                />
               </div>
             ) : (
               <button onClick={() => showHideAddressForm()}>Change</button>
@@ -117,7 +123,12 @@ const Cart = () => {
           <h5>Total - ${totalShippingFee + totalPrice}</h5>
         </div>
         <div>
-          <button className="checkOut-btn">CHEKOUT</button>
+          <button
+            className="checkOut-btn"
+            onClick={() => navigate("/shipping")}
+          >
+            CHEKOUT
+          </button>
         </div>
       </div>
     </div>

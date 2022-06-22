@@ -5,15 +5,11 @@ import { FaWindowClose } from "react-icons/fa";
 import { setAddress, TotalShippingFee } from "../../slices/cartSlice";
 import { addUserAddress } from "../../slices/userProfileSlice";
 
-const AddressForm = ({ setAddressForm }) => {
+const AddressForm = ({ toggleAddresFormVisiblity }) => {
   const { userInfo } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const { cartItems } = useSelector((state) => state.cart);
-
-  const editShow = () => {
-    setShow(!show);
-  };
 
   const showChangeAddComponent = () => {
     setShow(false);
@@ -21,7 +17,6 @@ const AddressForm = ({ setAddressForm }) => {
 
   const setAddressDefault = (add) => {
     dispatch(setAddress(add._id));
-
     dispatch(TotalShippingFee({ cartItems, add }));
   };
 
@@ -42,14 +37,18 @@ const AddressForm = ({ setAddressForm }) => {
 
   return (
     <div className="addressform-container">
-      <p className="close-button" onClick={() => setAddressForm(false)}>
+      <p
+        className="close-button"
+        onClick={() => toggleAddresFormVisiblity(false)}
+      >
         <FaWindowClose />
       </p>
       {show ? (
         <div>
-          <p onClick={() => showChangeAddComponent()}>change address</p>
-          <hr></hr>
-          OR
+          <p className="text" onClick={() => showChangeAddComponent()}>
+            Select Exisiting Address
+          </p>
+          <p>OR</p>
         </div>
       ) : (
         <div>
@@ -59,38 +58,46 @@ const AddressForm = ({ setAddressForm }) => {
               const shortAdd = `${street}, ${city}, ${state}, ${pincode}`;
               return (
                 <div key={add._id} className="address-item-container">
-                  <p>{shortAdd}</p>
-                  <button onClick={() => setAddressDefault(add)}>select</button>
+                  <span>{shortAdd}</span>
+                  <button onClick={() => setAddressDefault(add)}>SELECT</button>
                 </div>
               );
             })}
-          OR
         </div>
       )}
 
       {show ? (
-        <div>
+        <div className="addressform">
+          <div className="addressform-title">
+            <h3>Add Address</h3>
+          </div>
           <div className="addressform-form">
-            <form onSubmit={(e) => formSubmitHandler(e)}>
-              <input name="street" required placeholder="Street"></input>
-              <input name="city" required placeholder="City"></input>
-              <input name="state" required placeholder="State"></input>
-              <input name="country" required placeholder="Country"></input>
-              <input name="pincode" required placeholder="Pincode"></input>
-              <input name="loc" required placeholder="loc(lng, lat)"></input>
-              <button type="submit">ADD</button>
-            </form>
+            <div>
+              <form onSubmit={(e) => formSubmitHandler(e)}>
+                <input name="street" required placeholder="Street"></input>
+                <input name="city" required placeholder="City"></input>
+                <input name="state" required placeholder="State"></input>
+                <input name="country" required placeholder="Country"></input>
+                <input name="pincode" required placeholder="Pincode"></input>
+                <input name="loc" required placeholder="loc(lng, lat)"></input>
+                <div className="btn">
+                  <button type="submit">ADD</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       ) : (
         <>
-          <hr></hr>
+          <p>OR</p>
+
           <p
+            className="text"
             onClick={() => {
-              editShow();
+              setShow(!show);
             }}
           >
-            add new address'
+            Add New Address
           </p>
         </>
       )}

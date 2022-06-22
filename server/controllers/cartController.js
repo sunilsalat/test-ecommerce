@@ -96,7 +96,7 @@ const editCartItem = async (req, res) => {
 
 // getall cart items
 const getAllCartItems = async (req, res) => {
-  let cartItems = await Cart.find({ userId: req.userInfo.id });
+  let cartItems = await Cart.find({ userId: req.userInfo.id }).populate("productId");
 
   cartItems = cartItems.filter((e) => e.item_qty > 0);
 
