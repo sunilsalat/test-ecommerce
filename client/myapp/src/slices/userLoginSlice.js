@@ -16,7 +16,6 @@ export const userLogin = createAsyncThunk(
 
       if (res.status === 200) {
         dispatch(getUserProfile({}));
-        dispatch(getAllCartItems());
       }
 
       if (res.status !== 200) {
@@ -34,6 +33,7 @@ export const userLogout = createAsyncThunk(
   async ({}, { dispatch }) => {
     // Clear the local storage and clear userProfile info
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartAddress");
     dispatch(emptyUserInfo());
 
     const res = await fetch("/api/v1/auth/logout", {

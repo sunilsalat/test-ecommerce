@@ -86,6 +86,10 @@ const userInfo =
   localStorage.getItem("userInfo") &&
   JSON.parse(localStorage.getItem("userInfo"));
 
+const cartAddress =
+  localStorage.getItem("cartAddress") &&
+  JSON.parse(localStorage.getItem("cartAddress"));
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -93,14 +97,16 @@ const cartSlice = createSlice({
     totalQty: 0,
     totalPrice: 0,
     totalShippingFee: 0,
-    address: userInfo && userInfo.address.find((add) => add.isDefault === true),
+    address: cartAddress || userInfo?.address.find((e) => e.isDefault === true || userInfo?.address[0]|| null),
     success: null,
   },
   reducers: {
     setAddress: (state, action) => {
-      state.address = userInfo.address.find(
-        (add) => add._id === action.payload
-      );
+      state.address = action.payload;
+
+      // TODO - improve below logic
+      localStorage.removeItem("cartAddress");
+      localStorage.setItem("cartAddress", JSON.stringify(action.payload));
     },
 
     incQty: (state, action) => {
@@ -127,6 +133,7 @@ const cartSlice = createSlice({
 
     clearCart: (state, action) => {
       state.cartItems = null;
+      state.address = null;
       state.totalQty = 0;
       state.totalPrice = 0;
     },

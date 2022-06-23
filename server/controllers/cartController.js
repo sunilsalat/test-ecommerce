@@ -1,5 +1,7 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
+const User = require("../models/user");
+const Seller = require("../models/seller");
 
 // add to cart
 const addToCart = async (req, res) => {
@@ -61,7 +63,6 @@ const removeFromCart = async (req, res) => {
 
 // edit cart item
 const editCartItem = async (req, res) => {
-  console.log("request received from fronend !!!!!!", Date.now());
   const { cartItemId } = req.params;
   const { method } = req.body;
 
@@ -71,7 +72,7 @@ const editCartItem = async (req, res) => {
 
   if (method == "inc") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId, userId:req.userInfo.id},
+      { _id: cartItemId, userId: req.userInfo.id },
       { $inc: { item_qty: 1 } },
       {
         new: true,
@@ -82,7 +83,7 @@ const editCartItem = async (req, res) => {
 
   if (method == "dec") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId, userId:req.userInfo.id},
+      { _id: cartItemId, userId: req.userInfo.id },
       { $inc: { item_qty: -1 } },
       {
         new: true,
@@ -96,14 +97,49 @@ const editCartItem = async (req, res) => {
 
 // getall cart items
 const getAllCartItems = async (req, res) => {
-  let cartItems = await Cart.find({ userId: req.userInfo.id }).populate("productId");
+  let cartItems = await Cart.find({ userId: req.userInfo.id }).populate([
+    "productId",
+    "userId",
+  ]);
+
+  if (cartItems.length === 0) {
+    return res.status(200).json({ ok: true });
+  }
 
   cartItems = cartItems.filter((e) => e.item_qty > 0);
 
+  const user = await User.findOne({ _id: req.userInfo.id });
+  const cr = user.addresses.length > 0 && user.addresses[0].loc.coordinates;
+
+  if (!user) {
+    throw Error("Not logged in ");
+  }
+
   let totalFee = 0;
   for (var item of cartItems) {
-    const shi = await Product.findOne({ _id: item.productId });
-    totalFee += shi.shippinFee;
+    const sellerId = item.productId.seller;
+
+    try {
+      const dist = await Seller.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [...cr],
+            },
+            query: { _id: sellerId },
+            distanceField: "distance",
+            distanceMultiplier: 0.001,
+            spherical: true,
+          },
+        },
+      ]);
+
+      totalFee += dist[0]?.distance > 100 ? 50 : 0;
+    } catch (error) {}
+    // claculating fee based on distance
+
+    totalFee += item.productId.shippinFee;
   }
 
   const { totalQty, totalPrice } = cartItems.reduce(

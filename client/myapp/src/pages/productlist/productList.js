@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Product from "../../components/productComponent/Product";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getAllProducts, getCategories } from "../../slices/productsSlics";
-import { getAllCartItems } from "../../slices/cartSlice";
 
 const ProductList = () => {
   const dispatch = useDispatch();

@@ -53,7 +53,7 @@ const Cart = () => {
     }
   }, []);
 
-  if (cartItems && cartItems.length === 0) {
+  if (cartItems && cartItems <= 0) {
     return <div>Your cart is empty !</div>;
   }
 

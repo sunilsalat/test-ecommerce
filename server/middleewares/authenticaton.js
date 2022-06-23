@@ -12,7 +12,6 @@ const authMiddleware = async (req, res, next) => {
     // if accessToken is present and valid no need to generate newTokens
     if (accessToken) {
       const payload = verifyJwtToken(accessToken);
-      console.log("payload is this ", payload);
       req.userInfo = payload;
       next();
       return;
@@ -40,7 +39,6 @@ const authMiddleware = async (req, res, next) => {
     // set payload on request
     req.userInfo = { id, name, role };
 
-    console.log(req.userInfo);
     next();
   } catch (error) {
     throw new Error("Not authorize");

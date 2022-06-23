@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { setAddress } from "./cartSlice";
 
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
-  async ({}, { rejectWithValue }) => {
+  async ({}, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch("/api/v1/profile/get-user-info");
-      return await res.json();
+      const data = await res.json();
+      if (res.status === 200) {
+        dispatch(setAddress(data.address[0]));
+      }
+      return data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -22,11 +27,14 @@ export const addUserAddress = createAsyncThunk(
         body: JSON.stringify({ ...data }),
       });
 
-      if (res.status === 200) {
-        dispatch(getUserProfile({}));
-      }
+      const { add } = await res.json();
 
-      return await res.json();
+      if (res.status === 200) {
+        dispatch(setAddress({ ...add }));
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        userInfo.address.unshift({ ...add });
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      }
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -51,6 +59,10 @@ const userProfileSlice = createSlice({
     [getUserProfile.fulfilled]: (state, action) => {
       console.log("promise fulfilled");
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
+      localStorage.setItem(
+        "cartAddress",
+        JSON.stringify(action.payload.address[0])
+      );
       state.userInfo = action.payload;
     },
     [getUserProfile.rejected]: (state, error) => {
@@ -58,7 +70,9 @@ const userProfileSlice = createSlice({
     },
     // addUserAddress
     [addUserAddress.pending]: (state) => {},
-    [addUserAddress.fulfilled]: (state) => {},
+    [addUserAddress.fulfilled]: (state) => {
+      state.userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    },
     [addUserAddress.rejected]: (state, error) => {
       console.log("promise rejected");
     },

@@ -26,8 +26,6 @@ const addUserAddress = async (req, res) => {
 
   const newLoc = loc.split(",").map((e) => parseFloat(e));
 
-  console.log(newLoc);
-
   const add = {
     street,
     country,
@@ -46,10 +44,7 @@ const addUserAddress = async (req, res) => {
   user.addresses.push(add);
   await user.save();
 
-  res.status(200).json({ ok: true });
-  
+  res.status(200).json({ add: user.addresses[0] });
 };
-
-
 
 module.exports = { addUserAddress, getUserInfo };

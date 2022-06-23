@@ -16,7 +16,7 @@ const AddressForm = ({ toggleAddresFormVisiblity }) => {
   };
 
   const setAddressDefault = (add) => {
-    dispatch(setAddress(add._id));
+    dispatch(setAddress(add));
     dispatch(TotalShippingFee({ cartItems, add }));
   };
 
