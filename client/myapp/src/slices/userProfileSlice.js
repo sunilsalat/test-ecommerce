@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { setAddress } from "./cartSlice";
+import { getAllCartItems, setAddress } from "./cartSlice";
 
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",

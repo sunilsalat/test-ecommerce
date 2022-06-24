@@ -97,7 +97,11 @@ const cartSlice = createSlice({
     totalQty: 0,
     totalPrice: 0,
     totalShippingFee: 0,
-    address: cartAddress || userInfo?.address.find((e) => e.isDefault === true || userInfo?.address[0]|| null),
+    address:
+      cartAddress ||
+      userInfo?.address.find(
+        (e) => e.isDefault === true || userInfo?.address[0] || null
+      ),
     success: null,
   },
   reducers: {

@@ -109,7 +109,14 @@ const getAllCartItems = async (req, res) => {
   cartItems = cartItems.filter((e) => e.item_qty > 0);
 
   const user = await User.findOne({ _id: req.userInfo.id });
-  const cr = user.addresses.length > 0 && user.addresses[0].loc.coordinates;
+
+  if (req.body.addressId) {
+    var cr =
+      user.addresses.length > 0 &&
+      user.addresses.find((e) => e._id === addressId);
+  } else {
+    var cr = user.addresses.length > 0 && user.addresses[0].loc.coordinates;
+  }
 
   if (!user) {
     throw Error("Not logged in ");

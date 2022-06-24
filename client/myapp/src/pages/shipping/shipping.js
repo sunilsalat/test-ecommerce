@@ -3,9 +3,11 @@ import CheckOutStep from "../../components/checkoutStepCompoment/checkoutStep";
 import AddressForm from "../../components/addressform/AddressForm";
 import ContinueButton from "../../components/continuebtn/continueBtn";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 const Shipping = () => {
   const { address } = useSelector((state) => state.cart);
+  const [getSearchParams, setSearchParams] = useSearchParams();
 
   const shortAddress = `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
@@ -24,7 +26,14 @@ const Shipping = () => {
         </div>
       </div>
 
-      <ContinueButton text={"PAYMENT"} path={'/payment'} />
+      {address && (
+        <ContinueButton
+          text={"PAYMENT"}
+          path={"/payment"}
+          accessObj={"slkdfjslkfjs"}
+          
+        />
+      )}
     </div>
   );
 };

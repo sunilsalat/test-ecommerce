@@ -1,7 +1,13 @@
 import "./continueBtn.css";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
-const ContinueButton = ({ text, path }) => {
+const ContinueButton = ({ text, path, accessObj }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    setSearchParams({ accessObj });
+  }, []);
   return (
     <div className="continue-btn-container">
       <Link to={path} className="continue-btn">

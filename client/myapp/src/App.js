@@ -11,7 +11,6 @@ import Main from "./components/main/Main";
 import ProtectedRoute from "./components/protectedRoute";
 import Shipping from "./pages/shipping/shipping";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ContinueButton from "./components/continuebtn/continueBtn";
 import PaymentMethod from "./pages/paymentmethods/paymentMethods";
 
 function App() {
