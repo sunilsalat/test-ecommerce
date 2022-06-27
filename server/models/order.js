@@ -69,7 +69,6 @@ const OrderSchema = mongoose.Schema(
     paymentMethod: {
       type: String,
     },
-    orderPlacedAt: { type: Date },
     isDeliverd: { type: Boolean, default: false },
     deliverdAt: { type: Date },
     paidAt: { type: Date },

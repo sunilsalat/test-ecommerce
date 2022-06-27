@@ -31,8 +31,8 @@ export const getAllCartItems = createAsyncThunk(
 
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
-  async (cartItemId, { dispatch }) => {
-    const res = await fetch(`/api/v1/cart/remove/${cartItemId}`, {
+  async (productId, { dispatch }) => {
+    const res = await fetch(`/api/v1/cart/remove/${productId}`, {
       method: "delete",
     });
 
@@ -82,13 +82,13 @@ export const TotalShippingFee = createAsyncThunk(
   }
 );
 
-const userInfo =
-  localStorage.getItem("userInfo") &&
-  JSON.parse(localStorage.getItem("userInfo"));
+const userInfo = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
 
-const cartAddress =
-  localStorage.getItem("cartAddress") &&
-  JSON.parse(localStorage.getItem("cartAddress"));
+const cartAddress = localStorage.getItem("cartAddress")
+  ? JSON.parse(localStorage.getItem("cartAddress"))
+  : null;
 
 const cartSlice = createSlice({
   name: "cart",

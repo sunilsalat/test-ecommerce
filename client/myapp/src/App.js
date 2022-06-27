@@ -10,6 +10,7 @@ import ProductDetail from "./pages/productdetail/ProductDetail";
 import Main from "./components/main/Main";
 import ProtectedRoute from "./components/protectedRoute";
 import Shipping from "./pages/shipping/shipping";
+import Order from "./pages/order/order";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PaymentMethod from "./pages/paymentmethods/paymentMethods";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/payment" element={<PaymentMethod />} />
+            <Route path="/order" element={<Order />} />
           </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route

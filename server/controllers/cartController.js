@@ -1,14 +1,12 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
-const User = require("../models/user");
-const Seller = require("../models/seller");
 
 // add to cart
 const addToCart = async (req, res) => {
   const { item_qty } = req.body;
   const { productId } = req.params;
 
-  if (!item_qty) {
+  if (!item_qty || !productId) {
     throw new Error("all the fields are required");
   }
 
@@ -24,23 +22,47 @@ const addToCart = async (req, res) => {
 
   const { title, image, price, _id } = product;
 
-  const existingItem = await Cart.findOne({
-    productId,
-    userId: req.userInfo.id,
-  });
-
-  if (existingItem) {
-    existingItem.item_qty += 1;
-    await existingItem.save();
-    return res.status(200).json({ cart: existingItem });
-  }
-
-  const cart = await Cart.create({
+  const item = {
     item_title: title,
     item_image: image,
     item_price: price,
     productId: _id,
     item_qty: item_qty,
+  };
+  const existingCart = await Cart.findOne({
+    userId: req.userInfo.id,
+  });
+
+  const isItemAlreadyExistInCart = existingCart?.cartItems?.find(
+    (e) => e.productId.toString() === productId.toString()
+  );
+
+  // if item already exist inc qty by one
+  if (isItemAlreadyExistInCart) {
+    console.log("in there 1");
+    const updatedCartItems = existingCart.cartItems.map((e) => {
+      if (e.productId.toString() === productId.toString()) {
+        e.item_qty += 1;
+      }
+      return e;
+    });
+
+    existingCart.cartItems = updatedCartItems;
+    await existingCart.save();
+
+    return res.status(200).json({ cart: existingCart });
+  }
+
+  if (existingCart && existingCart.cartItems.length > 0) {
+    console.log("in there 2");
+    existingCart.cartItems.push(item);
+    await existingCart.save();
+    return res.status(200).json({ cart: existingCart });
+  }
+
+  // first time cart initialization of user
+  const cart = await Cart.create({
+    cartItems: item,
     userId: req.userInfo.id,
   });
 
@@ -48,32 +70,34 @@ const addToCart = async (req, res) => {
 };
 
 // remove form cart
-
 const removeFromCart = async (req, res) => {
-  const { cartItemId } = req.params;
+  const { productId } = req.params;
 
-  if (!cartItemId) {
-    throw new Error("cartItemId id is required");
+  if (!productId) {
+    throw Error("ProductId required chde");
   }
 
-  await Cart.findOneAndRemove({ _id: cartItemId });
+  const cart = await Cart.findOneAndUpdate(
+    { userId: req.userInfo.id },
+    { $pull: { cartItems: { productId: productId } } }
+  );
 
-  res.status(200).send("true");
+  res.status(200).json({ ok: "true" });
 };
 
 // edit cart item
 const editCartItem = async (req, res) => {
-  const { cartItemId } = req.params;
+  const { productId } = req.params;
   const { method } = req.body;
 
-  if (!cartItemId || !method) {
+  if (!productId || !method) {
     throw new Error("cartItmeId id is required");
   }
 
   if (method == "inc") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId, userId: req.userInfo.id },
-      { $inc: { item_qty: 1 } },
+      { "cartItems.$.productId": productId, userId: req.userInfo.id },
+      { $inc: { "cartItems.$[].item_qty": 1 } },
       {
         new: true,
       }
@@ -83,8 +107,8 @@ const editCartItem = async (req, res) => {
 
   if (method == "dec") {
     const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId, userId: req.userInfo.id },
-      { $inc: { item_qty: -1 } },
+      { "cartItems.$.productId": productId, userId: req.userInfo.id },
+      { $inc: { "cartItems.$[].item_qty": -1 } },
       {
         new: true,
       }
@@ -97,74 +121,19 @@ const editCartItem = async (req, res) => {
 
 // getall cart items
 const getAllCartItems = async (req, res) => {
-  let cartItems = await Cart.find({ userId: req.userInfo.id }).populate([
-    "productId",
-    "userId",
+  let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
+    "cartItems",
   ]);
 
-  if (cartItems.length === 0) {
-    return res.status(200).json({ ok: true });
-  }
+  // filter out any item with negative quantity
+  cartItems = cart.cartItems?.filter((e) => e.item_qty > 0);
 
-  cartItems = cartItems.filter((e) => e.item_qty > 0);
-
-  const user = await User.findOne({ _id: req.userInfo.id });
-
-  if (req.body.addressId) {
-    var cr =
-      user.addresses.length > 0 &&
-      user.addresses.find((e) => e._id === addressId);
-  } else {
-    var cr = user.addresses.length > 0 && user.addresses[0].loc.coordinates;
-  }
-
-  if (!user) {
-    throw Error("Not logged in ");
-  }
-
-  let totalFee = 0;
-  for (var item of cartItems) {
-    const sellerId = item.productId.seller;
-
-    try {
-      const dist = await Seller.aggregate([
-        {
-          $geoNear: {
-            near: {
-              type: "Point",
-              coordinates: [...cr],
-            },
-            query: { _id: sellerId },
-            distanceField: "distance",
-            distanceMultiplier: 0.001,
-            spherical: true,
-          },
-        },
-      ]);
-
-      totalFee += dist[0]?.distance > 100 ? 50 : 0;
-    } catch (error) {}
-    // claculating fee based on distance
-
-    totalFee += item.productId.shippinFee;
-  }
-
-  const { totalQty, totalPrice } = cartItems.reduce(
-    (agg, cuu) => {
-      const totalPriceOne = cuu.item_price * cuu.item_qty;
-      agg.totalPrice += totalPriceOne;
-      agg.totalQty += cuu.item_qty;
-      return agg;
-    },
-    {
-      totalQty: 0,
-      totalPrice: 0,
-    }
-  );
-
-  res
-    .status(200)
-    .json({ cartItems, totalQty, totalPrice, totalShippingFee: totalFee });
+  res.status(200).json({
+    cartItems: cart.cartItems,
+    totalQty: cart.tq,
+    totalPrice: cart.tp,
+    totalShippingFee: cart.totalShippingFee,
+  });
 };
 
 module.exports = { addToCart, removeFromCart, editCartItem, getAllCartItems };

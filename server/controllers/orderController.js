@@ -2,10 +2,19 @@ const Order = require("../models/order");
 
 // create order
 
-const { cartItems, shippingfee, address } = req.body;
+const CreateOrder = async (req, res) => {
+  const { cartItems, paymentMethod, address } = req.body;
 
-const allOrderItems = [];
-const subtotal = 0;
+  if (!cartItems || !paymentMethod || !address) {
+    throw new Error("all the fields are required");
+  }
+
+  for (let item of cartItems) {
+    console.log(item._id);
+  }
+
+  res.status(200).json({ ok: true });
+};
 
 // upadte order status - payment status
 
@@ -16,3 +25,6 @@ const subtotal = 0;
 // get single order detail
 
 // all order for admin
+
+
+module.exports  =  {CreateOrder}

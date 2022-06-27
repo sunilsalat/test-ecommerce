@@ -33,8 +33,8 @@ const Cart = () => {
     dispatch(editCartItem({ cartItemId, method }));
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeCartItem(id));
+  const handleRemove = (productId) => {
+    dispatch(removeCartItem(productId));
   };
 
   const showHideAddressForm = () => {
@@ -86,7 +86,7 @@ const Cart = () => {
                   <h5>{item.item_title}</h5>
                   <p>${item.item_price}</p>
                   <div>
-                    <button onClick={() => handleRemove(item._id)}>
+                    <button onClick={() => handleRemove(item.productId)}>
                       DELETE
                     </button>
                   </div>
@@ -123,12 +123,14 @@ const Cart = () => {
           <h5>Total - ${totalShippingFee + totalPrice}</h5>
         </div>
         <div>
-          <button
-            className="checkOut-btn"
-            onClick={() => navigate("/shipping")}
-          >
-            CHEKOUT
-          </button>
+          {cartItems ? (
+            <button
+              className="checkOut-btn"
+              onClick={() => navigate("/shipping")}
+            >
+              CHEKOUT
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
