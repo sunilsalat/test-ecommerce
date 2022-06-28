@@ -204,10 +204,17 @@ const getAllCartItems = async (req, res) => {
   });
 };
 
+const clearCartItems = async (req, res) => {
+  await Cart.deleteMany({ userId: req.userInfo.id });
+
+  res.status(200).json({ ok: true });
+};
+
 module.exports = {
   addToCart,
   removeFromCart,
   editCartItem,
   getAllCartItems,
   addShippingAddress,
+  clearCartItems
 };

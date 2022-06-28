@@ -9,9 +9,7 @@ const CreateOrder = async (req, res) => {
     throw new Error("all the fields are required");
   }
 
-  const cart = await Cart.findOne({ _id: req.userInfo.id });
-
-  console.log(cart)
+  const cart = await Cart.findOne({ userId: req.userInfo.id });
 
   const { totalShippingFee, shippingAddress, tp, cartItems } = cart;
 
@@ -32,6 +30,7 @@ const CreateOrder = async (req, res) => {
     total: tp + totalShippingFee,
     subTotal: tp,
     user: req.userInfo.id,
+    paymentMethod: paymentMethod,
   });
 
   res.status(200).json({ msg: order._id });
