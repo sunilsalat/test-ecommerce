@@ -1,9 +1,12 @@
+const cart = require("../models/cart");
 const Order = require("../models/order");
 
 // create order
 
 const CreateOrder = async (req, res) => {
   const { cartItems, paymentMethod, address } = req.body;
+
+  console.log(cartItems)
 
   if (!cartItems || !paymentMethod || !address) {
     throw new Error("all the fields are required");
