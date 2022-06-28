@@ -5,6 +5,7 @@ const {
   removeFromCart,
   editCartItem,
   getAllCartItems,
+  addShippingAddress,
 } = require("../controllers/cartController");
 
 const router = express.Router();
@@ -12,5 +13,6 @@ router.route("/add/:productId").post(authMiddleware, addToCart);
 router.route("/remove/:productId").delete(authMiddleware, removeFromCart);
 router.route("/edit/:productId").put(authMiddleware, editCartItem);
 router.route("/all").get(authMiddleware, getAllCartItems);
+router.route("/add-shi-add").post(authMiddleware, addShippingAddress);
 
 module.exports = router;

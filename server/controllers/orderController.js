@@ -26,9 +26,4 @@ const CreateOrder = async (req, res) => {
 
 // all order for admin
 
-
-module.exports  =  {CreateOrder}
-
-
-
-
+module.exports = { CreateOrder };

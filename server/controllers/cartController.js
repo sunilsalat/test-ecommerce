@@ -1,7 +1,7 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
 
-// add to cart
+// ADD TO CART
 const addToCart = async (req, res) => {
   const { item_qty } = req.body;
   const { productId } = req.params;
@@ -29,47 +29,49 @@ const addToCart = async (req, res) => {
     productId: _id,
     item_qty: item_qty,
   };
-  const existingCart = await Cart.findOne({
+
+  const cart = await Cart.findOne({
     userId: req.userInfo.id,
   });
 
-  const isItemAlreadyExistInCart = existingCart?.cartItems?.find(
+  /*
+  const isItemAlreadyExistInCart = cart?.cartItems?.find(
     (e) => e.productId.toString() === productId.toString()
   );
 
   // if item already exist inc qty by one
   if (isItemAlreadyExistInCart) {
     console.log("in there 1");
-    const updatedCartItems = existingCart.cartItems.map((e) => {
+    const updatedCartItems = cart.cartItems.map((e) => {
       if (e.productId.toString() === productId.toString()) {
         e.item_qty += 1;
       }
       return e;
     });
 
-    existingCart.cartItems = updatedCartItems;
-    await existingCart.save();
+    cart.cartItems = updatedCartItems;
+    await cart.save();
 
-    return res.status(200).json({ cart: existingCart });
+    return res.status(200).json({ cart: cart });
   }
+  */
 
-  if (existingCart && existingCart.cartItems.length > 0) {
-    console.log("in there 2");
-    existingCart.cartItems.push(item);
-    await existingCart.save();
-    return res.status(200).json({ cart: existingCart });
+  if (cart && cart.cartItems.length > 0) {
+    cart.cartItems.push(item);
+    await cart.save();
+    return res.status(200).json({ cart: cart });
   }
 
   // first time cart initialization of user
-  const cart = await Cart.create({
+  await Cart.create({
     cartItems: item,
     userId: req.userInfo.id,
   });
 
-  res.status(200).json({ cart });
+  res.status(200).json({ msg: "Item added" });
 };
 
-// remove form cart
+// REMOVE FROM CART
 const removeFromCart = async (req, res) => {
   const { productId } = req.params;
 
@@ -77,15 +79,29 @@ const removeFromCart = async (req, res) => {
     throw Error("ProductId required chde");
   }
 
-  const cart = await Cart.findOneAndUpdate(
-    { userId: req.userInfo.id },
-    { $pull: { cartItems: { productId: productId } } }
-  );
+  const cart = await Cart.findOne({ userId: req.userInfo.id });
+
+  if (cart && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.filter(
+      (e) => e.productId.toString() !== productId.toString()
+    );
+
+    cart.cartItems = updatedCartItems;
+    await cart.save();
+
+    return res.status(200).json({ msg: "Removed Successfully" });
+  }
+  /*
+  // const cart = await Cart.findOneAndUpdate(
+  //   { userId: req.userInfo.id },
+  //   { $pull: { cartItems: { productId: productId } } }
+  // );
+  */
 
   res.status(200).json({ ok: "true" });
 };
 
-// edit cart item
+// INC/DEC QTY
 const editCartItem = async (req, res) => {
   const { productId } = req.params;
   const { method } = req.body;
@@ -94,32 +110,83 @@ const editCartItem = async (req, res) => {
     throw new Error("cartItmeId id is required");
   }
 
-  if (method == "inc") {
-    const cartItem = await Cart.findOneAndUpdate(
+  const cart = await Cart.findOne({
+    userId: req.userInfo.id,
+  });
+
+  if (method == "inc" && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.map((e) => {
+      if (e.productId.toString() === productId) {
+        e.item_qty += 1;
+      }
+      return e;
+    });
+
+    cart.cartItems = updatedCartItems;
+
+    await cart.save();
+
+    return res.status(200).json({ ok: true });
+
+    /*const cartItem = await Cart.findOneAndUpdate(
       { "cartItems.$.productId": productId, userId: req.userInfo.id },
       { $inc: { "cartItems.$[].item_qty": 1 } },
       {
         new: true,
       }
     );
-    res.status(200).json({ ok: cartItem });
+    res.status(200).json({ ok: cartItem });*/
   }
 
-  if (method == "dec") {
-    const cartItem = await Cart.findOneAndUpdate(
-      { "cartItems.$.productId": productId, userId: req.userInfo.id },
-      { $inc: { "cartItems.$[].item_qty": -1 } },
-      {
-        new: true,
+  if (method == "dec" && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.map((e) => {
+      if (e.productId.toString() === productId.toString()) {
+        if (e.item_qty > 1) {
+          e.item_qty -= 1;
+        }
       }
-    );
-    res.status(200).json({ ok: cartItem });
+      return e;
+    });
+
+    cart.cartItems = updatedCartItems;
+
+    await cart.save();
+
+    return res.status(200).json({ ok: true });
   }
 
-  res.status(200);
+  res.status(200).json({ ok });
 };
 
-// getall cart items
+// ADD/UPDATE SHIPPING ADDRESS
+const addShippingAddress = async (req, res) => {
+  let { street, city, state, pincode, country, loc } = req.body.add;
+
+  if (!street || !city || !state || !pincode || !country || !loc) {
+    throw new Error("Please provide valid address");
+  }
+
+  const cart = await Cart.findOne({ userId: req.userInfo.id });
+
+  if (!cart) {
+    return res.status(200).json({ ok: true });
+  }
+
+  cart.shippingAddress = {
+    street,
+    city,
+    state,
+    pincode,
+    country,
+    loc: { type: "Point", coordinates: loc.coordinates },
+  };
+
+  await cart.save();
+
+  res.status(200).json({ msg: cart.shippingAddress });
+};
+
+// GET AGG. CART
 const getAllCartItems = async (req, res) => {
   let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
     "cartItems",
@@ -133,7 +200,14 @@ const getAllCartItems = async (req, res) => {
     totalQty: cart.tq,
     totalPrice: cart.tp,
     totalShippingFee: cart.totalShippingFee,
+    shippingAddress: cart.shippingAddress,
   });
 };
 
-module.exports = { addToCart, removeFromCart, editCartItem, getAllCartItems };
+module.exports = {
+  addToCart,
+  removeFromCart,
+  editCartItem,
+  getAllCartItems,
+  addShippingAddress,
+};

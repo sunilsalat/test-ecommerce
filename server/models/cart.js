@@ -40,7 +40,7 @@ const CartSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    shippngAddress: {
+    shippingAddress: {
       street: { type: String },
       city: { type: String },
       state: { type: String },
@@ -52,54 +52,58 @@ const CartSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-CartSchema.post(["save", "findOneAndUpdate"], async function () {
+CartSchema.post("save", async function () {
   try {
-    const { totalQty, totalPrice, shippingFee } = this.cartItems.reduce(
-      (agg, cuu) => {
-        // total price and qty calculations
-        const totalPriceOne = cuu.item_price * cuu.item_qty;
-        agg.totalPrice += totalPriceOne;
-        agg.totalQty += cuu.item_qty;
+    if (this.cartItems.length === 0) {
+      console.log(this._id, "is id in sid e");
+      await this.model("Cart").findOneAndDelete({ _id: this._id });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-        // calculating shippingfee based on weight
-        // const p = await this.model("Product").findOne({ _id: cuu.productId });
-        // agg.shippingFee += p.shippinFee;
-        // console.log(p.shippinFee);
+CartSchema.pre("save", async function () {
+  try {
+    let totalPrice = 0;
+    let totalQty = 0;
+    let shippingFee = 0;
+    let cr = this.shippingAddress.loc.coordinates;
+    cr = cr && [parseFloat(cr[0]), parseFloat(cr[1])];
 
-        // calculating shippingfee based on distance
-        // try {
-        //   const dist = await this.model("Seller").aggregate([
-        //     {
-        //       $geoNear: {
-        //         near: {
-        //           type: "Point",
-        //           coordinates: [72.8777, 19.076],
-        //         },
-        //         query: { _id: p.seller },
-        //         distanceField: "distance",
-        //         distanceMultiplier: 0.001,
-        //         spherical: true,
-        //       },
-        //     },
-        //   ]);
+    for (var e of this.cartItems) {
+      totalPrice += e.item_price * e.item_qty;
+      totalQty += e.item_qty;
+      const p = await this.model("Product").findOne({ _id: e.productId });
+      shippingFee += p?.shippinFee;
 
-        //   agg.shippingFee += dist[0].distance > 100 ? 49 : 0;
-        // } catch (error) {
-        //   console.log("gracefull failing");
-        // }
+      // calculating shippingfee based on distance
+      try {
+        const dist = await this.model("Seller").aggregate([
+          {
+            $geoNear: {
+              near: {
+                type: "Point",
+                coordinates: cr,
+              },
+              query: { _id: p.seller },
+              distanceField: "distance",
+              distanceMultiplier: 0.001,
+              spherical: true,
+            },
+          },
+        ]);
 
-        return agg;
-      },
-      {
-        totalQty: 0,
-        totalPrice: 0,
-        shippingFee: 0,
+        shippingFee += dist[0].distance > 100 ? 49 : 0;
+      } catch (error) {
+        console.log(error.message);
+        console.log("gracefull failing");
       }
-    );
+    }
 
-    (this.tp = totalPrice),
-      (this.tq = totalQty),
-      (this.totalShippingFee = shippingFee);
+    this.tp = totalPrice;
+    this.tq = totalQty;
+    this.totalShippingFee = shippingFee;
   } catch (error) {
     console.log(error);
   }
