@@ -6,14 +6,16 @@ const Order = require("../models/order");
 const CreateOrder = async (req, res) => {
   const { cartItems, paymentMethod, address } = req.body;
 
-  console.log(cartItems)
-
   if (!cartItems || !paymentMethod || !address) {
     throw new Error("all the fields are required");
   }
 
+  const totalShippingFee = 0
+
   for (let item of cartItems) {
-    console.log(item._id);
+
+    
+    
   }
 
   res.status(200).json({ ok: true });
@@ -29,9 +31,4 @@ const CreateOrder = async (req, res) => {
 
 // all order for admin
 
-
-module.exports  =  {CreateOrder}
-
-
-
-
+module.exports = { CreateOrder };
