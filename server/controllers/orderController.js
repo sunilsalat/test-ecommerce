@@ -1,19 +1,40 @@
 const Order = require("../models/order");
-
+const Cart = require("../models/cart");
 // create order
 
 const CreateOrder = async (req, res) => {
-  const { cartItems, paymentMethod, address } = req.body;
+  const { paymentMethod } = req.body;
 
-  if (!cartItems || !paymentMethod || !address) {
+  if (!paymentMethod) {
     throw new Error("all the fields are required");
   }
 
-  for (let item of cartItems) {
-    console.log(item._id);
-  }
+  const cart = await Cart.findOne({ _id: req.userInfo.id });
 
-  res.status(200).json({ ok: true });
+  console.log(cart)
+
+  const { totalShippingFee, shippingAddress, tp, cartItems } = cart;
+
+  const orderItems = cartItems.map((e) => {
+    return {
+      title: e.item_title,
+      image: e.item_image,
+      price: e.item_price,
+      productId: e.productId,
+      qty: e.item_qty,
+    };
+  });
+
+  const order = await Order.create({
+    orderItems,
+    shippingFee: totalShippingFee,
+    address: shippingAddress,
+    total: tp + totalShippingFee,
+    subTotal: tp,
+    user: req.userInfo.id,
+  });
+
+  res.status(200).json({ msg: order._id });
 };
 
 // upadte order status - payment status
