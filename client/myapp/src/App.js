@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/protectedRoute";
 import Shipping from "./pages/shipping/shipping";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PaymentMethod from "./pages/paymentmethods/paymentMethods";
+import Order from "./pages/order/Order";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/payment" element={<PaymentMethod />} />
+            <Route path="/order" element={<Order />} />
           </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route
