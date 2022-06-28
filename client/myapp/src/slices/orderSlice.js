@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { flushCart } from "../slices/cartSlice";
 
 export const placeOrder = createAsyncThunk(
   "order/placeOrder",
@@ -15,6 +16,10 @@ export const placeOrder = createAsyncThunk(
         },
         body: JSON.stringify({ cartItems, address, paymentMethod }),
       });
+
+      if (res.status === 200) {
+        dispatch(flushCart({}));
+      }
 
       return await res.json();
     } catch (error) {

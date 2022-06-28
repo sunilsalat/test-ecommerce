@@ -23,14 +23,14 @@ const Cart = () => {
     address &&
     `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
-  const alterQuantity = ({ cartItemId, method }) => {
+  const alterQuantity = ({ productId, method }) => {
     if (method === "inc") {
-      dispatch(incQty(cartItemId));
+      dispatch(incQty(productId));
     }
     if (method === "dec") {
-      dispatch(decQty(cartItemId));
+      dispatch(decQty(productId));
     }
-    dispatch(editCartItem({ cartItemId, method }));
+    dispatch(editCartItem({ productId, method }));
   };
 
   const handleRemove = (productId) => {
@@ -41,19 +41,13 @@ const Cart = () => {
     toggleAddresFormVisiblity(!showAddressForm);
   };
 
-  // useEffect(() => {
-  //   if (!userInfo || !userInfo.name) {
-  //     navigate("/signin");
-  //   }
-  // }, [navigate]);
-
   useEffect(() => {
     if (!cartItems && userInfo) {
       dispatch(getAllCartItems());
     }
   }, []);
 
-  if (cartItems && cartItems <= 0) {
+  if (!cartItems || cartItems <= 0) {
     return <div>Your cart is empty !</div>;
   }
 
@@ -62,7 +56,7 @@ const Cart = () => {
       <div className="cart-items-container">
         <div className="address-container">
           <div>My Cart({totalQty})</div>
-          <div>Deliver To - {shippingAddress}</div>
+          {address?.street ? <div>Deliver To - {shippingAddress}</div> : null}
           <div>
             {showAddressForm ? (
               <div className="modal">
@@ -71,7 +65,7 @@ const Cart = () => {
                 />
               </div>
             ) : (
-              <button onClick={() => showHideAddressForm()}>Change</button>
+              <button onClick={() => showHideAddressForm()}>Add Address</button>
             )}
           </div>
         </div>
@@ -94,7 +88,10 @@ const Cart = () => {
                 <div className="item-btn">
                   <button
                     onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "inc" })
+                      alterQuantity({
+                        productId: item.productId,
+                        method: "inc",
+                      })
                     }
                   >
                     +
@@ -102,7 +99,10 @@ const Cart = () => {
                   <span className="item-qty">{item.item_qty}</span>
                   <button
                     onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "dec" })
+                      alterQuantity({
+                        productId: item.productId,
+                        method: "dec",
+                      })
                     }
                   >
                     -

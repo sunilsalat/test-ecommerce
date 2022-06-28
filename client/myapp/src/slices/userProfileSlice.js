@@ -1,16 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllCartItems, setAddress } from "./cartSlice";
+import { setAddress } from "./cartSlice";
 
 export const getUserProfile = createAsyncThunk(
   "profile/getUserProfile",
   async ({}, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch("/api/v1/profile/get-user-info");
-      const data = await res.json();
-      if (res.status === 200) {
-        dispatch(setAddress(data.address[0]));
-      }
-      return data;
+      return await res.json();
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -59,10 +55,11 @@ const userProfileSlice = createSlice({
     [getUserProfile.fulfilled]: (state, action) => {
       console.log("promise fulfilled");
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
-      localStorage.setItem(
-        "cartAddress",
-        JSON.stringify(action.payload.address[0])
-      );
+
+      const defaultAddress =
+        action.payload.address.find((e) => e.isDefault === true) || null;
+
+      localStorage.setItem("cartAddress", JSON.stringify(defaultAddress));
       state.userInfo = action.payload;
     },
     [getUserProfile.rejected]: (state, error) => {

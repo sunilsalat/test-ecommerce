@@ -20,7 +20,11 @@ const CheckOutStep = ({ step1, step2, step3, step4 }) => {
       </div>
       <hr />
       <div className="nav-link">
-        {step4 ? <Link to="/order">placeOrder</Link> : <span>order</span>}
+        {step4 ? (
+          <Link to="/order">placeOrder</Link>
+        ) : (
+          <span>orderSummary</span>
+        )}
       </div>
     </div>
   );
