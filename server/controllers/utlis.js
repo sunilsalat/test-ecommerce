@@ -1,9 +1,10 @@
 // calculate shipping fee based on location, weight, units
-require(".dotenv").config();
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Seller = require("../models/seller");
 const User = require("../models/user");
 const Product = require("../models/product");
+const stripe = require("stripe")("sk_test_tR3PYbcVNZZ796tH88S4VQ2u");
 
 const getShippingFee = async (req, res) => {
   const { sellerId, productId, cartItems, add } = req.body;
@@ -43,7 +44,25 @@ const getShippingFee = async (req, res) => {
 };
 
 const getStripePk = async (req, res) => {
+
+
   res.status(200).json({ key: process.env.STRIPE_PK });
 };
 
 module.exports = { getShippingFee, getStripePk };
+
+
+// const { items } = req.body;
+
+// // Create a PaymentIntent with the order amount and currency
+// const paymentIntent = await stripe.paymentIntents.create({
+//   amount: calculateOrderAmount(items),
+//   currency: "INR",
+//   automatic_payment_methods: {
+//     enabled: true,
+//   },
+// });
+
+// res.send({
+//   clientSecret: paymentIntent.client_secret,
+// });
