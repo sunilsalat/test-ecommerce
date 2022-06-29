@@ -33,13 +33,22 @@ const orderSlice = createSlice({
   initialState: {
     paymentMethod: "stripe",
     shippingAddressId: "",
+    orderId: null,
   },
   reducers: {
     setPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
   },
-  extraReducers: {},
+  extraReducers: {
+    [placeOrder.pending]: (state) => {},
+    [placeOrder.fulfilled]: (state, action) => {
+      state.orderId = action.payload.id;
+    },
+    [placeOrder.rejected]: (state, error) => {
+      console.log("Promise Rejected");
+    },
+  },
 });
 
 export const { setPaymentMethod } = orderSlice.actions;

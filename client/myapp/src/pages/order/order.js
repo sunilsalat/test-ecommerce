@@ -14,10 +14,11 @@ const Order = () => {
   const shortAddress = `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const proccedToPayment = () => {
     dispatch(placeOrder({}));
-    navigate('/')
+    navigate("/payment-intent");
   };
 
   return (

@@ -13,6 +13,7 @@ import Shipping from "./pages/shipping/shipping";
 import Order from "./pages/order/order";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PaymentMethod from "./pages/paymentmethods/paymentMethods";
+import Payment from "./pages/paymethodIntentPage/payment";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/payment" element={<PaymentMethod />} />
             <Route path="/order" element={<Order />} />
+            <Route path="/payment-intent" element={<Payment />} />
           </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route
