@@ -20,8 +20,9 @@ const Cart = () => {
     useSelector((state) => state.cart);
 
   const shippingAddress =
-    address &&
-    `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
+    address && address.hasOwnProperty("street")
+      ? `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`
+      : null;
 
   const alterQuantity = ({ productId, method }) => {
     if (method === "inc") {
@@ -47,6 +48,8 @@ const Cart = () => {
     }
   }, []);
 
+  console.log(address);
+
   if (!cartItems || cartItems <= 0) {
     return <div>Your cart is empty !</div>;
   }
@@ -56,7 +59,7 @@ const Cart = () => {
       <div className="cart-items-container">
         <div className="address-container">
           <div>My Cart({totalQty})</div>
-          {address?.street ? <div>Deliver To - {shippingAddress}</div> : null}
+          {shippingAddress ? <div> Deliver To - {shippingAddress}</div> : null}
           <div>
             {showAddressForm ? (
               <div className="modal">

@@ -9,9 +9,9 @@ import {
 import { addUserAddress } from "../../slices/userProfileSlice";
 
 const AddressForm = ({ toggleAddresFormVisiblity }) => {
-  const { userInfo } = useSelector((state) => state.profile);
-  const dispatch = useDispatch();
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.profile);
 
   const showChangeAddComponent = () => {
     setShow(false);

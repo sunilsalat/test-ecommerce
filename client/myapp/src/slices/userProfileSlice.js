@@ -6,6 +6,7 @@ export const getUserProfile = createAsyncThunk(
   async ({}, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch("/api/v1/profile/get-user-info");
+
       return await res.json();
     } catch (error) {
       return rejectWithValue(error);
@@ -26,7 +27,7 @@ export const addUserAddress = createAsyncThunk(
       const { add } = await res.json();
 
       if (res.status === 200) {
-        dispatch(setAddress({ ...add }));
+        dispatch(setAddress({ add }));
         const userInfo = JSON.parse(localStorage.getItem("userInfo"));
         userInfo.address.unshift({ ...add });
         localStorage.setItem("userInfo", JSON.stringify(userInfo));

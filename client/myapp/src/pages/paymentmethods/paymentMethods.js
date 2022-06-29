@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import CheckOutStep from "../../components/checkoutStepCompoment/checkoutStep";
 import ContinueButton from "../../components/continuebtn/continueBtn";
@@ -11,15 +10,12 @@ const PaymentMethod = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [getSearchParams, setSearchParams] = useSearchParams();
-  console.log(getSearchParams.get("accessObj"));
-
   const handleChange = (e) => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
   useEffect(() => {
-    if (!address) {
+    if (!address || !address.street) {
       navigate("/shipping");
     }
   }, []);
@@ -34,12 +30,7 @@ const PaymentMethod = () => {
           <option value="paypal">Paypal</option>
         </select>
       </div>
-      <ContinueButton
-        text={"ORDER"}
-        path={"/order"}
-        accessObj={"ghghgh"}
-        onClick={() => setSearchParams({ new: "ask" })}
-      />
+      <ContinueButton text={"ORDER"} path={"/order"} />
     </div>
   );
 };

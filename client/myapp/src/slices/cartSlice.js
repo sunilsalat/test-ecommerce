@@ -94,6 +94,7 @@ export const flushCart = createAsyncThunk(
   }
 );
 
+/*
 // hit utli api to clculate shipping fee
 export const TotalShippingFee = createAsyncThunk(
   "cart/TotalShippingFee",
@@ -112,12 +113,11 @@ export const TotalShippingFee = createAsyncThunk(
     return await res.json();
   }
 );
+*/
 
 const cartAddress = localStorage.getItem("cartAddress")
   ? JSON.parse(localStorage.getItem("cartAddress"))
   : null;
-
-console.log(cartAddress);
 
 const cartSlice = createSlice({
   name: "cart",
@@ -191,12 +191,7 @@ const cartSlice = createSlice({
     [addToCart.rejected]: (state, error) => {
       console.log("promise rejected");
     },
-    // get shipping fee on add change and on initial cart load
-    [TotalShippingFee.pending]: (state) => {},
-    [TotalShippingFee.fulfilled]: (state, action) => {},
-    [TotalShippingFee.rejected]: (state, error) => {
-      console.log("promise rejcted");
-    },
+
     // alter cart item qty
     [editCartItem.pending]: (state) => {},
     [editCartItem.fulfilled]: (state, action) => {},
