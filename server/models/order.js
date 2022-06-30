@@ -69,7 +69,7 @@ const OrderSchema = mongoose.Schema(
       ],
       default: "pending",
     },
-    paymentIntentId: {
+    paymentIntent: {
       type: String,
     },
     clientSecret: {

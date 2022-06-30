@@ -50,7 +50,6 @@ const createPaymentIntent = async (req, res) => {
 
   const totaAmount = order.total;
 
-
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totaAmount,
@@ -60,6 +59,9 @@ const createPaymentIntent = async (req, res) => {
       },
     });
 
+    order.paymentIntent = paymentIntent.id;
+    order.clientSecret = paymentIntent.client_secret;
+    await order.save();
 
     res.status(200).send({
       clientSecret: paymentIntent.client_secret,
