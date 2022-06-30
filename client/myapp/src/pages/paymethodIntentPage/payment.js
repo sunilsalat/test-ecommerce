@@ -11,13 +11,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 //   return data.key;
 // };
 
-const stripe_promise = loadStripe(
-  "pk_test_51BTUDGJAJfZb9HEBwDg86TN1KNprHjkfipXmEDMb0gSCassK5T3ZfxsAbcgKVmAIXF7oZ6ItlZZbXO6idTHE67IM007EwQ4uN3"
-);
+const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const Payment = () => {
   const [clientSecret, setClientSecret] = useState("");
 
+
+  console.log(process.env.STRIPE_PK, 'stripe key is ')
+   
   const navigate = useNavigate();
 
   const { state } = useLocation();

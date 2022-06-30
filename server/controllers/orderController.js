@@ -1,6 +1,6 @@
+const stripe = require("stripe")(process.env.STRIPE_SK);
 const Order = require("../models/order");
 const Cart = require("../models/cart");
-const stripe = require("stripe")(process.env.STRIPE_SK);
 
 // create order
 
@@ -42,7 +42,6 @@ const CreateOrder = async (req, res) => {
 const createPaymentIntent = async (req, res) => {
   const { orderId } = req.body;
 
-
   if (!orderId) {
     throw Error("order id not provided");
   }
@@ -51,17 +50,23 @@ const createPaymentIntent = async (req, res) => {
 
   const totaAmount = order.total;
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: totaAmount,
-    currency: "INR",
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
 
-  res.status(200).send({
-    clientSecret: paymentIntent.client_secret,
-  });
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totaAmount,
+      currency: "INR",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 // upadte order status - payment status
