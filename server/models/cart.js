@@ -55,7 +55,6 @@ const CartSchema = mongoose.Schema(
 CartSchema.post("save", async function () {
   try {
     if (this.cartItems.length === 0) {
-      console.log(this._id, "is id in sid e");
       await this.model("Cart").findOneAndDelete({ _id: this._id });
     }
   } catch (error) {

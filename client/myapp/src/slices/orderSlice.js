@@ -28,6 +28,8 @@ export const placeOrder = createAsyncThunk(
   }
 );
 
+// export const createPa
+
 const orderSlice = createSlice({
   name: "order",
   initialState: {
@@ -39,10 +41,17 @@ const orderSlice = createSlice({
     setPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
+    emptyOrderId: (state, action) => {
+      state.orderId = null;
+    },
   },
   extraReducers: {
-    [placeOrder.pending]: (state) => {},
+    [placeOrder.pending]: (state) => {
+      console.log("Promise pending");
+    },
     [placeOrder.fulfilled]: (state, action) => {
+      console.log("Promise fulfilled");
+
       state.orderId = action.payload.id;
     },
     [placeOrder.rejected]: (state, error) => {
@@ -51,5 +60,5 @@ const orderSlice = createSlice({
   },
 });
 
-export const { setPaymentMethod } = orderSlice.actions;
+export const { setPaymentMethod, emptyOrderId } = orderSlice.actions;
 export default orderSlice.reducer;

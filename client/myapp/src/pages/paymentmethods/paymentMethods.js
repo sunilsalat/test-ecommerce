@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CheckOutStep from "../../components/checkoutStepCompoment/checkoutStep";
 import ContinueButton from "../../components/continuebtn/continueBtn";
 import { setPaymentMethod } from "../../slices/orderSlice";
@@ -9,6 +9,11 @@ const PaymentMethod = () => {
   const { address } = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { state } = useLocation();
+  if (!state || state.value !== "/shipping") {
+    navigate("/");
+  }
 
   const handleChange = (e) => {
     dispatch(setPaymentMethod(e.target.value));

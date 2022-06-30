@@ -1,24 +1,29 @@
 import "./order.css";
 import { useDispatch, useSelector } from "react-redux";
 import CheckOutStep from "../../components/checkoutStepCompoment/checkoutStep";
-import { placeOrder } from "../../slices/orderSlice";
+import { placeOrder, emptyOrderId } from "../../slices/orderSlice";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Order = () => {
   const { cartItems, address, totalPrice, totalShippingFee } = useSelector(
     (state) => state.cart
   );
-
   const { paymentMethod } = useSelector((state) => state.order);
-
   const shortAddress = `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { state } = useLocation();
+  if (!state || state.value !== "/payment") {
+    navigate("/");
+  }
+
   const proccedToPayment = () => {
-    dispatch(placeOrder({}));
-    navigate("/payment-intent");
+    dispatch(placeOrder({})).then((e) =>
+      navigate("/payment-intent", { state: { id: e.payload.id, value:'/order' } })
+    );
   };
 
   return (

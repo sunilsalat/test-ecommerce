@@ -5,6 +5,8 @@ const OrderItems = mongoose.Schema({
     type: String,
     required: [true, "Title can not be blank"],
   },
+  // optional as store productID
+
   image: {
     type: String,
     required: [true, "Image can not be blank"],
@@ -57,13 +59,20 @@ const OrderSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "failed", "deliverd", "cancel"],
+      enum: [
+        "pending",
+        "confirmed",
+        "failed",
+        "deliverd",
+        "cancel",
+        "refunded",
+      ],
       default: "pending",
     },
     paymentIntentId: {
       type: String,
     },
-    clientScret: {
+    clientSecret: {
       type: String,
     },
     paymentMethod: {
@@ -72,6 +81,7 @@ const OrderSchema = mongoose.Schema(
     isDeliverd: { type: Boolean, default: false },
     deliverdAt: { type: Date },
     paidAt: { type: Date },
+    refundedAt: { type: Date },
   },
   { timestamps: true }
 );
@@ -80,3 +90,13 @@ module.exports = mongoose.model("Order", OrderSchema);
 
 // all the fields of address needs to be stored in order schema seprately,
 // as user can modify or delete address later
+
+// product desc array
+// sub cat of related of product
+// images array
+// vdeo for product
+//  mul. cat of product
+
+// payment transection detail
+
+// when issue order refunded

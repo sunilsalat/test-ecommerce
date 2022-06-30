@@ -40,20 +40,19 @@ const CreateOrder = async (req, res) => {
 
 // create payment intent
 const createPaymentIntent = async (req, res) => {
-  const { id } = req.body;
+  const { orderId } = req.body;
 
-  console.log(req.body)
 
-  if(!id){
-    throw Error('order id not provided')
+  if (!orderId) {
+    throw Error("order id not provided");
   }
 
-  const order = await Order.findOne({ _id: id });
+  const order = await Order.findOne({ _id: orderId });
 
   const totaAmount = order.total;
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(totaAmount),
+    amount: totaAmount,
     currency: "INR",
     automatic_payment_methods: {
       enabled: true,

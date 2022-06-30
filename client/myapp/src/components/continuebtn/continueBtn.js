@@ -1,13 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import "./continueBtn.css";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
 const ContinueButton = ({ text, path }) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    navigate(`${path}`, { state: { value: path } });
+  };
+
   return (
     <div className="continue-btn-container">
-      <Link to={path} className="continue-btn">
+      <button onClick={() => handleSubmit()} to={path} className="continue-btn">
         CONTINUE TO {text}
-      </Link>
+      </button>
     </div>
   );
 };
