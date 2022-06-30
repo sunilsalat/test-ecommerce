@@ -17,7 +17,6 @@ const Payment = () => {
   const [clientSecret, setClientSecret] = useState("");
 
 
-  console.log(process.env.STRIPE_PK, 'stripe key is ')
    
   const navigate = useNavigate();
 
