@@ -19,15 +19,15 @@ const addReview = async (req, res) => {
   }
 
   // check for product purchased by user ?
-  const allUserOrder = await Order.find({ user: req.userInfo.id });
-  const isProductPurchasedByUser = allUserOrder.orderItems.map((item) => {
-    if (item._id === productId) {
-      return item;
-    }
+  const isProductPurchasedByUser = await Order.find({
+    $and: [{ user: req.userInfo.id }, { "orderItems.productId": productId }],
   });
 
-  if (isProductPurchasedByUser.length === 0) {
-    throw new Error("Product is not purchased by user ");
+
+  if (!isProductPurchasedByUser || isProductPurchasedByUser.length < 1) {
+    return res.send(
+      "For better user expirence, User who have purchased the product can only review!"
+    );
   }
 
   const review = await Review.create({ ...req.body, userId: req.userInfo.id });
@@ -42,7 +42,7 @@ const getAllProductReview = async (req, res) => {
     throw new Error("Product id is not provided ");
   }
 
-  const reviews = await Review.find({ productId }).populate('userId').limit(10);
+  const reviews = await Review.find({ productId }).populate("userId").limit(10);
 
   res.status(200).json({ reviews });
 };
