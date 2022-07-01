@@ -188,25 +188,28 @@ const addShippingAddress = async (req, res) => {
 
 // GET AGG. CART
 const getAllCartItems = async (req, res) => {
-  let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
-    "cartItems",
-  ]);
+  try {
+    let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
+      "cartItems",
+    ]);
 
-  // filter out any item with negative quantity
-  cartItems = cart.cartItems?.filter((e) => e.item_qty > 0);
+    // filter out any item with negative quantity
+    cartItems = cart.cartItems?.filter((e) => e.item_qty > 0);
 
-  res.status(200).json({
-    cartItems: cart.cartItems,
-    totalQty: cart.tq,
-    totalPrice: cart.tp,
-    totalShippingFee: cart.totalShippingFee,
-    shippingAddress: cart.shippingAddress,
-  });
+    res.status(200).json({
+      cartItems: cart.cartItems,
+      totalQty: cart.tq,
+      totalPrice: cart.tp,
+      totalShippingFee: cart.totalShippingFee,
+      shippingAddress: cart.shippingAddress,
+    });
+  } catch (error) {
+    res.status(200).send("ok");
+  }
 };
 
 const clearCartItems = async (req, res) => {
   await Cart.deleteMany({ userId: req.userInfo.id });
-
   res.status(200).json({ ok: true });
 };
 
@@ -216,5 +219,5 @@ module.exports = {
   editCartItem,
   getAllCartItems,
   addShippingAddress,
-  clearCartItems
+  clearCartItems,
 };

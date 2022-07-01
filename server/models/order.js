@@ -60,14 +60,14 @@ const OrderSchema = mongoose.Schema(
     status: {
       type: String,
       enum: [
-        "pending",
-        "confirmed",
-        "failed",
-        "deliverd",
-        "cancel",
-        "refunded",
+        "Pending",
+        "Confirmed",
+        "Failed",
+        "Deliverd",
+        "Cancel",
+        "Refunded",
       ],
-      default: "pending",
+      default: "Pending",
     },
     paymentIntent: {
       type: String,

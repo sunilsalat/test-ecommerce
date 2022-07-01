@@ -22,7 +22,9 @@ const Order = () => {
 
   const proccedToPayment = () => {
     dispatch(placeOrder({})).then((e) =>
-      navigate("/payment-intent", { state: { id: e.payload.id, value:'/order' } })
+      navigate("/payment-intent", {
+        state: { id: e.payload.id, value: "/order" },
+      })
     );
   };
 

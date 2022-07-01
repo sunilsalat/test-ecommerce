@@ -28,13 +28,31 @@ export const placeOrder = createAsyncThunk(
   }
 );
 
+export const updateOrderPaidAt = createAsyncThunk(
+  "order/updateOrderPaidAt",
+  async (payInt, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/v1/order/updateOrder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ payInt }),
+      });
+
+      return await res.json();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // export const createPa
 
 const orderSlice = createSlice({
   name: "order",
   initialState: {
     paymentMethod: "stripe",
-    shippingAddressId: "",
     orderId: null,
   },
   reducers: {
@@ -51,7 +69,6 @@ const orderSlice = createSlice({
     },
     [placeOrder.fulfilled]: (state, action) => {
       console.log("Promise fulfilled");
-
       state.orderId = action.payload.id;
     },
     [placeOrder.rejected]: (state, error) => {

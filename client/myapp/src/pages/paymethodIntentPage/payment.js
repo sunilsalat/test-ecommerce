@@ -15,11 +15,7 @@ const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const Payment = () => {
   const [clientSecret, setClientSecret] = useState("");
-
-
-   
   const navigate = useNavigate();
-
   const { state } = useLocation();
 
   if (!state || state.value !== "/order") {
