@@ -1,0 +1,37 @@
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.mt-2 {
+  margin-top: 1rem;
+}
+
+.mb-2{
+  margin-bottom: 1.2rem;
+}
+
+.mtb-5{
+  margin: 2px 0;
+}
+
+.justify-text-left{
+  text-align: left;
+}
+
+.order-img{
+  width: 50px;
+  height: 50px;
+}
+
+.order-status{
+ padding: 7px 10px;
+ background-color: rgba(253, 115, 65, 0.87);
+ color: #000;
+}
+
+.order-paid{
+  padding: 7px 10px;
+ background-color: rgba(154, 207, 190, 0.87);
+ color: #000;
+}

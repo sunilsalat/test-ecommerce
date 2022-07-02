@@ -21,11 +21,11 @@ const Navbar = () => {
     dispatch(userLogout({}));
   };
 
-  useEffect(()=>{
-    if(!cartItems){
-      dispatch(getAllCartItems())
+  useEffect(() => {
+    if (!cartItems) {
+      dispatch(getAllCartItems());
     }
-  },[])
+  }, []);
 
   return (
     <>
@@ -58,15 +58,17 @@ const Navbar = () => {
                   <li>
                     <Link to="/cart">
                       <FaShoppingCart /> Cart
-                      <span
-                        style={{
-                          backgroundColor: "white",
-                          padding: "1px",
-                          color: "steelblue",
-                        }}
-                      >
-                        {cartItems && cartItems.length}
-                      </span>
+                      {cartItems?.length > 0 ? (
+                        <span
+                          style={{
+                            backgroundColor: "white",
+                            padding: "1px",
+                            color: "steelblue",
+                          }}
+                        >
+                          {cartItems.length}
+                        </span>
+                      ) : null}
                     </Link>
                   </li>
                 </>

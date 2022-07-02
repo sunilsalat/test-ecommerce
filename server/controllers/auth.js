@@ -9,6 +9,7 @@ const Seller = require("../models/seller");
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // 
   if (!name || !email || !password) {
     throw new Error("All the fields are required to register");
   }
