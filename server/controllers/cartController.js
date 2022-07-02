@@ -34,14 +34,12 @@ const addToCart = async (req, res) => {
     userId: req.userInfo.id,
   });
 
-  /*
   const isItemAlreadyExistInCart = cart?.cartItems?.find(
     (e) => e.productId.toString() === productId.toString()
   );
 
   // if item already exist inc qty by one
   if (isItemAlreadyExistInCart) {
-    console.log("in there 1");
     const updatedCartItems = cart.cartItems.map((e) => {
       if (e.productId.toString() === productId.toString()) {
         e.item_qty += 1;
@@ -50,11 +48,11 @@ const addToCart = async (req, res) => {
     });
 
     cart.cartItems = updatedCartItems;
+
     await cart.save();
 
     return res.status(200).json({ cart: cart });
   }
-  */
 
   if (cart && cart.cartItems.length > 0) {
     cart.cartItems.push(item);
@@ -194,17 +192,17 @@ const getAllCartItems = async (req, res) => {
     ]);
 
     // filter out any item with negative quantity
-    cartItems = cart.cartItems?.filter((e) => e.item_qty > 0);
+    cartItems = cart?.cartItems?.filter((e) => e.item_qty > 0);
 
     res.status(200).json({
-      cartItems: cart.cartItems,
-      totalQty: cart.tq,
-      totalPrice: cart.tp,
-      totalShippingFee: cart.totalShippingFee,
-      shippingAddress: cart.shippingAddress,
+      cartItems: cart?.cartItems,
+      totalQty: cart?.tq,
+      totalPrice: cart?.tp,
+      totalShippingFee: cart?.totalShippingFee,
+      shippingAddress: cart?.shippingAddress,
     });
   } catch (error) {
-    res.status(200).send("ok");
+    res.status(200).send(error.message);
   }
 };
 

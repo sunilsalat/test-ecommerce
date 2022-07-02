@@ -48,8 +48,6 @@ const Cart = () => {
     }
   }, []);
 
-  console.log(address);
-
   if (!cartItems || cartItems <= 0) {
     return <div>Your cart is empty !</div>;
   }
