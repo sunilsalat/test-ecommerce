@@ -24,7 +24,11 @@ const addUserAddress = async (req, res) => {
     throw new Error("All the feild are required!");
   }
 
-  const newLoc = loc.split(",").map((e) => parseFloat(e));
+  if (Array.isArray(loc)) {
+    const newLoc = loc.map((e) => parseFloat(e));
+  } else {
+    var newLoc = loc.split(",").map((e) => parseFloat(e));
+  }
 
   const add = {
     street,

@@ -38,6 +38,7 @@ export const removeCartItem = createAsyncThunk(
     });
 
     if (res.status === 200) {
+      console.log(res.status, "sifs");
       dispatch(getAllCartItems());
     }
     return await res.json();
@@ -60,6 +61,7 @@ export const editCartItem = createAsyncThunk(
     if (res.status === 200) {
       dispatch(getAllCartItems());
     }
+
     return await res.json();
   }
 );
@@ -182,7 +184,6 @@ const cartSlice = createSlice({
         JSON.parse(localStorage.getItem("cartAddress"));
     },
     [getAllCartItems.rejected]: (state, error) => {
-      console.log(error.message);
       console.log("promise rejected");
     },
     // add item to cart
