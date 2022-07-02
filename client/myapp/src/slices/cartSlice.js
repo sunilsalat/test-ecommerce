@@ -82,13 +82,13 @@ export const TotalShippingFee = createAsyncThunk(
   }
 );
 
-const userInfo =
-  localStorage.getItem("userInfo") &&
-  JSON.parse(localStorage.getItem("userInfo"));
+const userInfo = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
 
-const cartAddress =
-  localStorage.getItem("cartAddress") &&
-  JSON.parse(localStorage.getItem("cartAddress"));
+const cartAddress = localStorage.getItem("cartAddress")
+  ? JSON.parse(localStorage.getItem("cartAddress"))
+  : null;
 
 const cartSlice = createSlice({
   name: "cart",
@@ -99,7 +99,7 @@ const cartSlice = createSlice({
     totalShippingFee: 0,
     address:
       cartAddress ||
-      userInfo?.address.find(
+      userInfo?.address?.find(
         (e) => e.isDefault === true || userInfo?.address[0] || null
       ),
     success: null,
