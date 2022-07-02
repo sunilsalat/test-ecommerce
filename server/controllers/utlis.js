@@ -1,4 +1,5 @@
 // calculate shipping fee based on location, weight, units
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Seller = require("../models/seller");
 const User = require("../models/user");
@@ -41,4 +42,8 @@ const getShippingFee = async (req, res) => {
   res.status(200).json({ shippingFee: totalFee });
 };
 
-module.exports = { getShippingFee };
+const getStripePk = async (req, res) => {
+  res.status(200).json({ key: process.env.STRIPE_PK });
+};
+
+module.exports = { getShippingFee, getStripePk };
