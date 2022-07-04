@@ -6,7 +6,6 @@ const AllProduct = () => {
   const [showComponent, toggleComponent] = useState(false);
 
   // get all the products of seller
-  
 
   return (
     <div>

@@ -27,12 +27,10 @@ const AddProduct = ({ toggleComponent }) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      body: JSON.stringify({ newdata }),
+      body: JSON.stringify({ dist: "skfjslkjf" }),
     });
 
     const val = await res.json();
-
-    console.log(val);
   };
 
   return (

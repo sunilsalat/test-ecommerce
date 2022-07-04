@@ -56,7 +56,7 @@ const getStripePk = async (req, res) => {
 const uploadImageToCloudinary = async (req, res) => {
   console.log(req.body);
 
-  res.status(200).send("ok");
+  res.status(200).json({ ok: true });
 };
 
 module.exports = { getShippingFee, getStripePk, uploadImageToCloudinary };
