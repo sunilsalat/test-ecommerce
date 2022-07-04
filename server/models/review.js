@@ -65,10 +65,12 @@ ReviewSchema.statics.calculateAvgRating = async function (productId) {
 };
 
 ReviewSchema.post("save", async function () {
+  console.log('fe')
   await this.constructor.calculateAvgRating(this.productId);
 });
 
 ReviewSchema.post("remove", async function () {
+  console.log("fired");
   await this.constructor.calculateAvgRating(this.productId);
 });
 

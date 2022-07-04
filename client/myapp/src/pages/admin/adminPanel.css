@@ -1,0 +1,13 @@
+.admin-panel-container {
+  display: flex;
+}
+
+.admin-panel-side-container {
+  flex: 1;
+  background-color: aliceblue;
+  border-right: 1px solid black;
+}
+
+.admin-panel-content-container {
+  flex: 4;
+}

@@ -1,9 +1,16 @@
 // calculate shipping fee based on location, weight, units
 require("dotenv").config();
 const mongoose = require("mongoose");
+const cloudinary = require("cloudinary");
 const Seller = require("../models/seller");
 const User = require("../models/user");
 const Product = require("../models/product");
+
+cloudinary.config({
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
+});
 
 const getShippingFee = async (req, res) => {
   const { sellerId, productId, cartItems, add } = req.body;
@@ -46,4 +53,10 @@ const getStripePk = async (req, res) => {
   res.status(200).json({ key: process.env.STRIPE_PK });
 };
 
-module.exports = { getShippingFee, getStripePk };
+const uploadImageToCloudinary = async (req, res) => {
+  console.log(req.body);
+
+  res.status(200).send("ok");
+};
+
+module.exports = { getShippingFee, getStripePk, uploadImageToCloudinary };

@@ -47,6 +47,12 @@ const ProductSchema = mongoose.Schema({
     ref: "Category",
     required: [true, "Category can not be blank"],
   },
+  subCategory: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "SubCategory",
+    },
+  ],
   avgRatings: {
     type: Number,
     default: 0,

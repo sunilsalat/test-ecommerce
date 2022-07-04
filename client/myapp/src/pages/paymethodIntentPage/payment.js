@@ -18,6 +18,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
+
   if (!state || state.value !== "/order") {
     navigate("/");
   }

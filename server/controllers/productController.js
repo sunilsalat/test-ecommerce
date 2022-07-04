@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Category = require("../models/category");
+const SubCategory = require("../models/subCategories");
 const mongoose = require("mongoose");
 
 const createProduct = async (req, res) => {
@@ -28,10 +29,9 @@ const editProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-
   if (req.query.hasOwnProperty("category")) {
     const products = await Product.find({
-      category: req.query['category'],
+      category: req.query["category"],
     })
       .limit(10)
       .populate("category")
@@ -41,7 +41,7 @@ const getAllProducts = async (req, res) => {
   }
 
   if (req.query.hasOwnProperty("title")) {
-    const newTitle = new RegExp("^" + req.query['title'], "i");
+    const newTitle = new RegExp("^" + req.query["title"], "i");
     const products = await Product.find({ title: { $regex: newTitle } })
       .limit(10)
       .populate("category")
@@ -74,6 +74,14 @@ const getProductDetail = async (req, res) => {
   res.status(200).json({ product });
 };
 
+// --- MISC ----
+
+// Get seller's Product
+const getProductBySeller = async () => {
+  const products = await Product.find({ seller: req.userInfo.id });
+  res.status(200).json({ products });
+};
+
 // Add category to which product belongs
 const addProductCategory = async (req, res) => {
   const { title } = req.body;
@@ -85,12 +93,38 @@ const addProductCategory = async (req, res) => {
 };
 
 // getallcategory
-
 const getAllCategory = async (req, res) => {
   // Todo -- show most selling categories first
   const categories = await Category.find({});
 
   res.status(200).json({ categories });
+};
+
+// add subcategory
+const addSubCategory = async (req, res) => {
+  const { categoryId, title } = req.body;
+  if (!categoryId || !title) {
+    throw new Error("All fields are required");
+  }
+
+  await SubCategory.create({ title, category: categoryId });
+
+  res.status(200).send("ok");
+};
+
+// getAllSubCategories
+const getAllSubCategories = async (req, res) => {
+  const { categoryId } = req.params;
+
+  if (!categoryId) {
+    throw new Error("category no tfouyen ");
+  }
+
+  const allSubCat = await SubCategory.find({
+    category: new mongoose.mongo.ObjectId(categoryId),
+  });
+
+  res.status(200).json({ allSubCat });
 };
 
 module.exports = {
@@ -101,4 +135,7 @@ module.exports = {
   addProductCategory,
   getAllCategory,
   getCategoryWiseProduct,
+  getProductBySeller,
+  getAllSubCategories,
+  addSubCategory,
 };
