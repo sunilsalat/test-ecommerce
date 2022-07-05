@@ -1,7 +1,7 @@
 // calculate shipping fee based on location, weight, units
 require("dotenv").config();
 const mongoose = require("mongoose");
-const cloudinary = require("cloudinary");
+const cloudinary = require("cloudinary").v2;
 const Seller = require("../models/seller");
 const User = require("../models/user");
 const Product = require("../models/product");
@@ -54,7 +54,14 @@ const getStripePk = async (req, res) => {
 };
 
 const uploadImageToCloudinary = async (req, res) => {
-  console.log(req.body);
+  const file = req.files.image;
+
+  console.log(file);
+
+  cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
+    console.log(result);
+    console.log(err);
+  });
 
   res.status(200).json({ ok: true });
 };

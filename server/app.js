@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cookiePraser = require("cookie-parser");
 require("express-async-errors");
+const fileUpload = require("express-fileupload");
 const app = express();
 const authRouter = require("./routes/authRouter");
 const productRouter = require("./routes/productRouter");
@@ -16,6 +17,7 @@ const { notFound } = require("./middleewares/notFound");
 // middlewares
 app.use(express.json());
 app.use(cookiePraser(process.env.JWT_SECRET));
+app.use(fileUpload({ useTempFiles: true }));
 
 app.get("/", (req, res) => {
   res.status(200).send("ok");

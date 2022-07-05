@@ -1,6 +1,7 @@
 import "./createProduct.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSubCat } from "../../slices/admin/allProductSlice";
+import axios from "axios";
 
 const AddProduct = ({ toggleComponent }) => {
   const { categories } = useSelector((state) => state.products);
@@ -13,24 +14,20 @@ const AddProduct = ({ toggleComponent }) => {
     dispatch(getAllSubCat(categoryId));
   };
 
+  const handleFileUpload = async (e) => {
+    const data = new FormData();
+    data.append("image", e.target.files[0]);
+
+    const res = await axios({
+      method: "POST",
+      url: "/api/v1/util/upload-img",
+      data: data,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
+
   const hanldeSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData(e.target);
-
-    const newdata = Object.fromEntries(data.entries());
-
-    console.log(newdata);
-
-    const res = await fetch("/api/v1/util/upload-img ", {
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: JSON.stringify({ dist: "skfjslkjf" }),
-    });
-
-    const val = await res.json();
   };
 
   return (
@@ -69,7 +66,12 @@ const AddProduct = ({ toggleComponent }) => {
         <input placeholder="weight in grams" name="weight" type="Number" />
         <input placeholder="price" type="Number" name="price" />
         <label htmlFor="myfile">Select Images To Upload</label>
-        <input type="file" id="myfile" name="myfile" multiple />
+        <input
+          type="file"
+          id="image"
+          name="image"
+          onChange={(e) => handleFileUpload(e)}
+        />
 
         <button type="submit" className="btn">
           Add Product
