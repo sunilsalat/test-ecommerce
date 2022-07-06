@@ -8,15 +8,12 @@ const {
 } = require("../controllers/utlis");
 const router = express.Router();
 
-const upload = multer({dest:'uploads/'});
+const upload = multer({ dest: "uploads/" });
 
 router.route("/get-shippingfee").post(authMiddleware, getShippingFee);
 router.route("/get-ssk").get(authMiddleware, getStripePk);
 router
   .route("/upload-img")
-  .post(
-    [ authMiddleware, isSeller],
-    uploadImageToCloudinary
-  );
+  .post([authMiddleware, isSeller], uploadImageToCloudinary);
 
 module.exports = router;

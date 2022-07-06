@@ -17,7 +17,7 @@ const { notFound } = require("./middleewares/notFound");
 // middlewares
 app.use(express.json());
 app.use(cookiePraser(process.env.JWT_SECRET));
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "./uploads" }));
 
 app.get("/", (req, res) => {
   res.status(200).send("ok");

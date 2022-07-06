@@ -27,6 +27,6 @@ router
   .get(authMiddleware, getAllSubCategories);
 router
   .route("/product-by-seller")
-  .get([isSeller, authMiddleware], getProductBySeller);
+  .get([authMiddleware, isSeller], getProductBySeller);
 
 module.exports = router;

@@ -1,5 +1,7 @@
 // calculate shipping fee based on location, weight, units
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const Seller = require("../models/seller");
@@ -56,12 +58,39 @@ const getStripePk = async (req, res) => {
 const uploadImageToCloudinary = async (req, res) => {
   const file = req.files.image;
 
-  console.log(file);
+  try {
+    const root = [];
 
-  cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
-    console.log(result);
-    console.log(err);
-  });
+    file.forEach((element) => {
+      const t = path.join(__dirname, `../${element.tempFilePath}`);
+      const buffer = fs.readFileSync(t);
+      const n = path.join(__dirname, `../images`);
+      const img = fs.writeFileSync(`${n}/${element.name}`, buffer, {
+        flag: "a+",
+      });
+
+      root.append(`/images/${Date.now()}-${element.name}`);
+    });
+    // return res.status(200).send(root);
+  } catch (error) {
+    const t = path.join(__dirname, `../${file.tempFilePath}`);
+
+    const buffer = fs.readFileSync(t);
+
+    const n = path.join(__dirname, `../images`);
+
+    const img = fs.writeFileSync(`${n}/${Date.now()}-${file.name}`, buffer, {
+      flag: "a+",
+    });
+
+    // return res.status(200).send(`/images/${Date.now()}-${file.name}`);
+  }
+
+  // upload to cloudinary failing self-sign-cert-error
+  // cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
+  //   console.log(result);
+  //   console.log(err);
+  // });
 
   res.status(200).json({ ok: true });
 };

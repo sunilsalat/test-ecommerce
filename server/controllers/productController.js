@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const Category = require("../models/category");
 const SubCategory = require("../models/subCategories");
 const mongoose = require("mongoose");
+const Seller = require("../models/seller");
 
 const createProduct = async (req, res) => {
   const { title, description, image, price, category, weight } = req.body;
@@ -77,8 +78,14 @@ const getProductDetail = async (req, res) => {
 // --- MISC ----
 
 // Get seller's Product
-const getProductBySeller = async () => {
-  const products = await Product.find({ seller: req.userInfo.id });
+const getProductBySeller = async (req, res) => {
+  const seller = await Seller.findOne({ user: req.userInfo.id });
+
+  const products = await Product.find({ seller: seller._id }).populate(
+    "category",
+    { title: 1 }
+  );
+
   res.status(200).json({ products });
 };
 
