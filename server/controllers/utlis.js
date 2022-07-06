@@ -59,19 +59,29 @@ const uploadImageToCloudinary = async (req, res) => {
   const file = req.files.image;
 
   try {
-    const root = [];
+    const paths = [];
 
     file.forEach((element) => {
       const t = path.join(__dirname, `../${element.tempFilePath}`);
       const buffer = fs.readFileSync(t);
+      console.log(t);
       const n = path.join(__dirname, `../images`);
-      const img = fs.writeFileSync(`${n}/${element.name}`, buffer, {
-        flag: "a+",
-      });
+      console.log(n);
+      const img = fs.writeFileSync(
+        `${n}/${Date.now()}-${element.name}`,
+        buffer,
+        {
+          flag: "a+",
+        }
+      );
 
-      root.append(`/images/${Date.now()}-${element.name}`);
+      paths.push(`/images/${Date.now()}-${element.name}`);
+
+      fs.unlinkSync(t)
     });
-    // return res.status(200).send(root);
+
+
+    return res.status(200).send(paths);
   } catch (error) {
     const t = path.join(__dirname, `../${file.tempFilePath}`);
 
@@ -83,7 +93,10 @@ const uploadImageToCloudinary = async (req, res) => {
       flag: "a+",
     });
 
-    // return res.status(200).send(`/images/${Date.now()}-${file.name}`);
+    fs.unlinkSync(t)
+
+
+    return res.status(200).send(`/images/${Date.now()}-${file.name}`);
   }
 
   // upload to cloudinary failing self-sign-cert-error
