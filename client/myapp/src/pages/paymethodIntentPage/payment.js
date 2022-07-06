@@ -11,13 +11,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 //   return data.key;
 // };
 
-const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const Payment = () => {
+  const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
   const [clientSecret, setClientSecret] = useState("");
   const navigate = useNavigate();
   const { state } = useLocation();
-
 
   if (!state || state.value !== "/order") {
     navigate("/");

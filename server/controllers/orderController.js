@@ -47,6 +47,10 @@ const createPaymentIntent = async (req, res) => {
 
   const order = await Order.findOne({ _id: orderId });
 
+  if (!order) {
+    throw new Error("No order found with id ");
+  }
+
   const totaAmount = order.total;
 
   try {
@@ -57,6 +61,10 @@ const createPaymentIntent = async (req, res) => {
         enabled: true,
       },
     });
+
+    if (!paymentIntent) {
+      throw new Error("can not be find paymentIntenernkflksjlklkjf");
+    }
 
     order.paymentIntent = paymentIntent.id;
     order.clientSecret = paymentIntent.client_secret;
