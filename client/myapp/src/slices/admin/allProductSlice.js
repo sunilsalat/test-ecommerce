@@ -26,18 +26,40 @@ export const getAllSellersProduct = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
   "seller-allproduct/createProduct",
-  async ({ data }, { dispatch, rejectWithValue }) => {
+  async ({ data, method, id }, { dispatch, rejectWithValue }) => {
     try {
-      // const res = await fetch("/api/v1/product/create", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(data),
-      // });
+      if (method === "new") {
+        console.log("new mthod called");
+        const res = await fetch("/api/v1/product/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
-      console.log("in carete product slice", data);
+        if (res.status === 200) {
+          dispatch(getAllSellersProduct());
+        }
+      }
+
+      if (method === "update") {
+        console.log("update mthod called");
+
+        const res = await fetch(`/api/v1/product/edit/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (res.status === 200) {
+          dispatch(getAllSellersProduct());
+        }
+      }
     } catch (error) {
+      console.log(error.message);
       return rejectWithValue(error.message);
     }
   }
@@ -63,7 +85,6 @@ const allProductSlice = createSlice({
     },
     [getAllSellersProduct.fulfilled]: (state, action) => {
       console.log("Promise fulfilled");
-      console.log(action.payload);
 
       state.allSellerProduct = action.payload.products;
     },

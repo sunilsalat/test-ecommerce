@@ -14,6 +14,7 @@ const AllProduct = () => {
 
   const editProduct = (e) => {
     setProduct(e);
+    // true opens a page to add product or to edit
     toggleComponent(true);
   };
 
@@ -64,9 +65,9 @@ const AllProduct = () => {
                       <td>{e.category.title}</td>
                       <td>{e.price}</td>
                       <td>
-                        <buttons onClick={(event) => editProduct(e)}>
+                        <button onClick={(event) => editProduct(e)}>
                           edit
-                        </buttons>
+                        </button>
                       </td>
                       <td>
                         <button>delete</button>

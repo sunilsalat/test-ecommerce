@@ -21,10 +21,11 @@ const addToCart = async (req, res) => {
   }
 
   const { title, image, price, _id } = product;
+  console.log(product)
 
   const item = {
     item_title: title,
-    item_image: image,
+    item_image: image[0],
     item_price: price,
     productId: _id,
     item_qty: item_qty,

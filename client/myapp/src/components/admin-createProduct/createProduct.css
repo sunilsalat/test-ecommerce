@@ -3,7 +3,7 @@
   margin: auto;
 }
 
-.add-product-form > form {
+.form {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -12,7 +12,7 @@
   text-align: left;
 }
 
-.add-product-form > form > input {
+.form > input {
   margin-bottom: 12px;
   padding: 8px 5px;
   border: 1px solid black;

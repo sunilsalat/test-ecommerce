@@ -19,16 +19,16 @@ const AddProduct = ({
 
   const dispatch = useDispatch();
 
-  // dummy payload to initialize data
+  // dummy payload to initialize product
   const obj = {
-    title: null,
-    description: null,
+    title: "",
+    description: "",
     category: "",
     subCategory: "",
-    unit: null,
-    weight: null,
-    price: null,
-    image: null,
+    unit: 1,
+    weight: "",
+    price: "",
+    image: "",
   };
 
   const [data, setData] = useState({
@@ -48,9 +48,7 @@ const AddProduct = ({
   };
 
   const handleFileUpload = async (e) => {
-    console.log(e.target.files);
-
-    const data = new FormData();
+    const formData = new FormData();
     for (let i = 0; i < e.target.files.length; i++) {
       data.append("image", e.target.files[i]);
     }
@@ -58,14 +56,18 @@ const AddProduct = ({
     const res = await axios({
       method: "POST",
       url: "/api/v1/util/upload-img",
-      data: data,
+      data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     });
+
+    setData((data) => ({ ...data, image: res.data }));
   };
 
-  const hanldeSubmit = async (e) => {
-    e.preventDefault();
-    dispatch(createProduct({ data }));
+  const handleSubmit = async ({ method, id }) => {
+    dispatch(createProduct({ data, method, id })).then(() => {
+      toggleComponent(false);
+      setAddingProduct(false);
+    });
   };
 
   useEffect(() => {
@@ -82,7 +84,7 @@ const AddProduct = ({
       >
         Cancle
       </button>
-      <form onSubmit={(e) => hanldeSubmit(e)}>
+      <div className="form">
         <input
           placeholder="title"
           name="title"
@@ -146,19 +148,14 @@ const AddProduct = ({
             })}
           </select>
         ) : null}
-        <input
-          placeholder="seller"
-          name="seller"
-          value={userInfo.id}
-          hidden
-          readOnly
-          required
-        />
+
         <input
           placeholder="unit"
           name="unit"
-          type="Number"
+          type="number"
           value={data.unit}
+          min="0"
+          onInput="validity.valid||(value='');"
           onChange={(e) => {
             setData((data) => ({ ...data, unit: e.target.value }));
           }}
@@ -167,8 +164,10 @@ const AddProduct = ({
         <input
           placeholder="weight in grams"
           name="weight"
-          type="Number"
+          type="number"
           value={data.weight}
+          min="0"
+          onInput="validity.valid||(value='');"
           onChange={(e) => {
             setData((data) => ({ ...data, weight: e.target.value }));
           }}
@@ -176,9 +175,11 @@ const AddProduct = ({
         />
         <input
           placeholder="price"
-          type="Number"
+          type="number"
           name="price"
           value={data.price}
+          min="0"
+          oninput="validity.valid||(value='');"
           onChange={(e) => {
             setData((data) => ({ ...data, price: e.target.value }));
           }}
@@ -193,10 +194,24 @@ const AddProduct = ({
           onChange={(e) => handleFileUpload(e)}
         />
 
-        <button type="submit" className="btn">
-          {addingProduct ? "Add Product" : "Save Product"}
-        </button>
-      </form>
+        {addingProduct ? (
+          <button
+            className="btn"
+            type="button"
+            onClick={(e) => handleSubmit({ method: "new" })}
+          >
+            Add Product
+          </button>
+        ) : (
+          <button
+            className="btn"
+            type="button"
+            onClick={(e) => handleSubmit({ method: "update", id: product._id })}
+          >
+            Save Product
+          </button>
+        )}
+      </div>
     </div>
   );
 };

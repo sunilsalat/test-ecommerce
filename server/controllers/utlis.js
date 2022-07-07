@@ -1,5 +1,6 @@
 // calculate shipping fee based on location, weight, units
 require("dotenv").config();
+
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -15,7 +16,7 @@ cloudinary.config({
 });
 
 const getShippingFee = async (req, res) => {
-  const { sellerId, productId, cartItems, add } = req.body;
+  const { sellerId, productId } = req.body;
 
   const user = await User.findOne({ _id: req.userInfo.id });
 
@@ -24,8 +25,6 @@ const getShippingFee = async (req, res) => {
   }
 
   const cr = user.addresses[0].loc.coordinates;
-
-  console.log(cr, "cordinates");
 
   const dist = await Seller.aggregate([
     {
@@ -43,9 +42,6 @@ const getShippingFee = async (req, res) => {
   ]);
 
   const product = await Product({ _id: productId });
-
-  console.log(dist[0].distance);
-
   const totalFee = product?.shippinFee || 0 + dist[0]?.distance > 100 ? 50 : 0;
 
   res.status(200).json({ shippingFee: totalFee });
@@ -55,57 +51,41 @@ const getStripePk = async (req, res) => {
   res.status(200).json({ key: process.env.STRIPE_PK });
 };
 
+// image compression, image resize
 const uploadImageToCloudinary = async (req, res) => {
   const file = req.files.image;
+
+  let imgFiles = [];
+
+  // if user upload single file convert to array
+  if (!Array.isArray(req.files.image)) {
+    imgFiles.push(file);
+  } else imgFiles = [...imgFiles, ...file];
 
   try {
     const paths = [];
 
-    file.forEach((element) => {
+    imgFiles.forEach((element) => {
       const t = path.join(__dirname, `../${element.tempFilePath}`);
       const buffer = fs.readFileSync(t);
-      console.log(t);
       const n = path.join(__dirname, `../images`);
-      console.log(n);
-      const img = fs.writeFileSync(
-        `${n}/${Date.now()}-${element.name}`,
-        buffer,
-        {
-          flag: "a+",
-        }
-      );
+      const p = `${Date.now()}-${element.name}`;
+      const img = fs.writeFileSync(`${n}/${p}`, buffer, {
+        flag: "a+",
+      });
 
-      paths.push(`/images/${Date.now()}-${element.name}`);
+      paths.push(`/${p}`);
 
-      fs.unlinkSync(t)
+      // todo -compress-image before saving
+
+      // once img file created from buffer delete temp buffer file
+      fs.unlinkSync(t);
     });
-
 
     return res.status(200).send(paths);
   } catch (error) {
-    const t = path.join(__dirname, `../${file.tempFilePath}`);
-
-    const buffer = fs.readFileSync(t);
-
-    const n = path.join(__dirname, `../images`);
-
-    const img = fs.writeFileSync(`${n}/${Date.now()}-${file.name}`, buffer, {
-      flag: "a+",
-    });
-
-    fs.unlinkSync(t)
-
-
-    return res.status(200).send(`/images/${Date.now()}-${file.name}`);
+    throw new Error("image upload failed !");
   }
-
-  // upload to cloudinary failing self-sign-cert-error
-  // cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
-  //   console.log(result);
-  //   console.log(err);
-  // });
-
-  res.status(200).json({ ok: true });
 };
 
 module.exports = { getShippingFee, getStripePk, uploadImageToCloudinary };

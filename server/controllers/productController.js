@@ -11,9 +11,11 @@ const createProduct = async (req, res) => {
     throw new Error("Missing fields");
   }
 
+  const seller = await Seller.findOne({ user: req.userInfo.id });
+
   const product = await Product.create({
     ...req.body,
-    seller: req.userInfo.id,
+    seller: seller,
   });
 
   res.status(201).json({ product });
@@ -22,9 +24,13 @@ const createProduct = async (req, res) => {
 const editProduct = async (req, res) => {
   const { id } = req.params;
 
-  const product = await Product.findOneAndUpdate({ _id: id }, req.body, {
-    new: true,
-  });
+  const product = await Product.findOneAndUpdate(
+    { _id: id },
+    { ...req.body },
+    {
+      new: true,
+    }
+  );
 
   res.status(200).json({ product });
 };
@@ -89,7 +95,7 @@ const getProductBySeller = async (req, res) => {
   res.status(200).json({ products });
 };
 
-// Add category to which product belongs
+// Add category
 const addProductCategory = async (req, res) => {
   const { title } = req.body;
   if (!title) {
