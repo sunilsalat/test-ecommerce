@@ -35,14 +35,37 @@ const ProductDetail = () => {
     return <div>Loading...</div>;
   }
 
-  console.log(product)
+  console.log(product);
 
   return (
     <>
       <div className="productDetail-container">
         <div className="product-img-btn-container">
           <div className="product-img">
-            <img src={product && product.image} alt="" />
+            {/* image caresoul */}
+            {product?.image?.length > 1 && (
+              <div className="product-img-one">
+                {product?.image.map((img) => {
+                  return (
+                    <div className="unit-img">
+                      <img src={img} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* detailed image */}
+            <div className="product-img-two">
+              <img
+                src={
+                  Array.isArray(product.image)
+                    ? product.image[0]
+                    : product.image
+                }
+                alt=""
+              />
+            </div>
           </div>
           <div className="product-btn">
             <button>BUY NOW</button>

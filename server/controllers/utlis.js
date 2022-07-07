@@ -55,6 +55,7 @@ const getStripePk = async (req, res) => {
 const uploadImageToCloudinary = async (req, res) => {
   const file = req.files.image;
 
+
   let imgFiles = [];
 
   // if user upload single file convert to array

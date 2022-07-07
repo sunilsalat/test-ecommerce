@@ -19,7 +19,28 @@
 .product-img {
   margin: auto;
   height: 90%;
+  display: flex;
+  justify-content: center;
   /* border: 1px solid blue; */
+}
+
+.product-img-one {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.unit-img {
+  border: 1px solid black;
+  margin: 1rem 0;
+}
+
+.unit-img>img{
+  width: 80px;
+  height: 80px;
+}
+
+.product-img-two {
+  flex: 3;
 }
 
 .product-img img {

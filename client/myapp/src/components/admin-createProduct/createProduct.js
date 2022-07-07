@@ -48,7 +48,7 @@ const AddProduct = ({
   };
 
   const handleFileUpload = async (e) => {
-    const formData = new FormData();
+    const data = new FormData();
     for (let i = 0; i < e.target.files.length; i++) {
       data.append("image", e.target.files[i]);
     }
@@ -56,7 +56,7 @@ const AddProduct = ({
     const res = await axios({
       method: "POST",
       url: "/api/v1/util/upload-img",
-      data: formData,
+      data: data,
       headers: { "Content-Type": "multipart/form-data" },
     });
 
