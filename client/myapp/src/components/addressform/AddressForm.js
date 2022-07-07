@@ -2,10 +2,7 @@ import "./AddressForm.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
-import {
-  setAddress,
-  addCartAddress,
-} from "../../slices/cartSlice";
+import { setAddress, addCartAddress } from "../../slices/cartSlice";
 import { addUserAddress } from "../../slices/userProfileSlice";
 
 const AddressForm = ({ toggleAddresFormVisiblity }) => {

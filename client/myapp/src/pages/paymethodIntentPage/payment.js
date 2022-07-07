@@ -1,4 +1,4 @@
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import CheckoutForm from "../../components/checkOutForm/CheckOutForm";
@@ -11,9 +11,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 //   return data.key;
 // };
 
-const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const Payment = () => {
+  const stripe_promise = loadStripe(process.env.REACT_APP_STRIPE_PK);
   const [clientSecret, setClientSecret] = useState("");
   const navigate = useNavigate();
   const { state } = useLocation();

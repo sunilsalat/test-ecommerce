@@ -35,6 +35,8 @@ const ProductDetail = () => {
     return <div>Loading...</div>;
   }
 
+  console.log(product)
+
   return (
     <>
       <div className="productDetail-container">

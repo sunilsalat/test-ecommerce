@@ -16,6 +16,8 @@ export const userLogin = createAsyncThunk(
 
       if (res.status === 200) {
         dispatch(getUserProfile({}));
+      } else {
+        dispatch(userLogout());
       }
 
       if (res.status !== 200) {

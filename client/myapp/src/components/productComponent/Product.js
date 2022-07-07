@@ -16,6 +16,7 @@ const Product = ({ product }) => {
         <FaHeart className="heart" />
         <div className="product-img-container" onClick={() => t(_id)}>
           <img src={image} />
+          {/* <img src={`http://localhost:5000${image[0]}`} /> */}
         </div>
         <div className="product-info-container">
           <p>{title}</p>

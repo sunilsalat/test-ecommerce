@@ -55,9 +55,15 @@ const Navbar = () => {
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
                     </Link>
                   </li>
+                  {userInfo?.role == "seller" ? (
+                    <li>
+                      <Link to="/admin">Admin</Link>
+                    </li>
+                  ) : null}
+
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
+                      <FaShoppingCart />
                       {cartItems?.length > 0 ? (
                         <span
                           style={{
@@ -81,7 +87,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
+                      <FaShoppingCart />
                     </Link>
                   </li>
                 </>
