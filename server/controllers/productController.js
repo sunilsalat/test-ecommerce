@@ -43,7 +43,7 @@ const getAllProducts = async (req, res) => {
     ? { title: { $regex: new RegExp("^" + req.query["title"], "i") } }
     : {};
 
-  const pageSize = 4;
+  const pageSize = 14;
   const page = parseInt(req.query.pageNumber) || 1;
 
   const products = await Product.find({ ...category, ...title })
