@@ -36,28 +36,19 @@ const editProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  if (req.query.hasOwnProperty("category")) {
-    const products = await Product.find({
-      category: req.query["category"],
-    })
-      .limit(10)
-      .populate("category")
-      .populate(["category", "seller"]);
+  // dynamic queries
+  const category = req.query.cat ? { category: req.query.cat } : {};
 
-    return res.status(200).json({ products });
-  }
+  const title = req.query.title
+    ? { title: { $regex: new RegExp("^" + req.query["title"], "i") } }
+    : {};
 
-  if (req.query.hasOwnProperty("title")) {
-    const newTitle = new RegExp("^" + req.query["title"], "i");
-    const products = await Product.find({ title: { $regex: newTitle } })
-      .limit(10)
-      .populate("category")
-      .populate(["category", "seller"]);
-    return res.status(200).json({ products });
-  }
+  const pageSize = 14;
+  const page = parseInt(req.query.pageNumber) || 1;
 
-  const products = await Product.find({})
-    .limit(10)
+  const products = await Product.find({ ...category, ...title })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
     .populate(["category", "seller"]);
   res.status(200).json({ products });
 };

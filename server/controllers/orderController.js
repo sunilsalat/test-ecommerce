@@ -63,7 +63,7 @@ const createPaymentIntent = async (req, res) => {
     });
 
     if (!paymentIntent) {
-      throw new Error("can not be find paymentIntenernkflksjlklkjf");
+      throw new Error("can not be find paymentIntenet");
     }
 
     order.paymentIntent = paymentIntent.id;

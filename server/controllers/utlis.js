@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const sharp = require("sharp");
 const Seller = require("../models/seller");
 const User = require("../models/user");
 const Product = require("../models/product");
@@ -74,16 +75,29 @@ const uploadImageToCloudinary = async (req, res) => {
         flag: "a+",
       });
 
-      paths.push(`/${p}`);
-
       // todo -compress-image before saving
+      // once img file created take that file and compress and than delete orignal file
+      try {
+        const v = `${Date.now()}-${element.name}`;
+        sharp(`${n}/${p}`)
+          .resize({ height: 300, width: 200 })
+          .toFile(`${n}/${v}`)
+          .then(() => {
+            // removing orignal file once that file is compressed
+            fs.unlinkSync(`${n}/${p}`);
+          });
 
-      // once img file created from buffer delete temp buffer file
+        paths.push(`/${v}`);
+      } catch (error) {
+        console.log(error);
+      }
+
       fs.unlinkSync(t);
     });
 
     return res.status(200).send(paths);
   } catch (error) {
+    console.log(error.message);
     throw new Error("image upload failed !");
   }
 };

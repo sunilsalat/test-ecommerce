@@ -51,7 +51,10 @@ const OrderDetail = () => {
               {order.orderItems?.map((e) => {
                 return (
                   <div key={e._id} className="flex-container-between mtb-5">
-                    <img className="order-img" src={e.image} />
+                    <img
+                      className="order-img"
+                      src={Array.isArray(e.image) ? e.image[0] : e.image}
+                    />
                     <p>{e.title}</p>
                     <p>
                       {e.qty}*{e.price} = ${e.qty * e.price}
