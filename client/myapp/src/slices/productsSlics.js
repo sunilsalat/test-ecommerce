@@ -2,15 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async ({ query_param }) => {
-    const key = query_param && Object.keys(query_param)[0];
-    const val = query_param && Object.values(query_param)[0];
+  async ({ cat = "", title = "" }) => {
     try {
-      if (key && val) {
-        var res = await fetch(`/api/v1/product/all?${key}=${val}`);
-      }else{
-         var res = await fetch(`/api/v1/product/all`)
-      }
+      if (cat || title ) {
+        var res = await fetch(`/api/v1/product/all?cat=${cat}&title=${title}`);
+      } else {
+        var res = await fetch(`/api/v1/product/all`);
+     }
       return await res.json();
     } catch (error) {
       console.log(error.message);

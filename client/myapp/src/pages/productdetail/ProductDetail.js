@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   productDetail,
   getAllProductReviews,
@@ -12,13 +12,14 @@ import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview"
 import AddReveiw from "../../components/addReview/addReview";
 
 const ProductDetail = () => {
-  const dispatch = useDispatch();
+  const [imgIndex, setImgIndex] = useState(0);
   const { id } = useParams();
+
   const { product, reviews, error, loading, reviewLoading } = useSelector(
     (state) => state.productDetail
   );
   const { userInfo } = useSelector((state) => state.profile);
-
+  const dispatch = useDispatch();
   const AddProductToCart = ({ qty, productId }) => {
     dispatch(addToCart({ item_qty: qty, productId: productId }));
   };
@@ -29,44 +30,48 @@ const ProductDetail = () => {
     if (userInfo && userInfo.name) {
       dispatch(getAllProductReviews({ id }));
     }
+
+    return () => setImgIndex(0);
   }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  console.log(product);
-
   return (
     <>
       <div className="productDetail-container">
         <div className="product-img-btn-container">
-          <div className="product-img">
+          <div className="product-img-section">
             {/* image caresoul */}
             {product?.image?.length > 1 && (
               <div className="product-img-one">
-                {product?.image.map((img) => {
+                {product?.image?.map((img, index) => {
                   return (
-                    <div className="unit-img">
-                      <img src={img} />
-                    </div>
+                    <img
+                      className="unit-img"
+                      src={img}
+                      onClick={() => setImgIndex(index)}
+                    />
                   );
                 })}
               </div>
             )}
 
             {/* detailed image */}
+
             <div className="product-img-two">
               <img
                 src={
                   Array.isArray(product.image)
-                    ? product.image[0]
+                    ? product?.image[imgIndex]
                     : product.image
                 }
                 alt=""
               />
             </div>
           </div>
+
           <div className="product-btn">
             <button>BUY NOW</button>
             <button
@@ -77,6 +82,7 @@ const ProductDetail = () => {
               ADD TO CART
             </button>
           </div>
+
           <div className="write-review-container">
             <span>{error}</span>
             {userInfo ? (

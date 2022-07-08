@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const sharp = require("sharp");
 const Seller = require("../models/seller");
 const User = require("../models/user");
 const Product = require("../models/product");
@@ -55,7 +56,6 @@ const getStripePk = async (req, res) => {
 const uploadImageToCloudinary = async (req, res) => {
   const file = req.files.image;
 
-
   let imgFiles = [];
 
   // if user upload single file convert to array
@@ -77,9 +77,20 @@ const uploadImageToCloudinary = async (req, res) => {
 
       paths.push(`/${p}`);
 
-      // todo -compress-image before saving
+      try {
+        sharp(`${n}/${p}`)
+        .resize({height:300, width:200})
+        .toFile(`${n}/${p}`, function (err) {
+          console.log(err);
+        });
 
+      } catch (error) {
+        console.log(error)
+      }
+  
+      // todo -compress-image before saving
       // once img file created from buffer delete temp buffer file
+
       fs.unlinkSync(t);
     });
 

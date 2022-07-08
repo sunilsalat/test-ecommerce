@@ -21,7 +21,6 @@ const addToCart = async (req, res) => {
   }
 
   const { title, image, price, _id } = product;
-  console.log(product)
 
   const item = {
     item_title: title,

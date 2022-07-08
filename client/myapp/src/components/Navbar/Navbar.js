@@ -1,10 +1,9 @@
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getAllProducts } from "../../slices/productsSlics";
 import { getAllCartItems } from "../../slices/cartSlice";
 
 const Navbar = () => {
@@ -13,8 +12,10 @@ const Navbar = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleSearch = () => {
-    dispatch(getAllProducts({ query_param: { title: title } }));
+    setSearchParams({ title: title.trim() });
   };
 
   const haneleLogOut = () => {
