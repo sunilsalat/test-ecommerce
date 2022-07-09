@@ -203,28 +203,27 @@ const AddProduct = ({
           onChange={(e) => handleFileUpload(e)}
         />
 
-        {addingProduct ? (
-          <button
-            className="btn"
-            type="button"
-            onClick={(e) => handleSubmit({ method: "new" })}
-            disabled
-          >
-            Add Product
-          </button>
-        ) : (
-          show && (
-            <button
-              className="btn"
-              type="button"
-              onClick={(e) =>
-                handleSubmit({ method: "update", id: product._id })
-              }
-            >
-              Save Product
-            </button>
-          )
-        )}
+        {addingProduct
+          ? show && (
+              <button
+                className="btn"
+                type="button"
+                onClick={(e) => handleSubmit({ method: "new" })}
+              >
+                Add Product
+              </button>
+            )
+          : show && (
+              <button
+                className="btn"
+                type="button"
+                onClick={(e) =>
+                  handleSubmit({ method: "update", id: product._id })
+                }
+              >
+                Save Product
+              </button>
+            )}
       </div>
     </div>
   );
