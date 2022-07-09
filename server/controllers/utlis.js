@@ -14,6 +14,7 @@ cloudinary.config({
   cloud_name: process.env.cloud_name,
   api_key: process.env.api_key,
   api_secret: process.env.api_secret,
+  secure: true,
 });
 
 const getShippingFee = async (req, res) => {
@@ -63,10 +64,10 @@ const uploadImageToCloudinary = async (req, res) => {
     imgFiles.push(file);
   } else imgFiles = [...imgFiles, ...file];
 
-  try {
-    const paths = [];
+  const paths = [];
 
-    imgFiles.forEach((element) => {
+  try {
+    for (let element of imgFiles) {
       const t = path.join(__dirname, `../${element.tempFilePath}`);
       const buffer = fs.readFileSync(t);
       const n = path.join(__dirname, `../images`);
@@ -75,29 +76,25 @@ const uploadImageToCloudinary = async (req, res) => {
         flag: "a+",
       });
 
-      // todo -compress-image before saving
-      // once img file created take that file and compress and than delete orignal file
-      try {
-        const v = `${Date.now()}-${element.name}`;
-        sharp(`${n}/${p}`)
-          .resize({ height: 300, width: 200 })
-          .toFile(`${n}/${v}`)
-          .then(() => {
-            // removing orignal file once that file is compressed
-            fs.unlinkSync(`${n}/${p}`);
-          });
+      // compressing img before uploading to cloudinary
+      const v = `${Date.now()}-${element.name}`;
+      await sharp(`${n}/${p}`)
+        .resize({ height: 300, width: 200 })
+        .toFile(`${n}/${v}`);
 
-        paths.push(`/${v}`);
-      } catch (error) {
-        console.log(error);
-      }
+      // uploading to cloudinary
+      const result = await cloudinary.uploader.upload(`${n}/${v}`);
+      paths.push(result.secure_url);
 
+      // removing remporay files
+      fs.unlinkSync(`${n}/${v}`);
+      fs.unlinkSync(`${n}/${p}`);
       fs.unlinkSync(t);
-    });
+    }
 
     return res.status(200).send(paths);
   } catch (error) {
-    console.log(error.message);
+    console.log(error.message, "eerror");
     throw new Error("image upload failed !");
   }
 };
