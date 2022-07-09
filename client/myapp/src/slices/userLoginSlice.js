@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserProfile, emptyUserInfo } from "./userProfileSlice";
 import { clearCart, getAllCartItems } from "./cartSlice";
+import {removeSellersProduct} from './admin/allProductSlice'
 
 export const userLogin = createAsyncThunk(
   "login/userLogin",
@@ -37,6 +38,7 @@ export const userLogout = createAsyncThunk(
     localStorage.removeItem("userInfo");
     localStorage.removeItem("cartAddress");
     dispatch(emptyUserInfo());
+    dispatch(removeSellersProduct())
 
     const res = await fetch("/api/v1/auth/logout", {
       method: "DELETE",

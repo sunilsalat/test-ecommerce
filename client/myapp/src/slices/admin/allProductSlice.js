@@ -38,7 +38,7 @@ export const createProduct = createAsyncThunk(
           body: JSON.stringify(data),
         });
 
-        if (res.status === 200) {
+        if (res.status === 201) {
           dispatch(getAllSellersProduct());
         }
       }
@@ -68,7 +68,11 @@ export const createProduct = createAsyncThunk(
 const allProductSlice = createSlice({
   name: "seller-allproduct",
   initialState: { subCats: null, allSellerProduct: null },
-  reducers: {},
+  reducers: {
+    removeSellersProduct:(state, action)=>{
+      state.allSellerProduct = null
+    }
+  },
   extraReducers: {
     [getAllSubCat.pending]: (state) => {
       console.log("Promise pending");
@@ -93,5 +97,7 @@ const allProductSlice = createSlice({
     },
   },
 });
+
+ export const {removeSellersProduct} = allProductSlice.actions
 
 export default allProductSlice.reducer;

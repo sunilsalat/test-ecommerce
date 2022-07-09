@@ -1,5 +1,5 @@
 import "./Navbar.css";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
@@ -11,6 +11,7 @@ const Navbar = () => {
   const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -20,6 +21,8 @@ const Navbar = () => {
 
   const haneleLogOut = () => {
     dispatch(userLogout({}));
+    navigate('/')
+    
   };
 
   useEffect(() => {
