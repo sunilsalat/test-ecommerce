@@ -27,6 +27,8 @@ const ProductList = () => {
     dispatch(getAllProducts({ cat, title }));
   }, [dispatch, cat, title]);
 
+  console.log(products)
+
   if (!products) {
     return <div>Loading...</div>;
   }
