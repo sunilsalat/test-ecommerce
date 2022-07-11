@@ -1,37 +1,14 @@
-<<<<<<< HEAD
-const cart = require("../models/cart");
-=======
 const stripe = require("stripe")(process.env.STRIPE_SK);
->>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b
 const Order = require("../models/order");
 const Cart = require("../models/cart");
 // create order
 
 const CreateOrder = async (req, res) => {
-<<<<<<< HEAD
-  const { cartItems, paymentMethod, address } = req.body;
-
-  if (!cartItems || !paymentMethod || !address) {
-    throw new Error("all the fields are required");
-  }
-
-  const totalShippingFee = 0
-
-  for (let item of cartItems) {
-
-    
-    
-  }
-
-  res.status(200).json({ ok: true });
-};
-=======
   const { paymentMethod } = req.body;
 
   if (!paymentMethod) {
     throw new Error("all the fields are required");
   }
->>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b
 
   const cart = await Cart.findOne({ userId: req.userInfo.id });
 
@@ -166,8 +143,4 @@ const OrderDetail = async (req, res) => {
 
 // all order for admin
 
-<<<<<<< HEAD
-module.exports = { CreateOrder };
-=======
 module.exports = { CreateOrder, createPaymentIntent, OrderDetail, UpdateOrder };
->>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b

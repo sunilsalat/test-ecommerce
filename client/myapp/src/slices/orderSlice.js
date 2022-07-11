@@ -3,14 +3,6 @@ import { flushCart } from "../slices/cartSlice";
 
 export const placeOrder = createAsyncThunk(
   "order/placeOrder",
-<<<<<<< HEAD
-  async ({}, { rejectWithValue, getState }) => {
-    try {
-      const { cartItems, address } = getState.cartItems;
-      const { paymentMethod } = getState.order;
-
-      const res = await fetch("/api/v1/order/create", {
-=======
   async ({}, { dispatch, rejectWithValue, getState }) => {
     try {
       const { paymentMethod } = getState().order;
@@ -18,18 +10,10 @@ export const placeOrder = createAsyncThunk(
 
       //
       const res = await fetch(`/api/v1/order/create`, {
->>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-<<<<<<< HEAD
-        body: JSON.stringify({ cartItems, paymentMethod, address }),
-      });
-    } catch (error) {}
-  }
-);
-=======
         body: JSON.stringify({ cartItems, address, paymentMethod }),
       });
 
@@ -64,7 +48,6 @@ export const updateOrderPaidAt = createAsyncThunk(
 );
 
 // export const createPa
->>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b
 
 const orderSlice = createSlice({
   name: "order",
