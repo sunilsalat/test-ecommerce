@@ -1,10 +1,9 @@
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getAllProducts } from "../../slices/productsSlics";
 import { getAllCartItems } from "../../slices/cartSlice";
 
 const Navbar = () => {
@@ -12,20 +11,25 @@ const Navbar = () => {
   const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSearch = () => {
-    dispatch(getAllProducts({ query_param: { title: title } }));
+    setSearchParams({ title: title.trim() });
   };
 
   const haneleLogOut = () => {
     dispatch(userLogout({}));
+    navigate('/')
+    
   };
 
-  useEffect(()=>{
-    if(!cartItems){
-      dispatch(getAllCartItems())
+  useEffect(() => {
+    if (!cartItems) {
+      dispatch(getAllCartItems());
     }
-  },[])
+  }, []);
 
   return (
     <>
@@ -55,18 +59,26 @@ const Navbar = () => {
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
                     </Link>
                   </li>
+                  {userInfo?.role == "seller" ? (
+                    <li>
+                      <Link to="/admin">Admin</Link>
+                    </li>
+                  ) : null}
+
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
-                      <span
-                        style={{
-                          backgroundColor: "white",
-                          padding: "1px",
-                          color: "steelblue",
-                        }}
-                      >
-                        {cartItems && cartItems.length}
-                      </span>
+                      <FaShoppingCart />
+                      {cartItems?.length > 0 ? (
+                        <span
+                          style={{
+                            backgroundColor: "white",
+                            padding: "1px",
+                            color: "steelblue",
+                          }}
+                        >
+                          {cartItems.length}
+                        </span>
+                      ) : null}
                     </Link>
                   </li>
                 </>
@@ -79,7 +91,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
+                      <FaShoppingCart />
                     </Link>
                   </li>
                 </>

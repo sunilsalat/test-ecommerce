@@ -10,9 +10,17 @@ import ProductDetail from "./pages/productdetail/ProductDetail";
 import Main from "./components/main/Main";
 import ProtectedRoute from "./components/protectedRoute";
 import Shipping from "./pages/shipping/shipping";
+import Order from "./pages/order/order";
+import OrderDetail from "./pages/orderDetailPage/orderDetail";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PaymentMethod from "./pages/paymentmethods/paymentMethods";
-import Order from "./pages/order/Order";
+import Payment from "./pages/paymethodIntentPage/payment";
+import PaymentConfirmatoin from "./pages/paymentConfirmationPage/paymentConfirmation";
+import AdminSellerAccess from "./components/seller-admin-only";
+import AddProduct from "./components/admin-createProduct/createProduct";
+import AdminPanel from "./pages/admin/adminPanel";
+import AllOrder from "./pages/admin-allOrders/allOrders";
+import AllProduct from "./pages/admin-allProducts/allProduct";
 
 function App() {
   return (
@@ -31,7 +39,7 @@ function App() {
             <Route path="/order" element={<Order />} />
           </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
-          <Route
+          {/* <Route
             path="/main/*"
             element={
               <Main>
@@ -40,7 +48,7 @@ function App() {
                 </Routes>
               </Main>
             }
-          />
+          /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

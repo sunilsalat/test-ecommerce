@@ -2,14 +2,13 @@ import "./AddressForm.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
-import { setAddress, TotalShippingFee } from "../../slices/cartSlice";
+import { setAddress, addCartAddress } from "../../slices/cartSlice";
 import { addUserAddress } from "../../slices/userProfileSlice";
 
 const AddressForm = ({ toggleAddresFormVisiblity }) => {
-  const { userInfo } = useSelector((state) => state.profile);
-  const dispatch = useDispatch();
   const [show, setShow] = useState(false);
-  const { cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.profile);
 
   const showChangeAddComponent = () => {
     setShow(false);
@@ -17,7 +16,7 @@ const AddressForm = ({ toggleAddresFormVisiblity }) => {
 
   const setAddressDefault = (add) => {
     dispatch(setAddress(add));
-    // dispatch(TotalShippingFee({ cartItems, add }));
+    dispatch(addCartAddress({ add }));
   };
 
   const formSubmitHandler = (e) => {

@@ -19,33 +19,38 @@ const AddressSchema = mongoose.Schema({
 
 AddressSchema.index({ loc: "2dsphere" });
 
-const UserSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Name can not be empty"],
+const UserSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name can not be empty"],
+    },
+    email: {
+      type: String,
+      required: [true, "Name can not be empty"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Name can not be empty"],
+      minlength: 6,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user", "seller"],
+      default: "user",
+    },
+    addresses: [AddressSchema],
   },
-  email: {
-    type: String,
-    required: [true, "Name can not be empty"],
-  },
-  password: {
-    type: String,
-    required: [true, "Name can not be empty"],
-    minlength: 6,
-  },
-  role: {
-    type: String,
-    enum: ["admin", "user", "seller"],
-    default: "user",
-  },
-  addresses: [AddressSchema],
-});
+  { timestamp: true }
+);
 
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 
+// newly added address will become default
 UserSchema.pre("save", async function () {
   if (!this.isModified("addresses")) return;
 
@@ -55,7 +60,13 @@ UserSchema.pre("save", async function () {
     }
     return add;
   });
-  this.addresses = this.addresses.reverse()
+  this.addresses = this.addresses.reverse();
+});
+
+UserSchema.post("save", async function () {
+  if (this.role === "seller") {
+    await this.model("Seller").create({ name: this.name, user: this._id });
+  }
 });
 
 UserSchema.methods.comparePassword = async function (password) {
@@ -64,3 +75,6 @@ UserSchema.methods.comparePassword = async function (password) {
 };
 
 module.exports = mongoose.model("User", UserSchema);
+
+// add mobile no and active status
+// last login date

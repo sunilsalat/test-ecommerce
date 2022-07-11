@@ -12,7 +12,10 @@ const AdminPanel = () => {
           <Link to="all-order">all order</Link>
         </div>
       </div>
+<<<<<<< HEAD
       {/* nested outlet must be called seperately  */}
+=======
+>>>>>>> e7d70c2871b52ecafd9c4a97b0ba41bde6d8e95b
       <div className="admin-panel-content-container">
         <Outlet />
       </div>

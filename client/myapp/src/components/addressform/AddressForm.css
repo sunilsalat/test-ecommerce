@@ -6,12 +6,12 @@
   margin: 10px 0;
 }
 
-.addressform{
+.addressform {
   padding: 3px 10px;
   border: 2px solid steelblue;
 }
 
-.addressform-title{
+.addressform-title {
   margin: 10px;
 }
 
@@ -29,15 +29,12 @@
   text-align: left;
 }
 
-.address-item-container >button {
+.address-item-container > button {
   padding: 5px 10px;
   color: seashell;
   background-color: steelblue;
   border: none;
 }
-
-
-
 
 .addressform-container form {
   display: flex;

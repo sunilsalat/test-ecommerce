@@ -9,6 +9,7 @@ const Seller = require("../models/seller");
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // 
   if (!name || !email || !password) {
     throw new Error("All the fields are required to register");
   }
@@ -86,8 +87,8 @@ const logout = async (req, res) => {
 
   res.cookie("accessToken", "", {
     httpOnly: true,
-    expires: new Date(Date.now() + 1000*0.5),
-    maxAge: 1000*0.5,
+    expires: new Date(Date.now() + 1000 * 0.5),
+    maxAge: 1000 * 0.5,
   });
   res.cookie("refreshToken", "", {
     httpOnly: true,
@@ -96,11 +97,6 @@ const logout = async (req, res) => {
   });
 
   res.status(200).json({ msg: "true" });
-};
-
-//USER INFO
-const getUserInfo = async (req, res) => {
-  // todo
 };
 
 // misc

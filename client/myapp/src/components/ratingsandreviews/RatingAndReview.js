@@ -1,8 +1,11 @@
 import "./RatingAndReview.css";
 
 import { BsStarFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 const RatingAndReview = ({ review }) => {
+
+  const {userInfo} = useSelector(state => state.profile)
   return (
     <div className="review-main-container">
       <div className="review-title-container">
@@ -14,7 +17,7 @@ const RatingAndReview = ({ review }) => {
       <div className="review-comment-container">
         <div>{review.comment}</div>
       </div>
-      <span className="user-name">{review.userId.name}</span>
+      <span className="user-name">{review?.userId?._id ===  userInfo.id? 'you': review?.userId?.name }</span>
     </div>
   );
 };

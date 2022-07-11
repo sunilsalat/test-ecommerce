@@ -1,26 +1,42 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import {
-  productDetail,
-  getAllProductReviews,
-} from "../../slices/productDetailSlice";
-import { addToCart, getAllCartItems } from "../../slices/cartSlice";
 import "./ProductDetail.css";
+import { useEffect, useState } from "react";
+import { addToCart, getAllCartItems } from "../../slices/cartSlice";
 import Star from "../../components/star/Star";
 import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview";
 import AddReveiw from "../../components/addReview/addReview";
+import {
+  productDetail,
+  getAllProductReviews,
+  emptyProductDetail,
+} from "../../slices/productDetailSlice";
 
 const ProductDetail = () => {
-  const dispatch = useDispatch();
+  const [imgIndex, setImgIndex] = useState(0);
   const { id } = useParams();
+
   const { product, reviews, error, loading, reviewLoading } = useSelector(
     (state) => state.productDetail
   );
   const { userInfo } = useSelector((state) => state.profile);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const AddProductToCart = ({ qty, productId }) => {
-    dispatch(addToCart({ item_qty: qty, productId: productId }));
+    // force user to login if not logged in
+    if (!userInfo) {
+      navigate(`/signin?path=/product-detail/${productId}`);
+    }
+    // only add item to cart when user is  logged in
+    if (userInfo) {
+      dispatch(addToCart({ item_qty: qty, productId: productId })).then((e) => {
+        if (e.payload.cart.cartItems[0]) {
+          navigate("/cart");
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -29,9 +45,14 @@ const ProductDetail = () => {
     if (userInfo && userInfo.name) {
       dispatch(getAllProductReviews({ id }));
     }
+
+    return () => {
+      setImgIndex(0);
+      dispatch(emptyProductDetail());
+    };
   }, [id]);
 
-  if (loading) {
+  if (loading || !product?.hasOwnProperty("title")) {
     return <div>Loading...</div>;
   }
 
@@ -39,9 +60,30 @@ const ProductDetail = () => {
     <>
       <div className="productDetail-container">
         <div className="product-img-btn-container">
-          <div className="product-img">
-            <img src={product && product.image} alt="" />
+          <div className="product-img-section">
+            {/* image caresoul */}
+            {product?.image?.length > 1 && (
+              <div className="product-img-one">
+                {product?.image?.map((img, index) => {
+                  return (
+                    <img
+                      key={index}
+                      className="unit-img"
+                      src={img}
+                      onClick={() => setImgIndex(index)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {/* detailed image */}
+
+            <div className="product-img-two">
+              <img src={product?.image[imgIndex]} alt="" />
+            </div>
           </div>
+
           <div className="product-btn">
             <button>BUY NOW</button>
             <button
@@ -52,6 +94,7 @@ const ProductDetail = () => {
               ADD TO CART
             </button>
           </div>
+
           <div className="write-review-container">
             <span>{error}</span>
             {userInfo ? (
@@ -77,7 +120,9 @@ const ProductDetail = () => {
           )}
           <h3>$ {product && product.price}</h3>
 
-          {/* <p>Seller-{product && product.seller.name}</p> */}
+          <p>
+            Seller- <b>{product?.seller?.name}</b>
+          </p>
 
           <div className="review-container">
             {reviews &&

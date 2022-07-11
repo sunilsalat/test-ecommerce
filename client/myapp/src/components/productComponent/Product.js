@@ -15,7 +15,7 @@ const Product = ({ product }) => {
       <div className="product-card-container">
         <FaHeart className="heart" />
         <div className="product-img-container" onClick={() => t(_id)}>
-          <img src={image} />
+          <img src={Array.isArray(image) ? image[0] : image} />
         </div>
         <div className="product-info-container">
           <p>{title}</p>

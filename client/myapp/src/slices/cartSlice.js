@@ -23,6 +23,7 @@ export const addToCart = createAsyncThunk(
 
 export const getAllCartItems = createAsyncThunk(
   "cart/getAllCartItems",
+
   async () => {
     const res = await fetch(`/api/v1/cart/all`);
     return await res.json();
@@ -31,12 +32,13 @@ export const getAllCartItems = createAsyncThunk(
 
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
-  async (cartItemId, { dispatch }) => {
-    const res = await fetch(`/api/v1/cart/remove/${cartItemId}`, {
+  async (productId, { dispatch }) => {
+    const res = await fetch(`/api/v1/cart/remove/${productId}`, {
       method: "delete",
     });
 
     if (res.status === 200) {
+      console.log(res.status, "sifs");
       dispatch(getAllCartItems());
     }
     return await res.json();
@@ -45,8 +47,8 @@ export const removeCartItem = createAsyncThunk(
 
 export const editCartItem = createAsyncThunk(
   "cart/editCartItem",
-  async ({ cartItemId, method }, { dispatch }) => {
-    const res = await fetch(`/api/v1/cart/edit/${cartItemId}`, {
+  async ({ productId, method }, { dispatch, getState }) => {
+    const res = await fetch(`/api/v1/cart/edit/${productId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -59,10 +61,42 @@ export const editCartItem = createAsyncThunk(
     if (res.status === 200) {
       dispatch(getAllCartItems());
     }
+
     return await res.json();
   }
 );
 
+export const addCartAddress = createAsyncThunk(
+  "cart/addCartAddress",
+  async ({ add }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/v1/cart/add-shi-add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ add }),
+      });
+
+      if (res.status === 200) {
+        dispatch(getAllCartItems());
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const flushCart = createAsyncThunk(
+  "cart/flushCart",
+  async ({}, { dispatch }) => {
+    const res = await fetch(`/api/v1/cart/clear`, {
+      method: "DELETE",
+    });
+  }
+);
+
+/*
 // hit utli api to clculate shipping fee
 export const TotalShippingFee = createAsyncThunk(
   "cart/TotalShippingFee",
@@ -81,14 +115,11 @@ export const TotalShippingFee = createAsyncThunk(
     return await res.json();
   }
 );
+*/
 
-const userInfo =
-  localStorage.getItem("userInfo") &&
-  JSON.parse(localStorage.getItem("userInfo"));
-
-const cartAddress =
-  localStorage.getItem("cartAddress") &&
-  JSON.parse(localStorage.getItem("cartAddress"));
+const cartAddress = localStorage.getItem("cartAddress")
+  ? JSON.parse(localStorage.getItem("cartAddress"))
+  : null;
 
 const cartSlice = createSlice({
   name: "cart",
@@ -97,11 +128,7 @@ const cartSlice = createSlice({
     totalQty: 0,
     totalPrice: 0,
     totalShippingFee: 0,
-    address:
-      cartAddress ||
-      userInfo?.address.find(
-        (e) => e.isDefault === true || userInfo?.address[0] || null
-      ),
+    address: cartAddress,
     success: null,
   },
   reducers: {
@@ -115,7 +142,7 @@ const cartSlice = createSlice({
 
     incQty: (state, action) => {
       const newCartItems = state.cartItems.map((item) => {
-        if (item._id === action.payload) {
+        if (item.productId === action.payload) {
           item.item_qty += 1;
         }
         return item;
@@ -126,8 +153,10 @@ const cartSlice = createSlice({
 
     decQty: (state, action) => {
       const newCartItems = state.cartItems.map((item) => {
-        if (item._id === action.payload) {
-          item.item_qty -= 1;
+        if (item.productId === action.payload) {
+          if (item.item_qty > 1) {
+            item.item_qty -= 1;
+          }
         }
         return item;
       });
@@ -150,9 +179,11 @@ const cartSlice = createSlice({
       state.totalQty = action.payload.totalQty;
       state.totalPrice = action.payload.totalPrice;
       state.totalShippingFee = action.payload.totalShippingFee;
+      state.address =
+        action.payload.shippingAddress ||
+        JSON.parse(localStorage.getItem("cartAddress"));
     },
     [getAllCartItems.rejected]: (state, error) => {
-      console.log(error.message);
       console.log("promise rejected");
     },
     // add item to cart
@@ -161,12 +192,7 @@ const cartSlice = createSlice({
     [addToCart.rejected]: (state, error) => {
       console.log("promise rejected");
     },
-    // get shipping fee on add change and on initial cart load
-    [TotalShippingFee.pending]: (state) => {},
-    [TotalShippingFee.fulfilled]: (state, action) => {},
-    [TotalShippingFee.rejected]: (state, error) => {
-      console.log("promise rejcted");
-    },
+
     // alter cart item qty
     [editCartItem.pending]: (state) => {},
     [editCartItem.fulfilled]: (state, action) => {},
@@ -174,6 +200,15 @@ const cartSlice = createSlice({
       console.log(error);
       console.log("promise rejectred");
     },
+    // flushcart
+    [flushCart.pending]: (state) => {},
+    [flushCart.fulfilled]: (state, action) => {
+      state.cartItems = null;
+      state.totalQty = null;
+      state.totalPrice = null;
+      state.totalShippingFee = null;
+    },
+    [flushCart.rejected]: (state) => {},
   },
 });
 
