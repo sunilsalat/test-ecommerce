@@ -18,6 +18,7 @@ const AllProduct = () => {
     toggleComponent(true);
   };
 
+
   useEffect(() => {
     if (!allSellerProduct) {
       dispatch(getAllSellersProduct());
@@ -62,7 +63,7 @@ const AllProduct = () => {
                     <tr key={e._id}>
                       <td>{e._id}</td>
                       <td>{e.title}</td>
-                      <td>{e.category.title}</td>
+                      <td>{e.category?.title}</td>
                       <td>{e.price}</td>
                       <td>
                         <button onClick={(event) => editProduct(e)}>

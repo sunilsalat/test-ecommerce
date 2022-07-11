@@ -13,6 +13,8 @@ const AddProduct = ({
   addingProduct,
   setAddingProduct,
 }) => {
+  const [show, hide] = useState(true);
+
   const { categories } = useSelector((state) => state.products);
   const { subCats } = useSelector((state) => state.allSellerProduct);
   const { userInfo } = useSelector((state) => state.profile);
@@ -48,6 +50,9 @@ const AddProduct = ({
   };
 
   const handleFileUpload = async (e) => {
+    // hide the save button as soon as file on select
+    hide(false);
+
     const data = new FormData();
     for (let i = 0; i < e.target.files.length; i++) {
       data.append("image", e.target.files[i]);
@@ -61,6 +66,8 @@ const AddProduct = ({
     });
 
     setData((data) => ({ ...data, image: res.data }));
+
+    hide(true);
   };
 
   const handleSubmit = async ({ method, id }) => {
@@ -96,6 +103,7 @@ const AddProduct = ({
               title: e.target.value,
             }));
           }}
+          required
         />
         <input
           placeholder="description"
@@ -105,6 +113,7 @@ const AddProduct = ({
           onChange={(e) => {
             setData((data) => ({ ...data, description: e.target.value }));
           }}
+          required
         />
 
         {/* category */}
@@ -194,23 +203,27 @@ const AddProduct = ({
           onChange={(e) => handleFileUpload(e)}
         />
 
-        {addingProduct ? (
-          <button
-            className="btn"
-            type="button"
-            onClick={(e) => handleSubmit({ method: "new" })}
-          >
-            Add Product
-          </button>
-        ) : (
-          <button
-            className="btn"
-            type="button"
-            onClick={(e) => handleSubmit({ method: "update", id: product._id })}
-          >
-            Save Product
-          </button>
-        )}
+        {addingProduct
+          ? show && (
+              <button
+                className="btn"
+                type="button"
+                onClick={(e) => handleSubmit({ method: "new" })}
+              >
+                Add Product
+              </button>
+            )
+          : show && (
+              <button
+                className="btn"
+                type="button"
+                onClick={(e) =>
+                  handleSubmit({ method: "update", id: product._id })
+                }
+              >
+                Save Product
+              </button>
+            )}
       </div>
     </div>
   );

@@ -10,11 +10,13 @@ const SignIn = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { search } = useLocation();
+
+  const query = new URLSearchParams(search);
 
   const { userInfo, error } = useSelector((state) => state.profile);
 
-  // const redirect = location.search ? location.search.split("=")[1] : "/";
+  const path = query.get("path") ? query.get("path") : "/";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.id) {
-      navigate("/");
+      navigate(path);
     }
   }, [userInfo, navigate]);
 

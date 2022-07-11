@@ -108,6 +108,6 @@ CartSchema.pre("save", async function () {
   }
 });
 
-// TODO - improve totalQty and totalPrice using aggregation pipeline
+//TODO - improve totalQty and totalPrice using aggregation pipeline
 
 module.exports = mongoose.model("Cart", CartSchema);

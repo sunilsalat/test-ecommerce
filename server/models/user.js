@@ -50,6 +50,7 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
 
+// newly added address will become default
 UserSchema.pre("save", async function () {
   if (!this.isModified("addresses")) return;
 
@@ -60,6 +61,12 @@ UserSchema.pre("save", async function () {
     return add;
   });
   this.addresses = this.addresses.reverse();
+});
+
+UserSchema.post("save", async function () {
+  if (this.role === "seller") {
+    await this.model("Seller").create({ name: this.name, user: this._id });
+  }
 });
 
 UserSchema.methods.comparePassword = async function (password) {

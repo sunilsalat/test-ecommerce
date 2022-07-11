@@ -7,7 +7,6 @@ import NavBar from "./components/Navbar/Navbar";
 import Profile from "./pages/profile/Profile";
 import Cart from "./pages/cart/Cart";
 import ProductDetail from "./pages/productdetail/ProductDetail";
-import Main from "./components/main/Main";
 import ProtectedRoute from "./components/protectedRoute";
 import Shipping from "./pages/shipping/shipping";
 import Order from "./pages/order/order";
@@ -49,16 +48,7 @@ function App() {
             </Route>
           </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
-          {/* <Route
-            path="/main/*"
-            element={
-              <Main>
-                <Routes>
-                  <Route path="productlist" element={<ProductList />} />
-                </Routes>
-              </Main>
-            }
-          /> */}
+        
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

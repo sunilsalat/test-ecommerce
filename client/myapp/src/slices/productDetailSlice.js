@@ -52,7 +52,12 @@ const ProductDetailSlice = createSlice({
     loading: false,
     reveiwLoading: false,
   },
-  reducers: {},
+  reducers: {
+    emptyProductDetail:(state)=>{
+      state.product = {}
+      state.reviews = null
+    }
+  },
   extraReducers: {
     [productDetail.pending]: (state) => {
       console.log("Promised pending");
@@ -93,4 +98,6 @@ const ProductDetailSlice = createSlice({
   },
 });
 
+export const {emptyProductDetail} = ProductDetailSlice.actions
 export default ProductDetailSlice.reducer;
+ 
