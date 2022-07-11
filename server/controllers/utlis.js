@@ -64,7 +64,7 @@ const uploadImageToCloudinary = async (req, res) => {
     imgFiles.push(file);
   } else imgFiles = [...imgFiles, ...file];
 
-  const paths = [];
+    const paths = [];
 
   try {
     for (let element of imgFiles) {
@@ -77,9 +77,9 @@ const uploadImageToCloudinary = async (req, res) => {
       });
 
       // compressing img before uploading to cloudinary
-      const v = `${Date.now()}-${element.name}`;
+        const v = `${Date.now()}-${element.name}`;
       await sharp(`${n}/${p}`)
-        .resize({ height: 300, width: 200 })
+          .resize({ height: 300, width: 200 })
         .toFile(`${n}/${v}`);
 
       // uploading to cloudinary
