@@ -1,7 +1,7 @@
 import "./Cart.css";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AddressForm from "../../components/addressform/AddressForm";
 import {
   getAllCartItems,
@@ -12,36 +12,35 @@ import {
 } from "../../slices/cartSlice";
 
 const Cart = () => {
-  const [showAddressForm, setAddressForm] = useState(false);
+  const [showAddressForm, toggleAddresFormVisiblity] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const { cartItems, totalQty, totalPrice, totalShippingFee, address } =
     useSelector((state) => state.cart);
 
-  const alterQuantity = ({ cartItemId, method }) => {
+  const shippingAddress =
+    address && address.hasOwnProperty("street")
+      ? `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`
+      : null;
+
+  const alterQuantity = ({ productId, method }) => {
     if (method === "inc") {
-      dispatch(incQty(cartItemId));
+      dispatch(incQty(productId));
     }
     if (method === "dec") {
-      dispatch(decQty(cartItemId));
+      dispatch(decQty(productId));
     }
-    dispatch(editCartItem({ cartItemId, method }));
+    dispatch(editCartItem({ productId, method }));
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeCartItem(id));
+  const handleRemove = (productId) => {
+    dispatch(removeCartItem(productId));
   };
 
   const showHideAddressForm = () => {
-    setAddressForm(!showAddressForm);
+    toggleAddresFormVisiblity(!showAddressForm);
   };
-
-  useEffect(() => {
-    if (!userInfo || !userInfo.name) {
-      navigate("/signin");
-    }
-  }, [navigate]);
 
   useEffect(() => {
     if (!cartItems && userInfo) {
@@ -49,19 +48,25 @@ const Cart = () => {
     }
   }, []);
 
+  if (!cartItems || cartItems <= 0) {
+    return <div>Your cart is empty !</div>;
+  }
+
   return (
     <div className="cart-container">
       <div className="cart-items-container">
         <div className="address-container">
           <div>My Cart({totalQty})</div>
-          <div>Deliver To - {JSON.stringify(address)}</div>
+          {shippingAddress ? <div> Deliver To - {shippingAddress}</div> : null}
           <div>
             {showAddressForm ? (
               <div className="modal">
-                <AddressForm setAddressForm={setAddressForm} />
+                <AddressForm
+                  toggleAddresFormVisiblity={toggleAddresFormVisiblity}
+                />
               </div>
             ) : (
-              <button onClick={() => showHideAddressForm()}>Change</button>
+              <button onClick={() => showHideAddressForm()}>Add Address</button>
             )}
           </div>
         </div>
@@ -76,7 +81,7 @@ const Cart = () => {
                   <h5>{item.item_title}</h5>
                   <p>${item.item_price}</p>
                   <div>
-                    <button onClick={() => handleRemove(item._id)}>
+                    <button onClick={() => handleRemove(item.productId)}>
                       DELETE
                     </button>
                   </div>
@@ -84,7 +89,10 @@ const Cart = () => {
                 <div className="item-btn">
                   <button
                     onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "inc" })
+                      alterQuantity({
+                        productId: item.productId,
+                        method: "inc",
+                      })
                     }
                   >
                     +
@@ -92,7 +100,10 @@ const Cart = () => {
                   <span className="item-qty">{item.item_qty}</span>
                   <button
                     onClick={() =>
-                      alterQuantity({ cartItemId: item._id, method: "dec" })
+                      alterQuantity({
+                        productId: item.productId,
+                        method: "dec",
+                      })
                     }
                   >
                     -
@@ -113,7 +124,14 @@ const Cart = () => {
           <h5>Total - ${totalShippingFee + totalPrice}</h5>
         </div>
         <div>
-          <button className="checkOut-btn">CHEKOUT</button>
+          {cartItems ? (
+            <button
+              className="checkOut-btn"
+              onClick={() => navigate("/shipping")}
+            >
+              CHEKOUT
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
 
-// add to cart
+// ADD TO CART
 const addToCart = async (req, res) => {
   const { item_qty } = req.body;
   const { productId } = req.params;
 
-  if (!item_qty) {
+  if (!item_qty || !productId) {
     throw new Error("all the fields are required");
   }
 
@@ -22,103 +22,200 @@ const addToCart = async (req, res) => {
 
   const { title, image, price, _id } = product;
 
-  const existingItem = await Cart.findOne({ productId });
-
-  if (existingItem) {
-    existingItem.item_qty += 1;
-    await existingItem.save();
-    return res.status(200).json({ cart: existingItem });
-  }
-
-  const cart = await Cart.create({
+  const item = {
     item_title: title,
-    item_image: image,
+    item_image: image[0],
     item_price: price,
     productId: _id,
     item_qty: item_qty,
+  };
+
+  const cart = await Cart.findOne({
     userId: req.userInfo.id,
   });
 
-  res.status(200).json({ cart });
-};
+  const isItemAlreadyExistInCart = cart?.cartItems?.find(
+    (e) => e.productId.toString() === productId.toString()
+  );
 
-// remove form cart
+  // if item already exist inc qty by one
+  if (isItemAlreadyExistInCart) {
+    const updatedCartItems = cart.cartItems.map((e) => {
+      if (e.productId.toString() === productId.toString()) {
+        e.item_qty += 1;
+      }
+      return e;
+    });
 
-const removeFromCart = async (req, res) => {
-  const { cartItemId } = req.params;
+    cart.cartItems = updatedCartItems;
 
-  if (!cartItemId) {
-    throw new Error("cartItemId id is required");
+    await cart.save();
+
+    return res.status(200).json({ cart: cart });
   }
 
-  await Cart.findOneAndRemove({ _id: cartItemId });
+  if (cart && cart.cartItems.length > 0) {
+    cart.cartItems.push(item);
+    await cart.save();
+    return res.status(200).json({ cart: cart });
+  }
 
-  res.status(200).send("true");
+  // first time cart initialization of user
+  await Cart.create({
+    cartItems: item,
+    userId: req.userInfo.id,
+  });
+
+  res.status(200).json({ msg: "Item added" });
 };
 
-// edit cart item
+// REMOVE FROM CART
+const removeFromCart = async (req, res) => {
+  const { productId } = req.params;
+
+  if (!productId) {
+    throw Error("ProductId required chde");
+  }
+
+  const cart = await Cart.findOne({ userId: req.userInfo.id });
+
+  if (cart && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.filter(
+      (e) => e.productId.toString() !== productId.toString()
+    );
+
+    cart.cartItems = updatedCartItems;
+    await cart.save();
+
+    return res.status(200).json({ msg: "Removed Successfully" });
+  }
+  /*
+  // const cart = await Cart.findOneAndUpdate(
+  //   { userId: req.userInfo.id },
+  //   { $pull: { cartItems: { productId: productId } } }
+  // );
+  */
+
+  res.status(200).json({ ok: "true" });
+};
+
+// INC/DEC QTY
 const editCartItem = async (req, res) => {
-  console.log("request received from fronend !!!!!!", Date.now());
-  const { cartItemId } = req.params;
+  const { productId } = req.params;
   const { method } = req.body;
 
-  if (!cartItemId || !method) {
+  if (!productId || !method) {
     throw new Error("cartItmeId id is required");
   }
 
-  if (method == "inc") {
-    const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId },
-      { $inc: { item_qty: 1 } },
+  const cart = await Cart.findOne({
+    userId: req.userInfo.id,
+  });
+
+  if (method == "inc" && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.map((e) => {
+      if (e.productId.toString() === productId) {
+        e.item_qty += 1;
+      }
+      return e;
+    });
+
+    cart.cartItems = updatedCartItems;
+
+    await cart.save();
+
+    return res.status(200).json({ ok: true });
+
+    /*const cartItem = await Cart.findOneAndUpdate(
+      { "cartItems.$.productId": productId, userId: req.userInfo.id },
+      { $inc: { "cartItems.$[].item_qty": 1 } },
       {
         new: true,
       }
     );
-    res.status(200).json({ ok: cartItem });
+    res.status(200).json({ ok: cartItem });*/
   }
 
-  if (method == "dec") {
-    const cartItem = await Cart.findOneAndUpdate(
-      { _id: cartItemId },
-      { $inc: { item_qty: -1 } },
-      {
-        new: true,
+  if (method == "dec" && cart.cartItems.length > 0) {
+    const updatedCartItems = cart.cartItems.map((e) => {
+      if (e.productId.toString() === productId.toString()) {
+        if (e.item_qty > 1) {
+          e.item_qty -= 1;
+        }
       }
-    );
-    res.status(200).json({ ok: cartItem });
+      return e;
+    });
+
+    cart.cartItems = updatedCartItems;
+
+    await cart.save();
+
+    return res.status(200).json({ ok: true });
   }
 
-  res.status(200);
+  res.status(200).json({ ok });
 };
 
-// getall cart items
+// ADD/UPDATE SHIPPING ADDRESS
+const addShippingAddress = async (req, res) => {
+  let { street, city, state, pincode, country, loc } = req.body.add;
+
+  if (!street || !city || !state || !pincode || !country || !loc) {
+    throw new Error("Please provide valid address");
+  }
+
+  const cart = await Cart.findOne({ userId: req.userInfo.id });
+
+  if (!cart) {
+    return res.status(200).json({ ok: true });
+  }
+
+  cart.shippingAddress = {
+    street,
+    city,
+    state,
+    pincode,
+    country,
+    loc: { type: "Point", coordinates: loc.coordinates },
+  };
+
+  await cart.save();
+
+  res.status(200).json({ msg: cart.shippingAddress });
+};
+
+// GET AGG. CART
 const getAllCartItems = async (req, res) => {
-  let cartItems = await Cart.find({ userId: req.userInfo.id });
+  try {
+    let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
+      "cartItems",
+    ]);
 
-  cartItems = cartItems.filter((e) => e.item_qty > 0);
+    // filter out any item with negative quantity
+    cartItems = cart?.cartItems?.filter((e) => e.item_qty > 0);
 
-  let totalFee = 0;
-  for (var item of cartItems) {
-    const shi = await Product.findOne({ _id: item.productId });
-    totalFee += shi.shippinFee;
+    res.status(200).json({
+      cartItems: cart?.cartItems,
+      totalQty: cart?.tq,
+      totalPrice: cart?.tp,
+      totalShippingFee: cart?.totalShippingFee,
+      shippingAddress: cart?.shippingAddress,
+    });
+  } catch (error) {
+    res.status(200).send(error.message);
   }
-
-  const { totalQty, totalPrice } = cartItems.reduce(
-    (agg, cuu) => {
-      const totalPriceOne = cuu.item_price * cuu.item_qty;
-      agg.totalPrice += totalPriceOne;
-      agg.totalQty += cuu.item_qty;
-      return agg;
-    },
-    {
-      totalQty: 0,
-      totalPrice: 0,
-    }
-  );
-
-  res
-    .status(200)
-    .json({ cartItems, totalQty, totalPrice, totalShippingFee: totalFee });
 };
 
-module.exports = { addToCart, removeFromCart, editCartItem, getAllCartItems };
+const clearCartItems = async (req, res) => {
+  await Cart.deleteMany({ userId: req.userInfo.id });
+  res.status(200).json({ ok: true });
+};
+
+module.exports = {
+  addToCart,
+  removeFromCart,
+  editCartItem,
+  getAllCartItems,
+  addShippingAddress,
+  clearCartItems,
+};

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   productDetail,
   getAllProductReviews,
@@ -9,40 +9,91 @@ import { addToCart, getAllCartItems } from "../../slices/cartSlice";
 import "./ProductDetail.css";
 import Star from "../../components/star/Star";
 import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview";
+import AddReveiw from "../../components/addReview/addReview";
 
 const ProductDetail = () => {
-  const dispatch = useDispatch();
+  const [imgIndex, setImgIndex] = useState(0);
   const { id } = useParams();
-  const { product, reviews } = useSelector((state) => state.productDetail);
-  const { userInfo } = useSelector((state) => state.login);
 
+  const { product, reviews, error, loading, reviewLoading } = useSelector(
+    (state) => state.productDetail
+  );
+  const { userInfo } = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
   const AddProductToCart = ({ qty, productId }) => {
     dispatch(addToCart({ item_qty: qty, productId: productId }));
-    dispatch(getAllCartItems());
   };
 
   useEffect(() => {
     dispatch(productDetail({ id }));
 
-    if (userInfo) {
+    if (userInfo && userInfo.name) {
       dispatch(getAllProductReviews({ id }));
     }
+
+    return () => setImgIndex(0);
   }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <div className="productDetail-container">
         <div className="product-img-btn-container">
-          <div className="product-img">
-            <img src={product && product.image} alt="" />
+          <div className="product-img-section">
+            {/* image caresoul */}
+            {product?.image?.length > 1 && (
+              <div className="product-img-one">
+                {product?.image?.map((img, index) => {
+                  return (
+                    <img
+                      className="unit-img"
+                      src={img}
+                      onClick={() => setImgIndex(index)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            {/* detailed image */}
+
+            <div className="product-img-two">
+              <img
+                src={
+                  Array.isArray(product.image)
+                    ? product?.image[imgIndex]
+                    : product.image
+                }
+                alt=""
+              />
+            </div>
           </div>
+
           <div className="product-btn">
             <button>BUY NOW</button>
             <button
-              onClick={() => AddProductToCart({ qty: 1, productId: product._id })}
+              onClick={() =>
+                AddProductToCart({ qty: 1, productId: product._id })
+              }
             >
               ADD TO CART
             </button>
+          </div>
+
+          <div className="write-review-container">
+            <span>{error}</span>
+            {userInfo ? (
+              reviewLoading ? (
+                "Loading..."
+              ) : (
+                <AddReveiw productId={product._id} />
+              )
+            ) : (
+              "Login to write review"
+            )}
           </div>
         </div>
 
@@ -60,7 +111,7 @@ const ProductDetail = () => {
           {/* <p>Seller-{product && product.seller.name}</p> */}
 
           <div className="review-container">
-            {reviews.length > 0 &&
+            {reviews &&
               reviews.map((review) => {
                 return <RatingAndReview review={review} key={review._id} />;
               })}

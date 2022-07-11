@@ -9,6 +9,7 @@ const Seller = require("../models/seller");
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // 
   if (!name || !email || !password) {
     throw new Error("All the fields are required to register");
   }
@@ -32,7 +33,7 @@ const login = async (req, res) => {
     throw new Error("Missing field");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate("addresses");
   if (!user) {
     throw new Error("invalid credentials");
   }
@@ -59,10 +60,7 @@ const login = async (req, res) => {
     });
 
     return res.status(200).json({
-      name: user.name,
-      role: user.role,
-      id: user._id,
-      address: user.addresses,
+      ok: true,
     });
   }
 
@@ -78,10 +76,7 @@ const login = async (req, res) => {
   createJwtToken({ res, payload, refreshTokenDB: token.refreshTokenDB });
 
   res.status(200).json({
-    name: user.name,
-    role: user.role,
-    id: user._id,
-    address: user.addresses,
+    ok: true,
   });
 };
 
@@ -92,19 +87,16 @@ const logout = async (req, res) => {
 
   res.cookie("accessToken", "", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now() + 1000 * 0.5),
+    maxAge: 1000 * 0.5,
   });
   res.cookie("refreshToken", "", {
     httpOnly: true,
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now() + 10),
+    maxAge: 10,
   });
 
   res.status(200).json({ msg: "true" });
-};
-
-//USER INFO
-const getUserInfo = async (req, res) => {
-  // todo
 };
 
 // misc
@@ -112,36 +104,7 @@ const checkRootUserInfo = async (req, res) => {
   res.status(200);
 };
 
-//// misc
-const addUserAddress = async (req, res) => {
-  const { state, country, city, pincode, street, loc } = req.body;
-
-  if (!state || !country || !city || !street || !pincode) {
-    throw new Error("All the feild are required!");
-  }
-
-  const add = {
-    street,
-    country,
-    city,
-    pincode,
-    state,
-    loc: { type: "Point", coordinates: loc },
-  };
-
-  const user = await User.findOne({ _id: req.userInfo.id });
-
-  if (!user) {
-    throw new Error("Can not add address");
-  }
-
-  user.addresses.push(add);
-  await user.save();
-
-  res.status(200).json({ ok: true });
-};
-
-// seller handles
+// seller handl
 
 const setUpSeller = async (req, res) => {
   const { location, name } = req.body;
@@ -160,6 +123,5 @@ module.exports = {
   login,
   logout,
   checkRootUserInfo,
-  addUserAddress,
   setUpSeller,
 };

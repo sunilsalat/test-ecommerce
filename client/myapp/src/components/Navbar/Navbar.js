@@ -1,41 +1,38 @@
 import "./Navbar.css";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../../slices/userLoginSlice";
 import { FaSearch, FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllCartItems } from "../../slices/cartSlice";
 
 const Navbar = () => {
   const [title, setTitle] = useState("");
-  const { userInfo } = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.profile);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const search = useLocation();
 
-  const query = new URLSearchParams(search);
-  const cat = query.get("cat");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSearch = () => {
-    navigate(`/?cat=${cat}&title=${title}`);
-  };
-
-  const redirectToHome = () => {
-    navigate("/");
+    setSearchParams({ title: title.trim() });
   };
 
   const haneleLogOut = () => {
-    dispatch(userLogout());
-    navigate("/signin");
+    dispatch(userLogout({}));
   };
+
+  useEffect(() => {
+    if (!cartItems) {
+      dispatch(getAllCartItems());
+    }
+  }, []);
 
   return (
     <>
       <nav className="navbar">
         <div className="left-section">
-          <Link to="/" onClick={() => redirectToHome()}>
-            MY-STORE
-          </Link>
+          <Link to="/">MY-STORE</Link>
         </div>
         <div className="middle-section">
           <input
@@ -51,28 +48,34 @@ const Navbar = () => {
         <div className="right-section">
           <div className="nav-links">
             <ul>
-              {userInfo ? (
+              {userInfo && userInfo.name ? (
                 <>
-                  <li onClick={() => haneleLogOut()}>
-                    <Link to="/">LogOut</Link>
-                  </li>
+                  <li onClick={() => haneleLogOut()}>LogOut</li>
                   <li>
                     <Link to="/">
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
                     </Link>
                   </li>
+                  {userInfo?.role == "seller" ? (
+                    <li>
+                      <Link to="/admin">Admin</Link>
+                    </li>
+                  ) : null}
+
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
-                      <span
-                        style={{
-                          backgroundColor: "white",
-                          padding: "1px",
-                          color: "steelblue",
-                        }}
-                      >
-                        {cartItems && cartItems.length}
-                      </span>
+                      <FaShoppingCart />
+                      {cartItems?.length > 0 ? (
+                        <span
+                          style={{
+                            backgroundColor: "white",
+                            padding: "1px",
+                            color: "steelblue",
+                          }}
+                        >
+                          {cartItems.length}
+                        </span>
+                      ) : null}
                     </Link>
                   </li>
                 </>
@@ -85,7 +88,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link to="/cart">
-                      <FaShoppingCart /> Cart
+                      <FaShoppingCart />
                     </Link>
                   </li>
                 </>

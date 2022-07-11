@@ -1,0 +1,28 @@
+
+.review-container-main{
+    margin-top: 5px 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid brown;
+
+}
+
+.review-container-main >h3{
+    color: brown;
+}
+
+.review-container-main >input,select{
+    margin: 5px 0;
+    padding: 2px;
+}
+
+.review-container-main > button{
+    padding: 5px 10px;
+    margin-top: 5px;
+    border: none;
+    background-color: steelblue;
+    color: white;
+}
+
+

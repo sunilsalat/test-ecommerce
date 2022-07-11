@@ -37,16 +37,19 @@ const ProductSchema = mongoose.Schema({
     default: 25,
     required: [true, "Unit can not be empty"],
   },
-  image: {
-    type: String,
-    required: [true, "Image can not be empty"],
-  },
+  image: [{ type: String }],
   price: { type: Number, required: [true, "Price can not be blank "] },
   category: {
     type: mongoose.ObjectId,
     ref: "Category",
     required: [true, "Category can not be blank"],
   },
+  subCategory: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "SubCategory",
+    },
+  ],
   avgRatings: {
     type: Number,
     default: 0,

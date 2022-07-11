@@ -2,18 +2,13 @@ import "./AddressForm.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
-import { setAddress, TotalShippingFee } from "../../slices/cartSlice";
+import { setAddress, addCartAddress } from "../../slices/cartSlice";
+import { addUserAddress } from "../../slices/userProfileSlice";
 
-const AddressForm = ({ setAddressForm }) => {
-  const { userInfo } = useSelector((state) => state.login);
-  const dispatch = useDispatch();
+const AddressForm = ({ toggleAddresFormVisiblity }) => {
   const [show, setShow] = useState(false);
-
-  const { cartItems } = useSelector((state) => state.cart);
-
-  const editShow = () => {
-    setShow(!show);
-  };
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.profile);
 
   const showChangeAddComponent = () => {
     setShow(false);
@@ -21,64 +16,87 @@ const AddressForm = ({ setAddressForm }) => {
 
   const setAddressDefault = (add) => {
     dispatch(setAddress(add));
-    dispatch(TotalShippingFee({ cartItems, add }));
+    dispatch(addCartAddress({ add }));
+  };
+
+  const formSubmitHandler = (e) => {
+    e.preventDefault();
+    const data = {};
+    for (let t of e.target) {
+      if (t.name == "loc") {
+        data[t.name] = t.value.split(",");
+      }
+      data[t.name] = t.value;
+    }
+
+    if (data) {
+      dispatch(addUserAddress({ data }));
+    } else alert("please add all fields");
   };
 
   return (
     <div className="addressform-container">
-      <p className="close-button" onClick={() => setAddressForm(false)}>
+      <p
+        className="close-button"
+        onClick={() => toggleAddresFormVisiblity(false)}
+      >
         <FaWindowClose />
       </p>
       {show ? (
         <div>
-          <p onClick={() => showChangeAddComponent()}>
-            change address
-            <hr></hr>
-            OR
+          <p className="text" onClick={() => showChangeAddComponent()}>
+            Select Exisiting Address
           </p>
+          <p>OR</p>
         </div>
       ) : (
         <div>
-          {userInfo.address.map((add) => {
-            const { city, state, street, pincode } = add;
-            const shortAdd = `${street}, ${city}, ${state}, ${pincode}`;
-            return (
-              <div key={add._id} className="address-item-container">
-                <p>{shortAdd}</p>
-                <button onClick={() => setAddressDefault(add)}>select</button>
-              </div>
-            );
-          })}
-          OR
+          {userInfo &&
+            userInfo.address.map((add) => {
+              const { city, state, street, pincode } = add;
+              const shortAdd = `${street}, ${city}, ${state}, ${pincode}`;
+              return (
+                <div key={add._id} className="address-item-container">
+                  <span>{shortAdd}</span>
+                  <button onClick={() => setAddressDefault(add)}>SELECT</button>
+                </div>
+              );
+            })}
         </div>
       )}
 
       {show ? (
-        <div>
-          <div className="addressform-form">
-            <form>
-              <input placeholder="Street"></input>
-              <input placeholder="City"></input>
-              <input placeholder="State"></input>
-              <input placeholder="Country"></input>
-              <input placeholder="Pincode"></input>
-              <input placeholder="loc(lng, lat)"></input>
-            </form>
+        <div className="addressform">
+          <div className="addressform-title">
+            <h3>Add Address</h3>
           </div>
-
-          <div className="btn-address-container">
-            <button> Add Address</button>
+          <div className="addressform-form">
+            <div>
+              <form onSubmit={(e) => formSubmitHandler(e)}>
+                <input name="street" required placeholder="Street"></input>
+                <input name="city" required placeholder="City"></input>
+                <input name="state" required placeholder="State"></input>
+                <input name="country" required placeholder="Country"></input>
+                <input name="pincode" required placeholder="Pincode"></input>
+                <input name="loc" required placeholder="loc(lng, lat)"></input>
+                <div className="btn">
+                  <button type="submit">ADD</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       ) : (
         <>
-          <hr></hr>
+          <p>OR</p>
+
           <p
+            className="text"
             onClick={() => {
-              editShow();
+              setShow(!show);
             }}
           >
-            add new address'
+            Add New Address
           </p>
         </>
       )}

@@ -13,7 +13,8 @@ const authMiddleware = async (req, res, next) => {
     if (accessToken) {
       const payload = verifyJwtToken(accessToken);
       req.userInfo = payload;
-      return next();
+      next();
+      return;
     }
 
     const data = verifyJwtToken(refreshToken);
@@ -38,7 +39,6 @@ const authMiddleware = async (req, res, next) => {
     // set payload on request
     req.userInfo = { id, name, role };
 
-    console.log(req.userInfo);
     next();
   } catch (error) {
     throw new Error("Not authorize");

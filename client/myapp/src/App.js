@@ -7,8 +7,20 @@ import NavBar from "./components/Navbar/Navbar";
 import Profile from "./pages/profile/Profile";
 import Cart from "./pages/cart/Cart";
 import ProductDetail from "./pages/productdetail/ProductDetail";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "./components/main/Main";
+import ProtectedRoute from "./components/protectedRoute";
+import Shipping from "./pages/shipping/shipping";
+import Order from "./pages/order/order";
+import OrderDetail from "./pages/orderDetailPage/orderDetail";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PaymentMethod from "./pages/paymentmethods/paymentMethods";
+import Payment from "./pages/paymethodIntentPage/payment";
+import PaymentConfirmatoin from "./pages/paymentConfirmationPage/paymentConfirmation";
+import AdminSellerAccess from "./components/seller-admin-only";
+import AddProduct from "./components/admin-createProduct/createProduct";
+import AdminPanel from "./pages/admin/adminPanel";
+import AllOrder from "./pages/admin-allOrders/allOrders";
+import AllProduct from "./pages/admin-allProducts/allProduct";
 
 function App() {
   return (
@@ -20,9 +32,24 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/payment" element={<PaymentMethod />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/payment-intent" element={<Payment />} />
+            <Route path="/order-detail/:orderId" element={<OrderDetail />} />
+            <Route path="/update-pay-int" element={<PaymentConfirmatoin />} />
+            <Route element={<AdminSellerAccess />}>
+              <Route path="/admin" element={<AdminPanel />}>
+                <Route index element={<AllProduct />} />
+                <Route path="all-product" element={<AllProduct />} />
+                <Route path="all-order" element={<AllOrder />} />
+              </Route>
+            </Route>
+          </Route>
           <Route path="/product-detail/:id" element={<ProductDetail />} />
-          <Route
+          {/* <Route
             path="/main/*"
             element={
               <Main>
@@ -31,7 +58,7 @@ function App() {
                 </Routes>
               </Main>
             }
-          />
+          /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

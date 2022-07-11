@@ -14,7 +14,7 @@ const SignUp = () => {
   const location = useLocation();
   const redirect = location.search ? location.search.split("=")[1] : "/";
   const { userInfo, success, error } = useSelector((state) => state.register);
-  const { userInfo: info } = useSelector((state) => state.login);
+  const { userInfo: info } = useSelector((state) => state.profile);
 
   const handleSubmit = (e) => {
     e.preventDefault();

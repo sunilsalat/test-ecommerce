@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getUserProfile, emptyUserInfo } from "./userProfileSlice";
+import { clearCart, getAllCartItems } from "./cartSlice";
 
 export const userLogin = createAsyncThunk(
   "login/userLogin",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const res = await fetch("/api/v1/auth/login", {
         method: "POST",
@@ -11,6 +13,12 @@ export const userLogin = createAsyncThunk(
         },
         body: JSON.stringify({ email, password }),
       });
+
+      if (res.status === 200) {
+        dispatch(getUserProfile({}));
+      } else {
+        dispatch(userLogout());
+      }
 
       if (res.status !== 200) {
         throw new Error("LogIn failed");
@@ -22,33 +30,41 @@ export const userLogin = createAsyncThunk(
   }
 );
 
-export const userLogout = createAsyncThunk("login/userLogout", async () => {
-  const res = await fetch("/api/v1/auth/logout", {
-    method: "GET",
-  });
-  return res.json();
-});
+export const userLogout = createAsyncThunk(
+  "login/userLogout",
+  async ({}, { dispatch }) => {
+    // Clear the local storage and clear userProfile info
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartAddress");
+    dispatch(emptyUserInfo());
 
-const userInfoFromLocalStorage = JSON.parse(localStorage.getItem("userInfo"));
+    const res = await fetch("/api/v1/auth/logout", {
+      method: "DELETE",
+    });
+
+    if (res.status === 200) {
+      dispatch(clearCart());
+    }
+
+    return await res.json();
+  }
+);
 
 const userLoginSlice = createSlice({
   name: "login",
-  initialState: {
-    userInfo: userInfoFromLocalStorage,
-    success: false,
-    error: "",
+  initialState: { msg: null },
+  reducers: {
+    defaultAdd: (state, action) => {
+      state.userInfo.address = action.payload;
+    },
   },
-  reducers: {},
   extraReducers: {
     // Login
     [userLogin.pending]: (state) => {
       console.log("Request pending");
     },
     [userLogin.fulfilled]: (state, action) => {
-      localStorage.setItem("userInfo", JSON.stringify(action.payload));
-      state.userInfo = action.payload;
-      state.success = true;
-      state.error = "";
+      console.log("request fulfilled");
     },
     [userLogin.rejected]: (state, error) => {
       console.log("Request rejected");
@@ -60,14 +76,15 @@ const userLoginSlice = createSlice({
       console.log("Request pending");
     },
     [userLogout.fulfilled]: (state, action) => {
-      localStorage.removeItem("userInfo");
       console.log("Request fullfilled");
-      state.userInfo = "";
+      state.msg = true;
     },
     [userLogout.rejected]: (state) => {
       console.log("Request rejected");
     },
   },
 });
+
+export const { defaultAdd } = userLoginSlice.actions;
 
 export default userLoginSlice.reducer;

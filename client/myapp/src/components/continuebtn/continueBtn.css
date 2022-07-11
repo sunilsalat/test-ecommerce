@@ -1,0 +1,19 @@
+.continue-btn-container {
+  margin-top: 30px;
+}
+
+.continue-btn {
+  padding: 5px 10px;
+  color: white;
+  background-color: orangered;
+  border: none;
+  transition: 0.25s;
+}
+
+.continue-btn  {
+  text-decoration: none;
+}
+
+.continue-btn:hover {
+  color: lightsalmon;
+}

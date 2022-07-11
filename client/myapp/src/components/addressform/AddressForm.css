@@ -1,17 +1,73 @@
-.addressform-container{
-    position: relative;
+.addressform-container {
+  position: relative;
 }
 
-.addressform-form {
-  padding: 25px;
+.addressform-container > hr {
+  margin: 10px 0;
+}
+
+.addressform {
+  padding: 3px 10px;
+  border: 2px solid steelblue;
+}
+
+.addressform-title {
+  margin: 10px;
+}
+
+.text {
+  font-weight: 600;
+  margin: 5px 0;
+}
+
+.address-item-container {
+  display: flex;
+  justify-content: space-around;
+  text-transform: capitalize;
+  padding: 3px;
+  margin: 5px 0;
+  text-align: left;
+}
+
+.address-item-container > button {
+  padding: 5px 10px;
+  color: seashell;
+  background-color: steelblue;
+  border: none;
 }
 
 .addressform-container form {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin: auto;
 }
+
 .addressform-container form input {
   margin-bottom: 12px;
+  padding: 8px 5px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.btn button {
+  padding: 8px 5px;
+  width: 100%;
+  font-weight: 400;
+}
+
+.btn button:hover {
+  background-color: black;
+  color: white;
+}
+
+.addressform-container form input::placeholder {
+  font-size: larger;
+}
+
+.addressform-container form input:focus {
+  outline: 1px solid rgb(76, 126, 235);
+  border: 1px solid rgb(76, 126, 235);
 }
 
 .btn-address-container {
@@ -20,8 +76,8 @@
   align-items: center;
 }
 
-.close-button{
-    position: absolute;
-    top:10px;
-    right: 10px;
+.close-button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
 }

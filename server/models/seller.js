@@ -18,5 +18,12 @@ const SellerSchema = mongoose.Schema({
 
 SellerSchema.index({ loc: '2dsphere' });
 
+SellerSchema.virtual('userName', {
+  ref: 'User',
+  localField: 'user', // Of post collection
+  foreignField: '_id',    // Of user collection
+  justOne: true
+})
+
 
 module.exports = mongoose.model("Seller", SellerSchema);
