@@ -32,6 +32,8 @@ const ProductList = () => {
     }
   }, [dispatch, cat]);
 
+  console.log(products)
+
   if (!products) {
     return <div>Loading...</div>;
   }
