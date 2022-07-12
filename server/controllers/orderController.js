@@ -1,6 +1,8 @@
 const stripe = require("stripe")(process.env.STRIPE_SK);
 const Order = require("../models/order");
 const Cart = require("../models/cart");
+const Seller = require("../models/seller");
+const mongoose = require("mongoose");
 // create order
 
 const CreateOrder = async (req, res) => {
@@ -87,7 +89,8 @@ const UpdateOrder = async (req, res) => {
       throw new Error("payInt is not provided ");
     }
 
-    const order = await Order.findOne({ user: req.userInfo.id });
+    // fine orderby id or payment intetnt
+    const order = await Order.findOne({ paymentIntent: payInt });
 
     const paymentIntent = await stripe.paymentIntents.retrieve(
       order.paymentIntent
@@ -111,11 +114,25 @@ const UpdateOrder = async (req, res) => {
 };
 
 // mark order deliverd for delivery person
+const markOrderDeliverd = async (req, res) => {
+  const { orderId } = req.body;
 
-// getall order of user
+  const order = await Order.findOne({ _id: orderId });
+
+  if (!order) {
+    throw new Error("Order does not exist !");
+  }
+
+  order.status = "Deliverd";
+  order.deliverdAt = new Date();
+  order.isDeliverd = true;
+
+  await order.save();
+
+  res.status(200).json({ ok: true });
+};
 
 // get single order detail
-
 const OrderDetail = async (req, res) => {
   const { orderId } = req.params;
 
@@ -133,14 +150,38 @@ const OrderDetail = async (req, res) => {
     throw new Error("Order does not exists!");
   }
 
-  // show only to whoever owns order
-  if (req.userInfo.id.toString() !== order.user._id.toString()) {
-    return res.status(200).json({ msg: "Order Not Found!" });
+  // show only to whoever owns order   and admin and sellers
+  if (
+    req.userInfo.role !== "seller" &&
+    req.userInfo.id.toString() !== order.user._id.toString()
+  ) {
+    return res.status(200).json({ msg: "Order does not belongs to user!" });
   }
 
   res.status(200).json({ order });
 };
 
-// all order for admin
+// get all serller orders
+const getAllSellersOrder = async (req, res) => {
+  const t = await Order.findOne({});
 
-module.exports = { CreateOrder, createPaymentIntent, OrderDetail, UpdateOrder };
+  const seller = await Seller.findOne({ user: req.userInfo.id });
+
+  const orders = await Order.find({
+    orderItems: { $elemMatch: { "productId.seller": seller._id } },
+  }).populate({
+    path: "orderItems.productId",
+    populate: { path: "seller" },
+  });
+
+  res.status(200).json({ orders });
+};
+
+module.exports = {
+  CreateOrder,
+  createPaymentIntent,
+  OrderDetail,
+  UpdateOrder,
+  getAllSellersOrder,
+  markOrderDeliverd,
+};

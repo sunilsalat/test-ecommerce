@@ -63,7 +63,7 @@ const ProductSchema = mongoose.Schema({
     required: [true, "Weight can not be empty"],
   },
   seller: {
-    type: mongoose.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "Seller",
     required: [true, "Seller can not be empty"],
   },
@@ -73,11 +73,20 @@ const ProductSchema = mongoose.Schema({
   },
   offers: [OfferSchema],
 });
+ProductSchema.virtual("sellerId", {
+  ref: "Seller",
+  localField: "seller", // Of post collection
+  foreignField: "_id", // Of user collection
+  justOne: true,
+});
 
 ProductSchema.pre("save", async function () {
   if (this.weight > 200) {
     this.shippinFee = 25;
   }
 });
+
+ProductSchema.set('toObject', { virtuals: true });
+ProductSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model("Product", ProductSchema);

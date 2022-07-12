@@ -47,13 +47,24 @@ export const updateOrderPaidAt = createAsyncThunk(
   }
 );
 
-// export const createPa
+// gettin all as of now, todo- get seller specific products
+export const getAllOrdersOfSeller = createAsyncThunk(
+  "order/getAllOrdersOfSeller",
+  async () => {
+    try {
+      const res = await fetch(`/api/v1/order/get-all-seller-order`);
+
+      return await res.json();
+    } catch (error) {}
+  }
+);
 
 const orderSlice = createSlice({
   name: "order",
   initialState: {
     paymentMethod: "stripe",
     orderId: null,
+    allSellersOrder: null,
   },
   reducers: {
     setPaymentMethod: (state, action) => {
@@ -72,6 +83,16 @@ const orderSlice = createSlice({
       state.orderId = action.payload.id;
     },
     [placeOrder.rejected]: (state, error) => {
+      console.log("Promise Rejected");
+    },
+    [getAllOrdersOfSeller.pending]: (state) => {
+      console.log("Promise pending");
+    },
+    [getAllOrdersOfSeller.fulfilled]: (state, action) => {
+      console.log("Promise fulfilled");
+      state.allSellersOrder = action.payload.orders;
+    },
+    [getAllOrdersOfSeller.rejected]: (state, error) => {
       console.log("Promise Rejected");
     },
   },

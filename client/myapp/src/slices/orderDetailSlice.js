@@ -13,12 +13,35 @@ export const getSingleOrderDetail = createAsyncThunk(
   }
 );
 
+export const markOrderDeliverd = createAsyncThunk(
+  "orderDetail/markOrderDeliverd",
+  async (orderId, { dispatch, rejectWithValue }) => {
+    try {
+      const res = fetch(`/api/v1/order/mark-deliverd`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      if (res.status === 200) {
+        dispatch(getSingleOrderDetail(orderId));
+      }
+    } catch (error) {}
+  }
+);
+
 const orderDetailSlice = createSlice({
   name: "orderDetail",
   initialState: {
     orderDetail: null,
   },
-  reducers: {},
+  reducers: {
+    emptyOrderDetail: (state) => {
+      state.orderDetail = null;
+    },
+  },
   extraReducers: {
     [getSingleOrderDetail.pending]: (state) => {
       console.log("promise pending ");
@@ -32,5 +55,7 @@ const orderDetailSlice = createSlice({
     },
   },
 });
+
+export const { emptyOrderDetail } = orderDetailSlice.actions;
 
 export default orderDetailSlice.reducer;

@@ -6,9 +6,9 @@ const SellerSchema = mongoose.Schema({
     required: [true, "Name can not be empty"],
   },
   loc: {
-    type: { type: String }
-  , coordinates: []
-},
+    type: { type: String },
+    coordinates: [],
+  },
   user: {
     type: mongoose.Types.ObjectId,
     ref: "User",
@@ -16,14 +16,6 @@ const SellerSchema = mongoose.Schema({
   },
 });
 
-SellerSchema.index({ loc: '2dsphere' });
-
-SellerSchema.virtual('userName', {
-  ref: 'User',
-  localField: 'user', // Of post collection
-  foreignField: '_id',    // Of user collection
-  justOne: true
-})
-
+SellerSchema.index({ loc: "2dsphere" });
 
 module.exports = mongoose.model("Seller", SellerSchema);
