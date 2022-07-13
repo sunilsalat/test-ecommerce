@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./ProductDetail.css";
 import { useEffect, useState } from "react";
-import { addToCart, getAllCartItems } from "../../slices/cartSlice";
+import { addToCart } from "../../slices/cartSlice";
 import Star from "../../components/star/Star";
 import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview";
 import AddReveiw from "../../components/addReview/addReview";
