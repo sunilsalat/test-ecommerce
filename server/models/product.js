@@ -73,12 +73,6 @@ const ProductSchema = mongoose.Schema({
   },
   offers: [OfferSchema],
 });
-ProductSchema.virtual("sellerId", {
-  ref: "Seller",
-  localField: "seller", // Of post collection
-  foreignField: "_id", // Of user collection
-  justOne: true,
-});
 
 ProductSchema.pre("save", async function () {
   if (this.weight > 200) {
@@ -86,7 +80,7 @@ ProductSchema.pre("save", async function () {
   }
 });
 
-ProductSchema.set('toObject', { virtuals: true });
-ProductSchema.set('toJSON', { virtuals: true });
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 
 module.exports = mongoose.model("Product", ProductSchema);

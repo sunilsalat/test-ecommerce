@@ -1,24 +1,25 @@
-import { getAllOrdersOfSeller } from "../../slices/orderSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getAllOrderOfUser } from "../../slices/orderSlice";
 
-const AllOrder = () => {
+const AllOrderUser = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { allSellersOrder } = useSelector((state) => state.order);
+  const navigate = useNavigate()
+  const { allUserOrder } = useSelector((state) => state.order);
 
   const handleClick = (id) => {
     navigate(`/order-detail/${id}`);
   };
 
   useEffect(() => {
-    dispatch(getAllOrdersOfSeller());
+    dispatch(getAllOrderOfUser());
   }, []);
 
-  if (!allSellersOrder) {
-    return <div>Loading....</div>;
+  if (!allUserOrder) {
+    return <div>Loading...</div>;
   }
+
   return (
     <div>
       <h1>All Orders</h1>
@@ -34,7 +35,7 @@ const AllOrder = () => {
           </tr>
         </thead>
         <tbody>
-          {allSellersOrder?.map((e) => {
+          {allUserOrder?.map((e) => {
             return (
               <tr key={e._id}>
                 <td onClick={() => handleClick(e._id)}>{e._id}</td>
@@ -52,4 +53,4 @@ const AllOrder = () => {
   );
 };
 
-export default AllOrder;
+export default AllOrderUser;

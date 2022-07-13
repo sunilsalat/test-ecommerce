@@ -24,7 +24,11 @@ const OrderItems = mongoose.Schema({
     ref: "Product",
     required: [true, "ProductId can not be blank"],
   },
-  
+  sellerId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Seller",
+    required: true,
+  },
 });
 
 const OrderSchema = mongoose.Schema(
@@ -101,7 +105,3 @@ module.exports = mongoose.model("Order", OrderSchema);
 // payment transection detail
 
 // when issue order refunded
-
-
-
-

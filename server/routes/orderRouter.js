@@ -9,6 +9,7 @@ const {
   UpdateOrder,
   getAllSellersOrder,
   markOrderDeliverd,
+  getAllOrderOfUser,
 } = require("../controllers/orderController");
 
 router.route("/create").post(authMiddleware, CreateOrder);
@@ -23,5 +24,6 @@ router
 router
   .route("/mark-deliverd")
   .post([authMiddleware, isSeller], markOrderDeliverd);
+router.route("/get-all-user-order").get(authMiddleware, getAllOrderOfUser);
 
 module.exports = router;

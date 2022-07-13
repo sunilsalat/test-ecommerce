@@ -23,6 +23,7 @@ const CreateOrder = async (req, res) => {
       price: e.item_price,
       productId: e.productId,
       qty: e.item_qty,
+      sellerId: e.item_seller,
     };
   });
 
@@ -161,17 +162,19 @@ const OrderDetail = async (req, res) => {
   res.status(200).json({ order });
 };
 
+// get all orders of single user
+const getAllOrderOfUser = async (req, res) => {
+  const orders = await Order.find({ user: req.userInfo.id });
+  res.status(200).json({ orders });
+};
+
 // get all serller orders
 const getAllSellersOrder = async (req, res) => {
-  const t = await Order.findOne({});
-
   const seller = await Seller.findOne({ user: req.userInfo.id });
-
   const orders = await Order.find({
-    orderItems: { $elemMatch: { "productId.seller": seller._id } },
+    orderItems: { $elemMatch: { sellerId: seller._id } },
   }).populate({
     path: "orderItems.productId",
-    populate: { path: "seller" },
   });
 
   res.status(200).json({ orders });
@@ -184,4 +187,5 @@ module.exports = {
   UpdateOrder,
   getAllSellersOrder,
   markOrderDeliverd,
+  getAllOrderOfUser,
 };
