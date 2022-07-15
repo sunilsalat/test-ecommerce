@@ -41,22 +41,24 @@ const getAllProducts = async (req, res) => {
     ? { title: { $regex: new RegExp("^" + req.query["title"], "i") } }
     : {};
 
-  const pageSize = 14;
-  const page = parseInt(req.query.pageNumber) || 1;
+  const pageSize = 2;
+  const page = parseInt(req.query.page) || 1;
 
   const result = await paginatedResult(
     Product,
     { ...category, ...title },
     ["category", "seller"],
-    1,
-    4
+    page,
+    pageSize
   );
 
-  const products = await Product.find({ ...category, ...title })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-    .populate(["category", "seller"]);
-  res.status(200).json({ products });
+  res.status(200).json({
+    products: result.data,
+    totalCount: result.total,
+    lastPage: result.lastPage,
+    page: result.currentPage,
+    hasMorePages: result.hasMorePages,
+  });
 };
 
 const getCategoryWiseProduct = async (req, res) => {
@@ -78,7 +80,6 @@ const getProductDetail = async (req, res) => {
   res.status(200).json({ product });
 };
 
-//
 //
 // ------------------------MISC---------MISC------- MISC -----------------MISC-----------------------------------------------------------------
 

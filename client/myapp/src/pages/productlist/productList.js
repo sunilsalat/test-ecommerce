@@ -2,12 +2,17 @@ import "./productList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import Product from "../../components/productComponent/Product";
+import Pagination from "../../components/pagination/Pagination";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { getAllProducts, getCategories } from "../../slices/productsSlics";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const { products, categories } = useSelector((state) => state.products);
+  const { products, categories, lastPage } = useSelector(
+    (state) => state.products
+  );
+
+  const ArrayFromLastPage = Array.from(Array(lastPage).keys());
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -16,6 +21,7 @@ const ProductList = () => {
 
   const cat = query.has("cat") ? query.get("cat") : "";
   const title = query.has("title") ? query.get("title") : "";
+  const page = query.has("page") ? query.get("page") : 1;
 
   useEffect(() => {
     if (!categories) {
@@ -24,8 +30,8 @@ const ProductList = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getAllProducts({ cat, title }));
-  }, [dispatch, cat, title]);
+    dispatch(getAllProducts({ cat, title, page }));
+  }, [dispatch, cat, title, page]);
 
   if (!products) {
     return <div>Loading...</div>;
@@ -64,15 +70,17 @@ const ProductList = () => {
       </div>
 
       {/* products body */}
-      <div className="productList-container">
-        {products &&
-          products.map((product) => {
-            return <Product product={product} key={product._id} />;
-          })}
+      <div className="main-hero-container">
+        <div className="productList-container">
+          {products &&
+            products.map((product) => {
+              return <Product product={product} key={product._id} />;
+            })}
+        </div>
+        <div className="pagination-container-main">
+          <Pagination lastPage={lastPage} path={"/"} />
+        </div>
       </div>
-
-      {/* pagination */}
-      <div>{}</div>
     </div>
   );
 };

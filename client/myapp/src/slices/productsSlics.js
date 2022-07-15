@@ -2,13 +2,16 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async ({ cat = "", title = "" }) => {
+  async ({ cat = "", title = "", page = 1 }) => {
     try {
-      if (cat || title ) {
-        var res = await fetch(`/api/v1/product/all?cat=${cat}&title=${title}`);
+      if (cat || title || page) {
+        console.log(page);
+        var res = await fetch(
+          `/api/v1/product/all?cat=${cat}&title=${title}&page=${page}`
+        );
       } else {
         var res = await fetch(`/api/v1/product/all`);
-     }
+      }
       return await res.json();
     } catch (error) {
       console.log(error.message);
@@ -26,13 +29,22 @@ export const getCategories = createAsyncThunk(
 
 const productsSlics = createSlice({
   name: "products",
-  initialState: { categories: null, products: null, success: false, error: "" },
+  initialState: {
+    categories: null,
+    products: null,
+    currentPage: 0,
+    lastPage: 0,
+    success: false,
+    error: "",
+  },
   reducers: {},
   extraReducers: {
     [getAllProducts.pending]: (state) => {},
     [getAllProducts.fulfilled]: (state, action) => {
       state.products = action.payload.products;
       state.success = true;
+      state.lastPage = action.payload.lastPage;
+      state.currentPage = action.payload.currentPage;
     },
     [getAllProducts.rejected]: (state, error) => {
       console.log("Promise rejected");

@@ -77,6 +77,14 @@
   font-weight: 600;
 }
 
+/* paginattion */
+
+.pagination-number {
+  margin: 13px;
+  padding: 3px;
+  border: 1px solid black;
+}
+
 @media only screen and (max-width: 900px) {
   .main-card-container {
     width: 30%;

@@ -50,11 +50,20 @@
   text-align: left;
 }
 
-.productList-container {
+.main-hero-container {
   flex: 4;
+  position: relative;
+}
+
+.productList-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+}
+
+.pagination-container-main{
+  margin-top: 50px;
+ 
 }
 
 @media only screen and (max-width: 600px) {
