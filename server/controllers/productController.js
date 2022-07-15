@@ -56,7 +56,7 @@ const getAllProducts = async (req, res) => {
     products: result.data,
     totalCount: result.total,
     lastPage: result.lastPage,
-    page: result.currentPage,
+    currentPage: result.currentPage,
     hasMorePages: result.hasMorePages,
   });
 };

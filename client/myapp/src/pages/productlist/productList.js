@@ -8,7 +8,7 @@ import { getAllProducts, getCategories } from "../../slices/productsSlics";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const { products, categories, lastPage } = useSelector(
+  const { products, categories, lastPage, currentPage } = useSelector(
     (state) => state.products
   );
 
@@ -73,13 +73,24 @@ const ProductList = () => {
       <div className="main-hero-container">
         <div className="productList-container">
           {products &&
-            products.map((product) => {
-              return <Product product={product} key={product._id} />;
+            products.map((product, index) => {
+              return (
+                <Product
+                  product={product}
+                  key={product._id}
+                  index={index}
+                  len={products.length}
+                  lastPage={lastPage}
+                  currentPage={currentPage}
+                />
+              );
             })}
         </div>
-        <div className="pagination-container-main">
+
+        {/* pagination -- improve to infinite scrolling  */}
+        {/* <div className="pagination-container-main">
           <Pagination lastPage={lastPage} path={"/"} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

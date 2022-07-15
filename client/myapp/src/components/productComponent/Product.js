@@ -1,17 +1,36 @@
 import "./Product.css";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef } from "react";
 
-const Product = ({ product }) => {
+const Product = ({ product, index, len, lastPage, currentPage }) => {
   const { _id, title, price, image } = product;
 
+  /// pagination
   const navigate = useNavigate();
+  const elemRef = useRef();
+
+  const observer = useCallback((node) => {
+    if (elemRef.current) elemRef.current.disconnect();
+    elemRef.current = new IntersectionObserver((entries) => {
+      if (currentPage < lastPage && entries[0].isIntersecting) {
+        navigate(`/?page=${currentPage + 1}`);
+      }
+    });
+
+    if (node) elemRef.current.observe(node);
+  });
+
   const t = (id) => {
     navigate(`/product-detail/${id}`);
   };
 
   return (
-    <div className="main-card-container">
+    <div
+      className="main-card-container"
+      // add InterceptorObserver to last product
+      ref={index + 1 === len ? observer : null}
+    >
       <div className="product-card-container">
         <FaHeart className="heart" />
         <div className="product-img-container" onClick={() => t(_id)}>
