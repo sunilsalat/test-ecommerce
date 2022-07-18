@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./ProductDetail.css";
 import { useEffect, useState } from "react";
-import { addToCart, getAllCartItems } from "../../slices/cartSlice";
+import { addToCart } from "../../slices/cartSlice";
 import Star from "../../components/star/Star";
 import RatingAndReview from "../../components/ratingsandreviews/RatingAndReview";
 import AddReveiw from "../../components/addReview/addReview";
@@ -16,9 +16,15 @@ const ProductDetail = () => {
   const [imgIndex, setImgIndex] = useState(0);
   const { id } = useParams();
 
-  const { product, reviews, error, loading, reviewLoading } = useSelector(
-    (state) => state.productDetail
-  );
+  const {
+    product,
+    reviews,
+    error,
+    loading,
+    reviewLoading,
+    lastPage,
+    currentPage,
+  } = useSelector((state) => state.productDetail);
   const { userInfo } = useSelector((state) => state.profile);
 
   const dispatch = useDispatch();
@@ -78,7 +84,6 @@ const ProductDetail = () => {
             )}
 
             {/* detailed image */}
-
             <div className="product-img-two">
               <img src={product?.image[imgIndex]} alt="" />
             </div>
@@ -126,8 +131,16 @@ const ProductDetail = () => {
 
           <div className="review-container">
             {reviews &&
-              reviews.map((review) => {
-                return <RatingAndReview review={review} key={review._id} />;
+              reviews.map((review, index) => {
+                return (
+                  <RatingAndReview
+                    review={review}
+                    key={review._id}
+                    index={index}
+                    lastPage={lastPage}
+                    currentPage={currentPage}
+                  />
+                );
               })}
           </div>
         </div>

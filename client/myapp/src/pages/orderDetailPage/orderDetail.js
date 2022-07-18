@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getSingleOrderDetail } from "../../slices/orderDetailSlice";
+import {
+  getSingleOrderDetail,
+  markOrderDeliverd,
+  emptyOrderDetail,
+} from "../../slices/orderDetailSlice";
 import "./orderDetail.css";
 
 const OrderDetail = () => {
@@ -9,11 +13,20 @@ const OrderDetail = () => {
   const { orderId } = useParams();
 
   const { orderDetail: order } = useSelector((state) => state.orderDetail);
+  const { userInfo } = useSelector((state) => state.profile);
+
+  const markDeliverdHandler = (orderId) => {
+    dispatch(markOrderDeliverd(orderId));
+  };
 
   useEffect(() => {
     if (orderId) {
       dispatch(getSingleOrderDetail(orderId));
     }
+
+    return () => {
+      dispatch(emptyOrderDetail());
+    };
   }, [orderId]);
 
   if (!order) {
@@ -35,7 +48,7 @@ const OrderDetail = () => {
               <p className="mtb-5">{JSON.stringify(order.address)}</p>
               <p className="order-paid">
                 {order.isDeliverd
-                  ? ` Deliverd At -  ${order.deliverdAt}`
+                  ? ` Deliverd At -  ${ new Date(order.deliverdAt).toLocaleString()}`
                   : "IN TRANSIT"}
               </p>
             </div>
@@ -80,6 +93,12 @@ const OrderDetail = () => {
                 <p>${order.total + order.shippingFee}</p>
               </div>
             </div>
+
+            {userInfo.role === "seller" && (
+              <button onClick={() => markDeliverdHandler(orderId)}>
+                mark deliverd
+              </button>
+            )}
           </div>
         </>
       )}

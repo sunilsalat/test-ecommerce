@@ -1,0 +1,13 @@
+.pagination-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pagination-block {
+  border: 1px solid black;
+  color: white;
+  background-color: black;
+}
+
+

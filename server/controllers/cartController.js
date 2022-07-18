@@ -20,7 +20,7 @@ const addToCart = async (req, res) => {
     throw new Error("product is out of stock for given valut of qty");
   }
 
-  const { title, image, price, _id } = product;
+  const { title, image, price, _id, seller } = product;
 
   const item = {
     item_title: title,
@@ -28,6 +28,7 @@ const addToCart = async (req, res) => {
     item_price: price,
     productId: _id,
     item_qty: item_qty,
+    item_seller: seller,
   };
 
   const cart = await Cart.findOne({
@@ -48,9 +49,7 @@ const addToCart = async (req, res) => {
     });
 
     cart.cartItems = updatedCartItems;
-
     await cart.save();
-
     return res.status(200).json({ cart: cart });
   }
 

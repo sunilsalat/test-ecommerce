@@ -47,7 +47,7 @@
 
 .product-img-two > img {
   height: 85%;
-  width: 300px;
+  /* width: 300px; */
   object-fit: cover;
   box-shadow: 1px 1px 5px grey;
 

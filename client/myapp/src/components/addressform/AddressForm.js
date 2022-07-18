@@ -10,10 +10,6 @@ const AddressForm = ({ toggleAddresFormVisiblity }) => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.profile);
 
-  const showChangeAddComponent = () => {
-    setShow(false);
-  };
-
   const setAddressDefault = (add) => {
     dispatch(setAddress(add));
     dispatch(addCartAddress({ add }));
@@ -42,9 +38,11 @@ const AddressForm = ({ toggleAddresFormVisiblity }) => {
       >
         <FaWindowClose />
       </p>
+
+      {/* on clicking selectExisting address show all user address */}
       {show ? (
         <div>
-          <p className="text" onClick={() => showChangeAddComponent()}>
+          <p className="text" onClick={() => setShow(false)}>
             Select Exisiting Address
           </p>
           <p>OR</p>
@@ -65,6 +63,7 @@ const AddressForm = ({ toggleAddresFormVisiblity }) => {
         </div>
       )}
 
+      {/* on clicking add address show blank address form  */}
       {show ? (
         <div className="addressform">
           <div className="addressform-title">

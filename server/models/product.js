@@ -63,7 +63,7 @@ const ProductSchema = mongoose.Schema({
     required: [true, "Weight can not be empty"],
   },
   seller: {
-    type: mongoose.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "Seller",
     required: [true, "Seller can not be empty"],
   },
@@ -79,5 +79,8 @@ ProductSchema.pre("save", async function () {
     this.shippinFee = 25;
   }
 });
+
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 
 module.exports = mongoose.model("Product", ProductSchema);

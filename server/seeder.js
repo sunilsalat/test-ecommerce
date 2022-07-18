@@ -63,13 +63,24 @@ const data = [
 
 const mongoose = require("mongoose");
 const Product = require("./models/product");
+const Review = require("./models/review");
 
 const uploadData = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/ecommerce");
-    await Product.deleteMany();
+    await mongoose.connect("");
 
-    await Product.insertMany(data);
+    for (var i = 0; i < 11; i++) {
+      console.log("slkfjslkfj");
+      await Review.create({
+        rating: Math.floor(Math.random() * 5) + 1,
+        title: `title ${i + 1}`,
+        comment: `comment ${i + 1}`,
+        userId: "62c943dc2300b6e558ef9120",
+        productId: "62c94aa5e15f54874573f1c7",
+      });
+      console.log("SLKFJLKSJDFK");
+    }
+
     process.exit();
   } catch (error) {
     console.log(error);
@@ -77,6 +88,10 @@ const uploadData = async () => {
   }
 };
 
-uploadData();
+try {
+  uploadData();
+} catch (error) {
+  console.log(error.message);
+}
 
 // ObjectId("6299ae01004ba20727fa6171"), ObjectId("62a9803b56babb7d23cfe354"), ObjectId("62a9b7f492f4eebc5c922bba"),

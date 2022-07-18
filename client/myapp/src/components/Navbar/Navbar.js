@@ -55,7 +55,7 @@ const Navbar = () => {
                 <>
                   <li onClick={() => haneleLogOut()}>LogOut</li>
                   <li>
-                    <Link to="/">
+                    <Link to="/profile">
                       {userInfo.name ? `Hi, ${userInfo.name}` : "Guest"}
                     </Link>
                   </li>

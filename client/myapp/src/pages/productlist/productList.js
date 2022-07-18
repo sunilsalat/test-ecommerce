@@ -2,20 +2,29 @@ import "./productList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import Product from "../../components/productComponent/Product";
+import Pagination from "../../components/pagination/Pagination";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { getAllProducts, getCategories } from "../../slices/productsSlics";
+import {
+  emptyProducts,
+  getAllProducts,
+  getCategories,
+} from "../../slices/productsSlics";
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const { products, categories } = useSelector((state) => state.products);
+  const { products, categories, lastPage, currentPage } = useSelector(
+    (state) => state.products
+  );
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { search } = useLocation();
+
   const query = new URLSearchParams(search);
 
   const cat = query.has("cat") ? query.get("cat") : "";
   const title = query.has("title") ? query.get("title") : "";
+  const page = query.has("page") ? query.get("page") : "";
 
   useEffect(() => {
     if (!categories) {
@@ -23,11 +32,18 @@ const ProductList = () => {
     }
   }, []);
 
+  // only on first render
   useEffect(() => {
-    dispatch(getAllProducts({ cat, title }));
-  }, [dispatch, cat, title]);
+    if (products.length === 0) {
+      dispatch(getAllProducts({}));
+    }
+  }, []);
 
-  console.log(products)
+  useEffect(() => {
+    if (cat || title || page > 1) {
+      dispatch(getAllProducts({ cat, title, page }));
+    }
+  }, [cat, title, page]);
 
   if (!products) {
     return <div>Loading...</div>;
@@ -51,7 +67,7 @@ const ProductList = () => {
                 return (
                   <p
                     onClick={() => {
-                      // navigate(`/?cat=${e._id}`);
+                      dispatch(emptyProducts());
                       setSearchParams({ cat: e._id });
                     }}
                     key={e._id}
@@ -66,15 +82,28 @@ const ProductList = () => {
       </div>
 
       {/* products body */}
-      <div className="productList-container">
-        {products &&
-          products.map((product) => {
-            return <Product product={product} key={product._id} />;
-          })}
-      </div>
+      <div className="main-hero-container">
+        <div className="productList-container">
+          {products.length !== 0 &&
+            products.map((product, index) => {
+              return (
+                <Product
+                  product={product}
+                  key={product._id}
+                  index={index}
+                  len={products.length}
+                  lastPage={lastPage}
+                  currentPage={currentPage}
+                />
+              );
+            })}
+        </div>
 
-      {/* pagination */}
-      <div>{}</div>
+        {/* pagination -- improve to infinite scrolling  */}
+        {/* <div className="pagination-container-main">
+          <Pagination lastPage={lastPage} path={"/"} />
+        </div> */}
+      </div>
     </div>
   );
 };

@@ -21,6 +21,11 @@ const item = mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    item_seller: {
+      type:  mongoose.Types.ObjectId,
+      ref: "Seller",
+      required: true,
+    },
   },
   { timestamps: true }
 );

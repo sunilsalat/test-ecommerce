@@ -3,6 +3,7 @@ const Category = require("../models/category");
 const SubCategory = require("../models/subCategories");
 const mongoose = require("mongoose");
 const Seller = require("../models/seller");
+const paginatedResult = require("../utlis/pagination");
 
 const createProduct = async (req, res) => {
   const { title, description, image, price, category, weight } = req.body;
@@ -12,7 +13,6 @@ const createProduct = async (req, res) => {
   }
 
   const seller = await Seller.findOne({ user: req.userInfo.id });
-
   const product = await Product.create({
     ...req.body,
     seller: seller,
@@ -23,7 +23,6 @@ const createProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
   const { id } = req.params;
-
   const product = await Product.findOneAndUpdate(
     { _id: id },
     { ...req.body },
@@ -38,19 +37,28 @@ const editProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   // dynamic queries
   const category = req.query.cat ? { category: req.query.cat } : {};
-
   const title = req.query.title
     ? { title: { $regex: new RegExp("^" + req.query["title"], "i") } }
     : {};
 
-  const pageSize = 14;
-  const page = parseInt(req.query.pageNumber) || 1;
+  const pageSize = 5;
+  const page = parseInt(req.query.page) || 1;
 
-  const products = await Product.find({ ...category, ...title })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-    .populate(["category", "seller"]);
-  res.status(200).json({ products });
+  const result = await paginatedResult(
+    Product,
+    { ...category, ...title },
+    ["category", "seller"],
+    page,
+    pageSize
+  );
+
+  res.status(200).json({
+    products: result.data,
+    totalCount: result.total,
+    lastPage: result.lastPage,
+    currentPage: result.currentPage,
+    hasMorePages: result.hasMorePages,
+  });
 };
 
 const getCategoryWiseProduct = async (req, res) => {
@@ -72,7 +80,8 @@ const getProductDetail = async (req, res) => {
   res.status(200).json({ product });
 };
 
-// --- MISC ----
+//
+// ------------------------MISC---------MISC------- MISC -----------------MISC-----------------------------------------------------------------
 
 // Get seller's Product
 const getProductBySeller = async (req, res) => {
@@ -100,7 +109,6 @@ const addProductCategory = async (req, res) => {
 const getAllCategory = async (req, res) => {
   // Todo -- show most selling categories first
   const categories = await Category.find({});
-
   res.status(200).json({ categories });
 };
 

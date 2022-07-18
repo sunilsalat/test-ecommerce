@@ -1,0 +1,14 @@
+.profile-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.user-profile-side-container {
+  border-right: 1px solid black;
+  flex: 1;
+}
+
+.user-profile-main-container {
+  flex: 4;
+}
