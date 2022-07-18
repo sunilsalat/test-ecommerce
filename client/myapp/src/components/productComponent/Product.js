@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useRef } from "react";
 import { getAllProducts } from "../../slices/productsSlics";
 import { useDispatch } from "react-redux";
+import { usePaginator } from "../../customHooks/paginatior";
 
-const Product = ({ product, index, len, lastPage, currentPage }) => {
+const Product = ({ product, index, lastPage, currentPage }) => {
   const { _id, title, price, image } = product;
 
   /// pagination
@@ -19,8 +20,19 @@ const Product = ({ product, index, len, lastPage, currentPage }) => {
 
   const cat = query.has("cat") ? query.get("cat") : "";
   const search_title = query.has("title") ? query.get("title") : "";
-  const page = query.has("page") ? query.get("page") : "";
 
+  /*
+  const runFun = () => {
+    dispatch(
+      getAllProducts({
+        page: currentPage + 1,
+        cat: cat,
+        title: search_title,
+      })
+    );
+  };
+  const { observer } = usePaginator(currentPage, lastPage, runFun);
+*/
   const observer = useCallback((node) => {
     if (elemRef.current) elemRef.current.disconnect();
     elemRef.current = new IntersectionObserver((entries) => {

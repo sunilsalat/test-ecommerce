@@ -51,12 +51,14 @@ const ProductDetailSlice = createSlice({
     error: null,
     loading: false,
     reveiwLoading: false,
+    currentPage: 0,
+    lastPage: 0,
   },
   reducers: {
-    emptyProductDetail:(state)=>{
-      state.product = {}
-      state.reviews = null
-    }
+    emptyProductDetail: (state) => {
+      state.product = {};
+      state.reviews = null;
+    },
   },
   extraReducers: {
     [productDetail.pending]: (state) => {
@@ -73,16 +75,18 @@ const ProductDetailSlice = createSlice({
       console.log(error.message);
       console.log("Promised rejected");
     },
-    // all product reviews
+    // get all  product reviews
     [getAllProductReviews.pending]: (state, action) => {
       console.log("Promise pending ");
-      state.reveiwLoading = true
+      state.reveiwLoading = true;
     },
     [getAllProductReviews.fulfilled]: (state, action) => {
       console.log("Promise fullfilled ");
       state.reviews = action.payload.reviews;
       state.error = null;
-      state.reveiwLoading = false
+      state.reveiwLoading = false;
+      state.lastPage = action.payload.lastPage;
+      state.currentPage = action.payload.currentPage;
     },
     [getAllProductReviews.rejected]: (state, action) => {
       console.log("Promise rejected ");
@@ -98,6 +102,5 @@ const ProductDetailSlice = createSlice({
   },
 });
 
-export const {emptyProductDetail} = ProductDetailSlice.actions
+export const { emptyProductDetail } = ProductDetailSlice.actions;
 export default ProductDetailSlice.reducer;
- 
