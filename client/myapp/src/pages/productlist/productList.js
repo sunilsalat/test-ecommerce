@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import Product from "../../components/productComponent/Product";
 import Pagination from "../../components/pagination/Pagination";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { getAllProducts, getCategories } from "../../slices/productsSlics";
+import {
+  emptyProducts,
+  getAllProducts,
+  getCategories,
+} from "../../slices/productsSlics";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -12,16 +16,15 @@ const ProductList = () => {
     (state) => state.products
   );
 
-  const ArrayFromLastPage = Array.from(Array(lastPage).keys());
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { search } = useLocation();
+
   const query = new URLSearchParams(search);
 
   const cat = query.has("cat") ? query.get("cat") : "";
   const title = query.has("title") ? query.get("title") : "";
-  const page = query.has("page") ? query.get("page") : 1;
+  const page = query.has("page") ? query.get("page") : "";
 
   useEffect(() => {
     if (!categories) {
@@ -29,9 +32,18 @@ const ProductList = () => {
     }
   }, []);
 
+  // only on first render
   useEffect(() => {
-    dispatch(getAllProducts({ cat, title, page }));
-  }, [dispatch, cat, title, page]);
+    if (products.length === 0) {
+      dispatch(getAllProducts({}));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cat || title || page > 1) {
+      dispatch(getAllProducts({ cat, title, page }));
+    }
+  }, [cat, title, page]);
 
   if (!products) {
     return <div>Loading...</div>;
@@ -55,7 +67,7 @@ const ProductList = () => {
                 return (
                   <p
                     onClick={() => {
-                      // navigate(`/?cat=${e._id}`);
+                      dispatch(emptyProducts());
                       setSearchParams({ cat: e._id });
                     }}
                     key={e._id}
@@ -72,7 +84,7 @@ const ProductList = () => {
       {/* products body */}
       <div className="main-hero-container">
         <div className="productList-container">
-          {products &&
+          {products.length !== 0 &&
             products.map((product, index) => {
               return (
                 <Product

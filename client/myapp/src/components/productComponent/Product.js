@@ -1,23 +1,41 @@
 import "./Product.css";
 import { FaHeart } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useRef } from "react";
+import { getAllProducts } from "../../slices/productsSlics";
+import { useDispatch } from "react-redux";
 
 const Product = ({ product, index, len, lastPage, currentPage }) => {
   const { _id, title, price, image } = product;
 
   /// pagination
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const elemRef = useRef();
+
+  const { search } = useLocation();
+
+  const query = new URLSearchParams(search);
+
+  const cat = query.has("cat") ? query.get("cat") : "";
+  const search_title = query.has("title") ? query.get("title") : "";
+  const page = query.has("page") ? query.get("page") : "";
 
   const observer = useCallback((node) => {
     if (elemRef.current) elemRef.current.disconnect();
     elemRef.current = new IntersectionObserver((entries) => {
       if (currentPage < lastPage && entries[0].isIntersecting) {
-        navigate(`/?page=${currentPage + 1}`);
+        dispatch(
+          getAllProducts({
+            page: currentPage + 1,
+            cat: cat,
+            title: search_title,
+          })
+        );
+        elemRef.current.unobserve(node);
       }
     });
-
+    // unobserve the product once it touches the screen or callback fires off
     if (node) elemRef.current.observe(node);
   });
 
@@ -28,8 +46,7 @@ const Product = ({ product, index, len, lastPage, currentPage }) => {
   return (
     <div
       className="main-card-container"
-      // add InterceptorObserver to last product
-      ref={index + 1 === len ? observer : null}
+      ref={index + 1 === 5 * currentPage ? observer : null}
     >
       <div className="product-card-container">
         <FaHeart className="heart" />

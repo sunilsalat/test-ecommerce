@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async ({ cat = "", title = "", page = 1 }) => {
+  async ({ cat = "", title = "", page = "" }, { dispatch }) => {
+    console.log('in get alll products')
     try {
       if (cat || title || page) {
         console.log(page);
@@ -31,17 +32,24 @@ const productsSlics = createSlice({
   name: "products",
   initialState: {
     categories: null,
-    products: null,
+    products: [],
     currentPage: 0,
     lastPage: 0,
     success: false,
     error: "",
   },
-  reducers: {},
+  reducers: {
+    emptyProducts: (state, action) => {
+      console.log("indise empty prdodfo");
+      state.products = [];
+    },
+  },
   extraReducers: {
     [getAllProducts.pending]: (state) => {},
     [getAllProducts.fulfilled]: (state, action) => {
-      state.products = action.payload.products;
+      state.products = [
+        ...new Set([...state.products, ...action.payload.products]),
+      ];
       state.success = true;
       state.lastPage = action.payload.lastPage;
       state.currentPage = action.payload.currentPage;
@@ -60,5 +68,7 @@ const productsSlics = createSlice({
     },
   },
 });
+
+export const { emptyProducts } = productsSlics.actions;
 
 export default productsSlics.reducer;

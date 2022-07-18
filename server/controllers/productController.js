@@ -41,7 +41,7 @@ const getAllProducts = async (req, res) => {
     ? { title: { $regex: new RegExp("^" + req.query["title"], "i") } }
     : {};
 
-  const pageSize = 2;
+  const pageSize = 5;
   const page = parseInt(req.query.page) || 1;
 
   const result = await paginatedResult(
