@@ -1,6 +1,3 @@
-
-
-
 import "./order.css";
 import { useDispatch, useSelector } from "react-redux";
 import CheckOutStep from "../../components/checkoutStepCompoment/checkoutStep";
