@@ -8,20 +8,24 @@ const RatingAndReview = ({ review, currentPage, lastPage, index }) => {
   const { userInfo } = useSelector((state) => state.profile);
 
   const elemRef = useRef();
+
   const observer = useCallback((node) => {
     if (elemRef.current) elemRef.current.disconnect();
+
     elemRef.current = new IntersectionObserver((entries) => {
       if (currentPage < lastPage && entries[0].isIntersecting) {
-
-        
-
+        console.log("it Wop~!!");
+        //    todo improve pagination infinite scroll later
       }
+      elemRef.current.unobserve(node);
     });
+
+    if (node) elemRef.current.observe(node);
   });
 
   return (
     <div
-      ref={index + 1 === 5 * currentPage ? observer : null}
+      ref={index + 1 === 2 * currentPage ? observer : null}
       className="review-main-container"
     >
       <div className="review-title-container">

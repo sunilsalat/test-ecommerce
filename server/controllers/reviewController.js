@@ -47,7 +47,7 @@ const getAllProductReview = async (req, res) => {
     pageSize
   );
 
-  const reviews = await Review.find({ productId }).populate("userId").limit(10);
+  // const reviews = await Review.find({ productId }).populate("userId").limit(10);
 
   res.status(200).json({
     reviews: result.data,
