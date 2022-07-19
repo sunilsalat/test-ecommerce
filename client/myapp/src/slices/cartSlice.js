@@ -142,7 +142,10 @@ const cartSlice = createSlice({
 
     incQty: (state, action) => {
       const newCartItems = state.cartItems.map((item) => {
-        if (item.productId === action.payload) {
+        if (
+          item.productId === action.payload._id &&
+          item.item_qty <= action.payload.productId.unit
+        ) {
           item.item_qty += 1;
         }
         return item;
@@ -152,8 +155,9 @@ const cartSlice = createSlice({
     },
 
     decQty: (state, action) => {
+      console.log("sldkjf");
       const newCartItems = state.cartItems.map((item) => {
-        if (item.productId === action.payload) {
+        if (item.productId === action.payload._id) {
           if (item.item_qty > 1) {
             item.item_qty -= 1;
           }
@@ -188,7 +192,9 @@ const cartSlice = createSlice({
     },
     // add item to cart
     [addToCart.pending]: (state) => {},
-    [addToCart.fulfilled]: (state, action) => {},
+    [addToCart.fulfilled]: (state, action) => {
+      console.log("promise fulfilled for add to cart");
+    },
     [addToCart.rejected]: (state, error) => {
       console.log("promise rejected");
     },

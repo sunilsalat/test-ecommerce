@@ -24,18 +24,21 @@ const Cart = () => {
       ? `${address.street}, ${address.city}, ${address.state}, ${address.pincode}`
       : null;
 
-  const alterQuantity = ({ productId, method }) => {
+  const alterQuantity = ({ productId, method, qty }) => {
     if (method === "inc") {
       dispatch(incQty(productId));
+      qty < productId.unit &&
+        dispatch(editCartItem({ productId: productId._id, method }));
     }
     if (method === "dec") {
       dispatch(decQty(productId));
+      qty <= productId.unit &&
+        dispatch(editCartItem({ productId: productId._id, method }));
     }
-    dispatch(editCartItem({ productId, method }));
   };
 
   const handleRemove = (productId) => {
-    dispatch(removeCartItem(productId));
+    dispatch(removeCartItem(productId._id));
   };
 
   const showHideAddressForm = () => {
@@ -92,6 +95,7 @@ const Cart = () => {
                       alterQuantity({
                         productId: item.productId,
                         method: "inc",
+                        qty: item.item_qty,
                       })
                     }
                   >
@@ -103,6 +107,7 @@ const Cart = () => {
                       alterQuantity({
                         productId: item.productId,
                         method: "dec",
+                        qty: item.item_qty,
                       })
                     }
                   >

@@ -38,7 +38,7 @@ const ProductDetail = () => {
     // only add item to cart when user is  logged in
     if (userInfo) {
       dispatch(addToCart({ item_qty: qty, productId: productId })).then((e) => {
-        if (e.payload.cart.cartItems[0]) {
+        if (e.payload.msg === "Item added") {
           navigate("/cart");
         }
       });
@@ -95,6 +95,7 @@ const ProductDetail = () => {
               onClick={() =>
                 AddProductToCart({ qty: 1, productId: product._id })
               }
+              disabled={product?.unit <= 0}
             >
               ADD TO CART
             </button>
@@ -128,6 +129,7 @@ const ProductDetail = () => {
           <p>
             Seller- <b>{product?.seller?.name}</b>
           </p>
+          <p>{product?.unit} Unit In-stock</p>
 
           <div className="review-container">
             {reviews &&

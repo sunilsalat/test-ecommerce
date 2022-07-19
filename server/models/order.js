@@ -91,6 +91,17 @@ const OrderSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+OrderSchema.post("save", async function () {
+  if (this.status === "Confirmed") {
+    for (var item of this.orderItems) {
+      await this.model("Product").findOneAndUpdate(
+        { _id: item.productId },
+        { $inc: { unit: -item.qty } }
+      );
+    }
+  }
+});
+
 module.exports = mongoose.model("Order", OrderSchema);
 
 // all the fields of address needs to be stored in order schema seprately,

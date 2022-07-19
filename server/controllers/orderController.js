@@ -7,15 +7,13 @@ const mongoose = require("mongoose");
 
 const CreateOrder = async (req, res) => {
   const { paymentMethod } = req.body;
-
   if (!paymentMethod) {
     throw new Error("all the fields are required");
   }
 
   const cart = await Cart.findOne({ userId: req.userInfo.id });
-
   const { totalShippingFee, shippingAddress, tp, cartItems } = cart;
-
+  
   const orderItems = cartItems.map((e) => {
     return {
       title: e.item_title,
@@ -43,19 +41,16 @@ const CreateOrder = async (req, res) => {
 // create payment intent
 const createPaymentIntent = async (req, res) => {
   const { orderId } = req.body;
-
   if (!orderId) {
     throw Error("order id not provided");
   }
 
   const order = await Order.findOne({ _id: orderId });
-
   if (!order) {
     throw new Error("No order found with id ");
   }
 
   const totaAmount = order.total;
-
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totaAmount,
@@ -101,10 +96,18 @@ const UpdateOrder = async (req, res) => {
       paymentIntent.amount_received === paymentIntent.amount &&
       paymentIntent.status === "succeeded"
     ) {
-      await Order.findOneAndUpdate(
-        { paymentIntent: paymentIntent.id },
-        { paidAt: new Date(), isPaid: true, status: "confirmed" }
-      );
+      const order = await Order.findOne({ paymentIntent: paymentIntent.id });
+
+      order.paidAt = new Date();
+      order.isPaid = true;
+      order.status = "Confirmed";
+
+      await order.save();
+
+      // await Order.findOneAndUpdate(
+      //   { paymentIntent: paymentIntent.id },
+      //   { paidAt: new Date(), isPaid: true, status: "confirmed" }
+      // );
 
       return res.status(200).json({ id: order._id });
     }

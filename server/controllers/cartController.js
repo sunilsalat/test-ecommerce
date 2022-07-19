@@ -20,14 +20,14 @@ const addToCart = async (req, res) => {
     throw new Error("product is out of stock for given valut of qty");
   }
 
-  const { title, image, price, _id, seller } = product;
+  const { title, image, price, _id, seller, unit } = product;
 
   const item = {
     item_title: title,
     item_image: image[0],
     item_price: price,
     productId: _id,
-    item_qty: item_qty,
+    item_qty: item_qty > unit ? unit : item_qty,
     item_seller: seller,
   };
 
@@ -188,6 +188,7 @@ const getAllCartItems = async (req, res) => {
   try {
     let cart = await Cart.findOne({ userId: req.userInfo.id }).populate([
       "cartItems",
+      "cartItems.productId",
     ]);
 
     // filter out any item with negative quantity

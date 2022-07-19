@@ -15,13 +15,9 @@ const ProductList = () => {
   const { products, categories, lastPage, currentPage } = useSelector(
     (state) => state.products
   );
-
   const [searchParams, setSearchParams] = useSearchParams();
-
   const { search } = useLocation();
-
   const query = new URLSearchParams(search);
-
   const cat = query.has("cat") ? query.get("cat") : "";
   const title = query.has("title") ? query.get("title") : "";
   const page = query.has("page") ? query.get("page") : "";
@@ -85,7 +81,7 @@ const ProductList = () => {
       <div className="main-hero-container">
         <div className="productList-container">
           {products.length !== 0 &&
-            products.map((product, index) => {
+            products.map((product,  ) => {
               return (
                 <Product
                   product={product}

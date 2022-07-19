@@ -9,13 +9,14 @@ const PaymentConfirmatoin = () => {
   const navigate = useNavigate();
 
   const query = new URLSearchParams(search);
-
   const payInt = query.get("payment_intent");
 
   useEffect(() => {
-    dispatch(updateOrderPaidAt(payInt)).then((e) => {
-      navigate(`/order-detail/${e.payload.id}`);
-    });
+    if (payInt) {
+      dispatch(updateOrderPaidAt(payInt)).then((e) => {
+        navigate(`/order-detail/${e.payload.id}`);
+      });
+    }
   }, [payInt]);
 
   return <></>;
