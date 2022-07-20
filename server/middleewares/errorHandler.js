@@ -1,5 +1,5 @@
 const errorHandlerMiddleware = (err, req, res, next) => {
-  res.status(500).json({ msg: err.message });
+  res.status(err.statusCode).json({ msg: err.message });
   next();
 };
 

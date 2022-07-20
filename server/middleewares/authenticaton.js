@@ -1,11 +1,12 @@
 const { verifyJwtToken, createJwtToken } = require("../utlis/jwt");
 const Token = require("../models/token");
+const {NotAuthorize} = require('../error')
 
 const authMiddleware = async (req, res, next) => {
   const { accessToken, refreshToken } = req.signedCookies;
 
   if (!refreshToken) {
-    throw new Error("tokens not provided");
+    throw new NotAuthorize("Not Authorize to access page!");
   }
 
   try {
@@ -26,7 +27,7 @@ const authMiddleware = async (req, res, next) => {
     });
 
     if (!token || !token.isValid) {
-      throw new Error("Not authorize !");
+      throw new NotAuthorize("Not Authorize to access page!");
     }
 
     // refresh the access token using Refresh token

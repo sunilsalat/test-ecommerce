@@ -81,7 +81,7 @@ const ProductList = () => {
       <div className="main-hero-container">
         <div className="productList-container">
           {products.length !== 0 &&
-            products.map((product,  ) => {
+            products.map((product, index  ) => {
               return (
                 <Product
                   product={product}

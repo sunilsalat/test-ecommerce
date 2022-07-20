@@ -66,7 +66,6 @@ const AddProduct = ({
     });
 
     setData((data) => ({ ...data, image: res.data }));
-
     hide(true);
   };
 

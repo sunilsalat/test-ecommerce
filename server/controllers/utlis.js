@@ -95,6 +95,7 @@ const uploadImageToCloudinary = async (req, res) => {
     return res.status(200).send(paths);
   } catch (error) {
     console.log(error.message, "eerror");
+    
     throw new Error("image upload failed !");
   }
 };

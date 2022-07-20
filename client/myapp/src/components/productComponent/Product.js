@@ -50,6 +50,8 @@ const Product = ({ product, index, lastPage, currentPage }) => {
     navigate(`/product-detail/${id}`);
   };
 
+  console.log("renderi proucte page ");
+
   return (
     <div
       className="main-card-container"
