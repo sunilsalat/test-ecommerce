@@ -5,6 +5,7 @@ const {
   getShippingFee,
   getStripePk,
   uploadImageToCloudinary,
+  streamVideo
 } = require("../controllers/utlis");
 const router = express.Router();
 
@@ -15,5 +16,7 @@ router.route("/get-ssk").get(authMiddleware, getStripePk);
 router
   .route("/upload-img")
   .post([authMiddleware, isSeller], uploadImageToCloudinary);
+
+router.route('/vdo').get(streamVideo)
 
 module.exports = router;
