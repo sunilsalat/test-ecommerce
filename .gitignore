@@ -14,7 +14,7 @@
 .env.local
 node_modules/
 
-/server/Hardest Backend Node.js Concept to Master.mp4
+/server/*.mp4
 /server/sdf.txt
 
 # misc
