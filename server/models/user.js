@@ -23,6 +23,9 @@ const UserSchema = mongoose.Schema(
   {
     name: {
       type: String,
+      minLength: 3,
+      maxLength: 25,
+      trim: true,
       required: [true, "Name can not be empty"],
     },
     email: {
@@ -33,13 +36,19 @@ const UserSchema = mongoose.Schema(
     password: {
       type: String,
       required: [true, "Name can not be empty"],
-      minlength: 6,
+      minLength: 6,
     },
     role: {
       type: String,
+      trim: true,
       enum: ["admin", "user", "seller"],
       default: "user",
     },
+    lastLogin: {
+      type: Date,
+    },
+    loginAttempt: { type: Number, default:0},
+    isActive: { type: Boolean, default: true },
     addresses: [AddressSchema],
   },
   { timestamp: true }

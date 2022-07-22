@@ -4,16 +4,11 @@ const { generateUserPayload } = require("../utlis/generateUserPayload");
 const crypto = require("crypto");
 const Token = require("../models/token");
 const Seller = require("../models/seller");
-const { BadRequest } = require("../error");
+const { BadRequest, NotAuthorize } = require("../error");
 
 // REGISTER
 const register = async (req, res) => {
   const { name, email, password } = req.body;
-
-  //
-  if (!name || !email || !password) {
-    throw new BadRequest("All the fields are required to register");
-  }
 
   const isUserExist = await User.findOne({ email });
 
@@ -29,19 +24,30 @@ const register = async (req, res) => {
 // LOGIN
 const login = async (req, res) => {
   const { email, password } = req.body;
-
-  if ((!email, !password)) {
-    throw new BadRequest("Missing field");
-  }
-
   const user = await User.findOne({ email }).populate("addresses");
+
   if (!user) {
     throw new BadRequest("invalid credentials");
   }
+
+  if (!user.isActive || user.loginAttempt > 5) {
+    user.isActive = false;
+    await user.save();
+    throw new NotAuthorize("Account is blocked");
+  }
+
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
+    user.loginAttempt += 1;
+    await user.save();
     throw new BadRequest("invalid credentials");
   }
+
+  if (user) {
+    user.lastLoging = Date.now();
+    await user.save();
+  }
+
   const payload = generateUserPayload(user);
   // Do not save new refreshTOkenDb in token db, if already exist and valid
   const existing_token = await Token.findOne({ user: user._id });
@@ -49,7 +55,7 @@ const login = async (req, res) => {
   if (existing_token) {
     const { isValid } = existing_token;
     if (!isValid) {
-      throw new CustomError.BadRequest("Not authorize");
+      throw new BadRequest("Not authorize");
     }
     createJwtToken({
       res,

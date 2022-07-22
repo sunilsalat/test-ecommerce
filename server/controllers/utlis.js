@@ -100,7 +100,7 @@ const uploadImageToCloudinary = async (req, res) => {
   }
 };
 
-// video stramin
+// video straming
 const streamVideo = async (req, res) => {
   const redStr = fs.createReadStream(
     "Hardest Backend Node.js Concept to Master.mp4"
